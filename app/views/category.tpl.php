@@ -1,0 +1,1 @@
+<h3>Catégorie <?=$this->var['categories'][$this->var['params']['id']]; ?></h3>
