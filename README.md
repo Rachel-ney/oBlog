@@ -13,9 +13,9 @@
 - ~~Réécriture d'url avec altorouter et .htaccess~~
 
 ## BDD :
-- Créer une vrai BDD pour générer les articles
-- Utiliser DBData pour executer les requêtes SQL
-- Créer des modèles pour les fetch class de DBData
+- ~~Créer une vrai BDD pour générer les articles~~
+- ~~Utiliser DBData pour executer les requêtes SQL~~
+- ~~Créer des modèles pour les fetch class de DBData~~
 
 ## A ajouter : 
 - Possibilité de connexion / inscription :

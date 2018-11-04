@@ -36,16 +36,71 @@ class DBData {
      * Méthode permettant de récupérer les infos de tout les personnages
      * Ainsi que le type de chaques personnages
      */
-    public function getAllCharacters()
+    public function getAllPost()
     {
-        $sql = 
-        "SELECT c.*, t.name AS type_name 
-        FROM `character` AS c 
-        INNER JOIN `type` AS t 
-        ON c.type_id = t.id
-        ORDER BY c.name";
+        $sql =
+        "SELECT p.* , c.name AS category_name, a.name AS author_name
+        FROM post AS p
+        INNER JOIN category AS c
+        ON p.category = c.id_category
+        INNER JOIN author AS a
+        ON p.author = a.id_author";
         $statement = $this->dbh->query($sql);
-        $characters = $statement->fetchAll(PDO::FETCH_CLASS,'Character');
-        return $characters;
+        $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
+        return $postList;
+    }
+
+    public function getAllPostFromCategory($id_category)
+    {
+        $sql =
+        "SELECT p.* , c.name AS category_name, a.name AS author_name
+        FROM post AS p
+        INNER JOIN category AS c
+        ON p.category = c.id_category
+        INNER JOIN author AS a
+        ON p.author = a.id_author
+        WHERE p.category =". $id_category;
+        $statement = $this->dbh->query($sql);
+        $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
+        return $postList;
+    }
+    public function getAllPostFromAuthor($id_author)
+    {
+        $sql =
+        "SELECT p.* , c.name AS category_name, a.name AS author_name
+        FROM post AS p
+        INNER JOIN category AS c
+        ON p.category = c.id_category
+        INNER JOIN author AS a
+        ON p.author = a.id_author
+        WHERE p.author =". $id_author;
+        $statement = $this->dbh->query($sql);
+        $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
+        return $postList;
+    }
+
+    public function getAllAuthor()
+    {
+        $sql =
+        "SELECT * FROM author";
+        $statement = $this->dbh->query($sql);
+        $authorList = $statement->fetchAll(PDO::FETCH_CLASS,'Author');
+        return $authorList;
+    }
+
+    public function getAllCategory()
+    {
+        $sql =
+        "SELECT * FROM category";
+        $statement = $this->dbh->query($sql);
+        $categoryList = $statement->fetchAll(PDO::FETCH_CLASS,'Category');
+        return $categoryList;
     }
 }
+/* Exemple de requête avec alias et jointure : 
+    "SELECT c.*, t.name AS type_name 
+    FROM `character` AS c 
+    INNER JOIN `type` AS t 
+    ON c.type_id = t.id
+    ORDER BY c.name";
+*/

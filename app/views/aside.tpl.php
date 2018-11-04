@@ -11,8 +11,8 @@
           <div class="card">
             <h3 class="card-header">Catégories</h3>
             <ul class="list-group list-group-flush">
-              <?php foreach ($this->getVar('categories') as $index => $categoryName) : ?>
-              <li class="list-group-item"> <a href="<?= $this->router->generate('category', ['id' => $index]);?>"><?= $categoryName ?></a></li>
+              <?php foreach ($this->getVar('allCategory') as $categoryName) : ?>
+              <li class="list-group-item"> <a href="<?= $this->router->generate('category', ['id' => $categoryName->getIdCategory()]);?>"><?= $categoryName->getName() ?></a></li>
               <?php endforeach; ?>
             </ul>
           </div>
@@ -21,8 +21,8 @@
           <div class="card">
             <h3 class="card-header">Auteurs</h3>
             <ul class="list-group list-group-flush">
-              <?php foreach ($this->getVar('authors') as $index => $authorName) : ?>
-              <li class="list-group-item"><a href="<?= $this->router->generate('author', ['id' => $index]);?>"><?= $authorName ?></a></li>
+              <?php foreach ($this->getVar('allAuthor') as $authorName) : ?>
+              <li class="list-group-item"><a href="<?= $this->router->generate('author', ['id' => $authorName->getIdAuthor()]);?>"><?= $authorName->getName() ?></a></li>
               <?php endforeach; ?>
             </ul>
           </div>

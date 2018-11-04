@@ -5,22 +5,22 @@
 abstract class CoreController 
 {
     // protected pour pouvoir y acceder dans les enfants
-    protected $data = array();
     protected $oTemplator;
+    protected $dbdata;
 
     public function __construct($router, $articlesList, $authorsList, $categoriesList)
     {
         // je récupère le router et instancie dbdata pour plus tard
-        $this->data['authors'] = $authorsList;
-        $this->data['categories'] = $categoriesList;
-        $this->data['articles'] = $articlesList;
+        $this->dbdata = new DBData();
         $this->oTemplator = new Templator(__DIR__.'/../views', $router);
+
     }
     // assemble le template
     protected function show($viewName, $params = array())
     {
-        $this->oTemplator->setVar('categories', $this->data['categories']);
         $this->oTemplator->setVar('params', $params);
+        $this->oTemplator->setVar('allAuthor', $this->dbdata->getAllAuthor());
+        $this->oTemplator->setVar('allCategory', $this->dbdata->getAllCategory());
         $this->oTemplator->display($viewName);
     }
 }

@@ -6,14 +6,14 @@
         https://getbootstrap.com/docs/4.1/layout/grid/#grid-options -->
         <main class="col-lg-9">
 
-          <?php foreach ($this->getVar('articles') as $currentArticle) : ?>
+          <?php foreach ($this->getVar('allPost') as $currentPost) : ?>
           <!-- Je dispose une card: https://getbootstrap.com/docs/4.1/components/card/ -->
           <article class="card">
             <div class="card-body">
-              <h2 class="card-title"><?= $currentArticle->title ?></h2>
-              <p class="card-text"><?= $currentArticle->content ?></p>
+              <h2 class="card-title"><?= $currentPost->getTitle() ?></h2>
+              <p class="card-text"><?= $currentPost->getContent() ?></p>
               <p class="infos">
-                Posté par <a href="#" class="card-link"><?= $currentArticle->author ?></a> le <time><?= $currentArticle->getDateFr() ?></time> dans <a href="#" class="card-link">#<?= str_replace(' ', '', $currentArticle->category) ?></a>
+                Posté par <a href="#" class="card-link"><?= $currentPost->getAuthorName() ?></a> le <time><?= $currentPost->getPublishDate() ?></time> dans <a href="#" class="card-link">#<?= str_replace(' ', '', $currentPost->getCategoryName()) ?></a>
               </p>
             </div>
           </article>
@@ -32,11 +32,4 @@
         <?php $this->include('aside') ?>
       </div><!-- /.row -->
 
-      <?php
-      // Lignes ajouté pour le bonus : 
-      // Accès à une variable inexistante dans le système de templates
-      echo $this->getVar('404notfound');
-
-      // Demande au système de templates d'afficher une template inexistante
-      $this->display('templateToto');
 

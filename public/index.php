@@ -3,6 +3,7 @@
 require __DIR__.'/../vendor/autoload.php';
 
 //Inclusion de DBData
+require __DIR__.'/../app/utils/DBData.php';
 
 // Inclusion des controllers
 require __DIR__.'/../app/controllers/CoreController.php';
@@ -10,6 +11,11 @@ require __DIR__.'/../app/controllers/MainController.php';
 require __DIR__.'/../app/controllers/BlogController.php';
 
 // Inclusion des models
+require __DIR__.'/../app/models/CoreModel.php';
+require __DIR__.'/../app/models/Author.php';
+require __DIR__.'/../app/models/Category.php';
+require __DIR__.'/../app/models/Post.php';
+// à virer lorsque DBData sera fonctionnel :
 require __DIR__.'/../app/models/Article.php';
 
 // Inclusion des fichiers utils
