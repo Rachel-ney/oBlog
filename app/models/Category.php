@@ -3,16 +3,24 @@
 class Category extends CoreModel
 {
     private $name;
-    private $id_category;
-
+    
+    /**
+     * Get the value of name
+     */ 
     public function getName()
     {
         return $this->name;
     }
 
-    public function getIdCategory()
+    /**
+     * Set the value of name
+     *
+     * @return  self
+     */ 
+    public function setName($name)
     {
-        return $this->id_category;
-    }
+        $this->name = $name;
 
+        return $this;
+    }
 }

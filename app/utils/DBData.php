@@ -42,9 +42,9 @@ class DBData {
         "SELECT p.* , c.name AS category_name, a.name AS author_name
         FROM post AS p
         INNER JOIN category AS c
-        ON p.category = c.id_category
+        ON p.category_id = c.id
         INNER JOIN author AS a
-        ON p.author = a.id_author";
+        ON p.author_id = a.id";
         $statement = $this->dbh->query($sql);
         $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
         return $postList;
@@ -56,10 +56,10 @@ class DBData {
         "SELECT p.* , c.name AS category_name, a.name AS author_name
         FROM post AS p
         INNER JOIN category AS c
-        ON p.category = c.id_category
+        ON p.category_id = c.id
         INNER JOIN author AS a
-        ON p.author = a.id_author
-        WHERE p.category =". $id_category;
+        ON p.author_id = a.id
+        WHERE p.category_id =". $id_category;
         $statement = $this->dbh->query($sql);
         $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
         return $postList;
@@ -70,10 +70,10 @@ class DBData {
         "SELECT p.* , c.name AS category_name, a.name AS author_name
         FROM post AS p
         INNER JOIN category AS c
-        ON p.category = c.id_category
+        ON p.category_id = c.id
         INNER JOIN author AS a
-        ON p.author = a.id_author
-        WHERE p.author =". $id_author;
+        ON p.author_id = a.id
+        WHERE p.author_id =". $id_author;
         $statement = $this->dbh->query($sql);
         $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
         return $postList;

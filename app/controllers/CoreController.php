@@ -8,7 +8,7 @@ abstract class CoreController
     protected $oTemplator;
     protected $dbdata;
 
-    public function __construct($router, $articlesList, $authorsList, $categoriesList)
+    public function __construct($router)
     {
         // je récupère le router et instancie dbdata pour plus tard
         $this->dbdata = new DBData();

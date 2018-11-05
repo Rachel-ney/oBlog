@@ -15,12 +15,9 @@ require __DIR__.'/../app/models/CoreModel.php';
 require __DIR__.'/../app/models/Author.php';
 require __DIR__.'/../app/models/Category.php';
 require __DIR__.'/../app/models/Post.php';
-// à virer lorsque DBData sera fonctionnel :
-require __DIR__.'/../app/models/Article.php';
 
 // Inclusion des fichiers utils
 require __DIR__.'/../app/utils/Templator.php';
-require __DIR__.'/../app/utils/data.php';
 
 // Instanciation altorouter
 $router = new AltoRouter();
@@ -59,7 +56,7 @@ if ($match)
     $methodName = $dispatcher[1];
 
     // Instanciation du bon controller
-    $controller = new $controllerName($router, $articlesList, $authorsList, $categoriesList);
+    $controller = new $controllerName($router);
 
     // Appel de la bonne méthode, envoi des éventuels paramètres
     $controller->$methodName($match['params']);

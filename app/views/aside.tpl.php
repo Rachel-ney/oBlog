@@ -12,7 +12,7 @@
             <h3 class="card-header">Catégories</h3>
             <ul class="list-group list-group-flush">
               <?php foreach ($this->getVar('allCategory') as $categoryName) : ?>
-              <li class="list-group-item"> <a href="<?= $this->router->generate('category', ['id' => $categoryName->getIdCategory()]);?>"><?= $categoryName->getName() ?></a></li>
+              <li class="list-group-item"> <a href="<?= $this->router->generate('category', ['id' => $categoryName->getId()]);?>"><?= $categoryName->getName() ?></a></li>
               <?php endforeach; ?>
             </ul>
           </div>
@@ -22,7 +22,7 @@
             <h3 class="card-header">Auteurs</h3>
             <ul class="list-group list-group-flush">
               <?php foreach ($this->getVar('allAuthor') as $authorName) : ?>
-              <li class="list-group-item"><a href="<?= $this->router->generate('author', ['id' => $authorName->getIdAuthor()]);?>"><?= $authorName->getName() ?></a></li>
+              <li class="list-group-item"><a href="<?= $this->router->generate('author', ['id' => $authorName->getId()]);?>"><?= $authorName->getName() ?></a></li>
               <?php endforeach; ?>
             </ul>
           </div>

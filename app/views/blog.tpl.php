@@ -13,7 +13,7 @@
               <h2 class="card-title"><?= $currentPost->getTitle() ?></h2>
               <p class="card-text"><?= $currentPost->getContent() ?></p>
               <p class="infos">
-                Posté par <a href="#" class="card-link"><?= $currentPost->getAuthorName() ?></a> le <time><?= $currentPost->getPublishDate() ?></time> dans <a href="#" class="card-link">#<?= str_replace(' ', '', $currentPost->getCategoryName()) ?></a>
+                Posté par <a href="#" class="card-link"><?= $currentPost->getAuthorName() ?></a> le <time><?= $currentPost->getCreatedAt() ?></time> dans <a href="#" class="card-link">#<?= str_replace(' ', '', $currentPost->getCategoryName()) ?></a>
               </p>
             </div>
           </article>

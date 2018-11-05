@@ -19,6 +19,7 @@ class Templator {
 
     // cette méthode permet d'afficher TOUT les templates, avec comme contenu principal: le nom du template donné en parametre
     public function display ($template) {
+        //dump($this->var);
         // dans $verify je stock le chemin de fichier complet qui mène au nom du template donné en paramètre
         $verify = $this->cheminAbsolut. '/'.$template.'.tpl.php';
         // je vérifie si le fichier donné en paramètre existe bien en donnant son chemin de fichier à la fonction file_exists()
