@@ -33,8 +33,8 @@ class DBData {
         }
     }
     /**
-     * Méthode permettant de récupérer les infos de tout les personnages
-     * Ainsi que le type de chaques personnages
+     * Méthode permettant de récupérer les infos de tout les articles
+     * Ainsi que l'auteur et la catégorie de chaque articles
      */
     public function getAllPost()
     {
@@ -49,7 +49,28 @@ class DBData {
         $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
         return $postList;
     }
-
+    /**
+     * Méthode permettant de récupérer les infos d'un articles d'après son ID
+     * Ainsi que l'auteur et la catégorie de l'article
+     */
+    public function getPostFromId($id_post)
+    {
+        $sql =
+        "SELECT p.* , c.name AS category_name, a.name AS author_name
+        FROM post AS p
+        INNER JOIN category AS c
+        ON p.category_id = c.id
+        INNER JOIN author AS a
+        ON p.author_id = a.id
+        WHERE p.id = ". $id_post;
+        $statement = $this->dbh->query($sql);
+        $postList = $statement->fetchObject('Post');
+        return $postList;
+    }
+    /**
+     * Méthode permettant de récupérer les infos de tout les articles d'une catégorie
+     * Ainsi que l'auteur et la catégorie de chaque articles
+     */
     public function getAllPostFromCategory($id_category)
     {
         $sql =
@@ -64,6 +85,10 @@ class DBData {
         $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
         return $postList;
     }
+    /**
+     * Méthode permettant de récupérer les infos de tout les articles d'un auteur
+     * Ainsi que l'auteur et la catégorie de chaque articles
+     */
     public function getAllPostFromAuthor($id_author)
     {
         $sql =
@@ -78,7 +103,9 @@ class DBData {
         $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
         return $postList;
     }
-
+    /**
+     * Méthode permettant de récupérer les infos de tout les auteurs
+     */
     public function getAllAuthor()
     {
         $sql =
@@ -87,7 +114,9 @@ class DBData {
         $authorList = $statement->fetchAll(PDO::FETCH_CLASS,'Author');
         return $authorList;
     }
-
+    /**
+     * Méthode permettant de récupérer les infos de toutes les catégories
+     */
     public function getAllCategory()
     {
         $sql =
@@ -97,10 +126,3 @@ class DBData {
         return $categoryList;
     }
 }
-/* Exemple de requête avec alias et jointure : 
-    "SELECT c.*, t.name AS type_name 
-    FROM `character` AS c 
-    INNER JOIN `type` AS t 
-    ON c.type_id = t.id
-    ORDER BY c.name";
-*/

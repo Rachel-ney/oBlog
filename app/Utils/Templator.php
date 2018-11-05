@@ -29,6 +29,12 @@ class Templator {
             include $verify; // $verify contient le chemin complet jusqu'au template donné en paramètre
             include $this->cheminAbsolut. '/footer.tpl.php';
         }
+        else {
+            header("HTTP/1.0 404 Not Found");
+            include $this->cheminAbsolut. '/header.tpl.php';
+            include $this->cheminAbsolut. '/error404.tpl.php';
+            include $this->cheminAbsolut. '/footer.tpl.php';
+        }
     }
 
     // cette méthode permet d'inclure UN template bien préci dont le nom est donné en paramètre

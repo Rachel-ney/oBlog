@@ -31,4 +31,10 @@ class BlogController extends CoreController
         }
         $this->show('author', $params);
     }
+
+    public function post($params = array())
+    {
+        $this->oTemplator->setVar('post', $this->dbdata->getPostFromId($params['id']));
+        $this->show('post');
+    }
 }
