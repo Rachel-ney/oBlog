@@ -4,20 +4,14 @@ namespace oBlog\Models;
 class Category extends CoreModel
 {
     private $name;
+    const TABLE_NAME = 'category';
     
-    /**
-     * Get the value of name
-     */ 
+    // GETTERS & SETTERS
+ 
     public function getName()
     {
         return $this->name;
     }
-
-    /**
-     * Set the value of name
-     *
-     * @return  self
-     */ 
     public function setName($name)
     {
         $this->name = $name;
