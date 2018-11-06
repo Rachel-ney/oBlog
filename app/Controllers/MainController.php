@@ -1,4 +1,5 @@
 <?php
+namespace oBlog\Controllers;
 
 class MainController extends CoreController
 {

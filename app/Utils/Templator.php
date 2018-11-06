@@ -1,4 +1,5 @@
 <?php
+namespace oBlog\Utils;
 
 class Templator {
     private $cheminAbsolut;

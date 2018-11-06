@@ -1,4 +1,5 @@
 <?php
+namespace oBlog\Models;
 
 abstract class CoreModel
 {

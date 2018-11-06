@@ -1,4 +1,7 @@
 <?php
+namespace oBlog\Controllers;
+use oBlog\Utils\DBData;
+use oBlog\Utils\Templator;
 
 // classe parente des controller
 // abstract pour ne pas pouvoir l'instancier directement mais seulement par le biais des enfants

@@ -1,4 +1,5 @@
 <?php
+namespace oBlog;
 
 class Application 
 {
@@ -7,7 +8,7 @@ class Application
     public function __construct() 
     {
         // Lancer AltoRouter
-        $this->router = new AltoRouter();
+        $this->router = new \AltoRouter();
         // Récuperation de BASE_URI
         $baseUrl = isset($_SERVER['BASE_URI']) ? trim($_SERVER['BASE_URI']) : '/';
         // Définition de la BASE_URI pour AltoRouter
@@ -35,7 +36,7 @@ class Application
 
         // redefinition du nom du controller avec le namespace
         // on parle alors de FQCN (= Fully Qualified Class Name)
-        // $controllerName = '\oFramework\Controllers\\'.$controllerName;
+        $controllerName = '\oBlog\Controllers\\'.$controllerName;
         // on instancie le controller
         $myController = new $controllerName($this->router);
         // on appelle la méthode

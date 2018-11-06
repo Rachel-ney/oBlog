@@ -1,4 +1,6 @@
 <?php
+namespace oBlog\Utils;
+use PDO;
 /**
  * Classe permettant de retourner des données stockées dans la base de données
  */
@@ -46,7 +48,7 @@ class DBData {
         INNER JOIN author AS a
         ON p.author_id = a.id";
         $statement = $this->dbh->query($sql);
-        $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
+        $postList = $statement->fetchAll(PDO::FETCH_CLASS,'oBlog\Models\Post');
         return $postList;
     }
     /**
@@ -64,7 +66,7 @@ class DBData {
         ON p.author_id = a.id
         WHERE p.id = ". $id_post;
         $statement = $this->dbh->query($sql);
-        $postList = $statement->fetchObject('Post');
+        $postList = $statement->fetchObject('oBlog\Models\Post');
         return $postList;
     }
     /**
@@ -82,7 +84,7 @@ class DBData {
         ON p.author_id = a.id
         WHERE p.category_id =". $id_category;
         $statement = $this->dbh->query($sql);
-        $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
+        $postList = $statement->fetchAll(PDO::FETCH_CLASS,'oBlog\Models\Post');
         return $postList;
     }
     /**
@@ -100,7 +102,7 @@ class DBData {
         ON p.author_id = a.id
         WHERE p.author_id =". $id_author;
         $statement = $this->dbh->query($sql);
-        $postList = $statement->fetchAll(PDO::FETCH_CLASS,'Post');
+        $postList = $statement->fetchAll(PDO::FETCH_CLASS,'oBlog\Models\Post');
         return $postList;
     }
     /**
@@ -111,7 +113,7 @@ class DBData {
         $sql =
         "SELECT * FROM author";
         $statement = $this->dbh->query($sql);
-        $authorList = $statement->fetchAll(PDO::FETCH_CLASS,'Author');
+        $authorList = $statement->fetchAll(PDO::FETCH_CLASS,'oBlog\Models\Author');
         return $authorList;
     }
     /**
@@ -122,7 +124,7 @@ class DBData {
         $sql =
         "SELECT * FROM category";
         $statement = $this->dbh->query($sql);
-        $categoryList = $statement->fetchAll(PDO::FETCH_CLASS,'Category');
+        $categoryList = $statement->fetchAll(PDO::FETCH_CLASS,'oBlog\Models\Category');
         return $categoryList;
     }
 }

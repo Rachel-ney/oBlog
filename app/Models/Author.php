@@ -1,4 +1,5 @@
 <?php
+namespace oBlog\Models;
 
 class Author extends CoreModel
 {
