@@ -9,7 +9,7 @@ abstract class CoreModel
     protected $created_at;
     protected $updated_at;
 
-    abstract public static function update($id);
+    abstract public static function update($model, $id);
     abstract public static function insert($model);
 
     // Méthode renvoyant TOUT les champs d'une table
