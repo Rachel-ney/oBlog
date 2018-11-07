@@ -9,37 +9,31 @@ class MainController extends CoreController
     // j'appel show pour afficher la home
     public function home()
     {
-        // test getAll();
-        $allPost = Post::getAll();
-        dump($allPost);
-        $allAuthor = Author::getAll();
-        dump($allAuthor);
-        $allCategory = Category::getAll();
-        dump($allCategory);
-
-        // test getOne($id);
-        $onePost = Post::getOne(1);
-        dump($onePost);
-        $oneAuthor = Author::getOne(4);
-        dump($oneAuthor);
-        $oneCategory = Category::getOne(3);
-        dump($oneCategory);
-
         // test delete($id);
-        $deletePost = Post::delete(5);
-        dump($deletePost);
-        $deleteAuthor = Author::delete(5);
-        dump($deleteAuthor);
-        $deleteCategory = Category::delete(4);
-        dump($deleteCategory);
+        // $deletePost = Post::delete(5);
+        // dump($deletePost);
+        // $deleteAuthor = Author::delete(5);
+        // dump($deleteAuthor);
+        // $deleteCategory = Category::delete(5);
+        // dump($deleteCategory);
 
-        // test getAll();
-        $allPost = Post::getAll();
-        dump($allPost);
-        $allAuthor = Author::getAll();
-        dump($allAuthor);
-        $allCategory = Category::getAll();
-        dump($allCategory);
+        // test insert() de la classe Author
+        $user = new Author();
+        $user->setName('User');
+        $user->setImage('myPictureUser.jpg');
+        $user->setEmail('user@email.fr');
+        dump($user);
+        //$addUser = Author::insert($user);
+
+        // test insert() de la classe Post
+        $post = new Post();
+        $post->setTitle('Comment j\'ai ajouté un nouvel article');
+        $post->setResume('C\'était un soir de pleine lune, en arrosant mes fleurs un rayon de lune m\'a frappé !');
+        $post->setContent(' Lorem ipsum dolor sit amet consectetur, adipisicing elit. Odio possimus nesciunt non et sapiente numquam minus temporibus eum corrupti perferendis! ');
+        $post->setAuthorId(3);
+        $post->setCategoryId(2);
+        dump($post);
+        //$addPost = Post::insert($post);
 
         $this->show('home');
     }

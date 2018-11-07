@@ -9,14 +9,17 @@ abstract class CoreModel
     protected $created_at;
     protected $updated_at;
 
+    abstract public static function update($id);
+    abstract public static function insert($model);
+
     // Méthode renvoyant TOUT les champs d'une table
     public static function getAll()
     {
         if(static:: TABLE_NAME === 'post') 
         {
             $sql = 'SELECT p.* , c.name AS category_name, a.name AS author_name 
-            FROM '. static:: TABLE_NAME .' 
-            AS p INNER JOIN category AS c 
+            FROM '. static:: TABLE_NAME .' AS p 
+            INNER JOIN category AS c 
             ON p.category_id = c.id 
             INNER JOIN author AS a 
             ON p.author_id = a.id;';
@@ -30,14 +33,14 @@ abstract class CoreModel
         return $results;
     }
 
-    // Méthode renvoyant UN UNIQUE champ d'une table
+    // Méthode renvoyant UN UNIQUE champ d'une table dont l'id est donné
     public static function getOne($id)
     {
         if(static:: TABLE_NAME === 'post') 
         {
             $sql = 'SELECT p.* , c.name AS category_name, a.name AS author_name 
-            FROM '. static:: TABLE_NAME .' 
-            AS p INNER JOIN category AS c 
+            FROM '. static:: TABLE_NAME .' AS p 
+            INNER JOIN category AS c 
             ON p.category_id = c.id 
             INNER JOIN author AS a 
             ON p.author_id = a.id
@@ -55,7 +58,7 @@ abstract class CoreModel
         return $results;
     }
 
-    // Méthode supprimant le champ d'une table
+    // Méthode supprimant le champ d'une table dont l'id est donné
     public static function delete($id)
     {
         $sql = 'DELETE FROM '.static::TABLE_NAME.' WHERE id = :id;';

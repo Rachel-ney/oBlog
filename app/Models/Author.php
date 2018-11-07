@@ -1,5 +1,7 @@
 <?php
 namespace oBlog\Models;
+use PDO;
+use oBlog\Utils\Database;
 
 class Author extends CoreModel
 {
@@ -7,6 +9,29 @@ class Author extends CoreModel
     private $image;
     private $email;
     const TABLE_NAME = 'author';
+
+    // Méthode permettant d'ajouter un auteur dans la bdd d'après un model reçu en paramètre
+    public static function insert($model)
+    {
+        $sql = 'INSERT INTO '.self::TABLE_NAME.' (name, image, email) VALUES (:insertName, :insertImage, :insertEmail);';
+        $pdoStatement = Database::getPDO()->prepare($sql);
+
+        $pdoStatement->bindValue(':insertName', $model->getName(), PDO::PARAM_STR);
+        $pdoStatement->bindValue(':insertImage', $model->getImage(), PDO::PARAM_STR);
+        $pdoStatement->bindValue(':insertEmail', $model->getEmail(), PDO::PARAM_STR);
+
+        if ($pdoStatement->execute()) {
+            return $pdoStatement->rowCount() > 0;
+        } else {
+             return false;
+        }
+    }
+
+    // Méthode permettant de modifier les infos d'un auteur dans la bdd d'après un model reçu en paramètre + l'id de l'auteur
+    public static function update($model, $id)
+    {
+        // TODO
+    }
     
     // GETTERS & SETTERS 
     public function getName()
