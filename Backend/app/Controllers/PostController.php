@@ -70,9 +70,7 @@ class PostController extends CoreController
             $this->showJson($array_json);
             die();
         }
-        // je déclare mon tableau de réponse
-        $array_json = array();
-        // je le rempli : 
+        // je rempli mon tableau de réponse :
             $array_json = [
                 'post' => [
                     'id'            => $postForJson->getId(),
@@ -92,7 +90,7 @@ class PostController extends CoreController
         $this->showJson($array_json);
     }
 
-    // Méthode pour ajouter un post en bdd
+    // Méthode pour ajouter / modifier un post en bdd
     public function addOrUpdate() 
     {
         // je récupère la variable qui détermine si l'action sera de type add ou de type update
@@ -106,7 +104,7 @@ class PostController extends CoreController
             die();
         }
         // si la méthode renseigné n'est pas update ou insert
-        if ($insertOrUpdate !== 'update' || $insertOrUpdate !== 'insert') {
+        if ($insertOrUpdate !== 'update' && $insertOrUpdate !== 'insert') {
             // message d'erreur, fin du programme
             $array_json['msg'] = 'Erreur syntaxe : insert pour créer un article / update pour modifier un article';
             $this->showJson($array_json);
@@ -176,22 +174,19 @@ class PostController extends CoreController
             $this->showJson($array_json);
             die();
         }
-
-        // je déclare mon tableau de réponse
-        $array_json = array();
-        // je le rempli : 
-            $array_json['post'] = [
-                'id'            => $post->getId(),
-                'title'         => $post->getTitle(),
-                'resume'        => $post->getResume(),
-                'content'       => $post->getContent(),
-                'authorId'      => $post->getAuthorId(),
-                'categoryId'    => $post->getCategoryId(),
-                'authorName'    => $post->getAuthorName(),
-                'categoryName'  => $post->getCategoryName(),
-                'created_at'    => $post->getCreatedAt(),
-                'updated_at'    => $post->getUpdatedAt(),
-            ];
+        // je rempli mon tableau de réponse : 
+        $array_json['post'] = [
+            'id'            => $post->getId(),
+            'title'         => $post->getTitle(),
+            'resume'        => $post->getResume(),
+            'content'       => $post->getContent(),
+            'authorId'      => $post->getAuthorId(),
+            'categoryId'    => $post->getCategoryId(),
+            'authorName'    => $post->getAuthorName(),
+            'categoryName'  => $post->getCategoryName(),
+            'created_at'    => $post->getCreatedAt(),
+            'updated_at'    => $post->getUpdatedAt(),
+        ];
         // j'envoi le tableau à showJson
         $this->showJson($array_json);
     }
