@@ -1,5 +1,5 @@
 # Backend :  
-- finir les méthodes des Models
+- ~~finir les méthodes des Models~~
 - finir les méthodes des Controller
 - système connexion / inscription: 
 - la connexion cherche si l'utilisateur existe ou non et le connecte si enregistré dans bdd --> modifier le retour de la méthode one() dans le cas ou auteur inexistant

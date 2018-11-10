@@ -9,8 +9,8 @@ abstract class CoreModel
     protected $created_at;
     protected $updated_at;
 
-    abstract public static function update($model, $id);
-    abstract public static function insert($model);
+    abstract static function update();
+    abstract static function insert();
 
     // Méthode renvoyant TOUT les champs d'une table
     public static function getAll()
@@ -65,13 +65,12 @@ abstract class CoreModel
         $pdoStatement = Database::getPDO()->prepare($sql);
         $pdoStatement->bindValue(':id', $id, PDO::PARAM_INT);
 
-        if ($pdoStatement->execute()) {
-            // Si le nombre de ligne concerné par la dernière requête sql 
-            // < 0 : return vaudra false
-            // > 0 : return vaudra true
+        if ($pdoStatement->execute()) 
+        {
             return $pdoStatement->rowCount() > 0;
-        // Si un soucis a l'execution...
-        } else {
+        } 
+        else 
+        {
             return false;
         }
     }

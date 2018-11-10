@@ -44,30 +44,63 @@ class Post extends CoreModel
     }
     
     // Méthode insérant un nouvel article dans la table post d'après un model reçu en paramètre
-    public static function insert($model)
+    public function insert()
     {
         $sql = 
         'INSERT INTO '.self::TABLE_NAME.' (title, resume, content, author_id, category_id) 
         VALUES (:insertTitle, :insertResume, :insertContent, :insertAuthorId, :insertCategoryId);';
         $pdoStatement = Database::getPDO()->prepare($sql);
 
-        $pdoStatement->bindValue(':insertTitle', $model->getTitle(), PDO::PARAM_STR);
-        $pdoStatement->bindValue(':insertResume', $model->getResume(), PDO::PARAM_STR);
-        $pdoStatement->bindValue(':insertContent', $model->getContent(), PDO::PARAM_STR);
-        $pdoStatement->bindValue(':insertAuthorId', $model->getAuthorId(), PDO::PARAM_INT);
-        $pdoStatement->bindValue(':insertCategoryId', $model->getCategoryId(), PDO::PARAM_INT);
+        $pdoStatement->bindValue(':insertTitle',     $this->getTitle(), PDO::PARAM_STR);
+        $pdoStatement->bindValue(':insertResume',    $this->getResume(), PDO::PARAM_STR);
+        $pdoStatement->bindValue(':insertContent',   $this->getContent(), PDO::PARAM_STR);
+        $pdoStatement->bindValue(':insertAuthorId',  $this->getAuthorId(), PDO::PARAM_INT);
+        $pdoStatement->bindValue(':insertCategoryId',$this->getCategoryId(), PDO::PARAM_INT);
 
-        if ($pdoStatement->execute()) {
-            return $pdoStatement->rowCount() > 0;
-        } else {
-             return false;
-        }
+        $success = false;
+        if ($pdoStatement->execute()) 
+        {
+            $success = $pdoStatement->rowCount() > 0;
+            if ($success)
+            {
+                $this->id = Database::getPDO()->lastInsertId();
+            }
+        } 
+        return $success;
     }
 
     // Méthode modifiant un article dans la table post d'après un model reçu en paramètre et son id
-    public static function update($model, $id)
+    public function update()
     {
-        // TODO
+        // UPDATE table
+        // SET nom_colonne_1 = 'nouvelle valeur'
+        // WHERE condition
+        $sql = 
+        'UPDATE '.self::TABLE_NAME.' SET 
+        title =         :newTitle, 
+        resume =        :newResume, 
+        content =       :newContent, 
+        author_id =     :newAuthorId, 
+        category_id =   :newCategoryId 
+        WHERE id =      :insertId ;';
+
+        $pdoStatement = Database::getPDO()->prepare($sql);
+
+        $pdoStatement->bindValue(':newTitle',      $this->getTitle(), PDO::PARAM_STR);
+        $pdoStatement->bindValue(':newResume',     $this->getResume(), PDO::PARAM_STR);
+        $pdoStatement->bindValue(':newContent',    $this->getContent(), PDO::PARAM_STR);
+        $pdoStatement->bindValue(':newAuthorId',   $this->getAuthorId(), PDO::PARAM_INT);
+        $pdoStatement->bindValue(':newCategoryId', $this->getCategoryId(), PDO::PARAM_INT);
+        $pdoStatement->bindValue(':insertId',      $this->getId(), PDO::PARAM_INT);
+
+        if ($pdoStatement->execute()) 
+        {
+            return $pdoStatement->rowCount() > 0;
+        } 
+        else 
+        {
+             return false;
+        }
     }
 
     // GETTERS & SETTERS
