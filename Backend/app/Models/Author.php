@@ -1,5 +1,5 @@
 <?php
-namespace oBlog\Models;
+namespace oBlogApi\Models;
 use PDO;
 use oBlog\Utils\Database;
 

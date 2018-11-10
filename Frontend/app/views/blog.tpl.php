@@ -5,22 +5,19 @@
         MAIS au dela d'une certaine taille, il n'en prendra plus que 9
         https://getbootstrap.com/docs/4.1/layout/grid/#grid-options -->
         <main class="col-lg-9">
-
-          <?php foreach ($this->getVar('allPost') as $currentPost) : ?>
           <!-- Je dispose une card: https://getbootstrap.com/docs/4.1/components/card/ -->
           <article class="card">
             <div class="card-body">
-              <h2 class="card-title"> <a href="<?= $this->router->generate('post', ['id' => $currentPost->getId()]);?>"><?= $currentPost->getTitle() ?></a> </h2>
-              <p class="card-text"><?= $currentPost->getResume() ?></p>
+              <h2 class="card-title"> <a href="">Titre</a> </h2>
+              <p class="card-text">Resume</p>
               <p class="infos">
                 Posté par 
-                <a href="<?= $this->router->generate('author',['id' => $currentPost->getAuthorId()]);?>" class="card-link"><?= $currentPost->getAuthorName() ?></a>
-                le <time><?= $currentPost->getCreatedAt() ?></time> 
-                dans <a href="<?= $this->router->generate('category',['id' => $currentPost->getCategoryId()]);?>" class="card-link">#<?= str_replace(' ', '', $currentPost->getCategoryName()) ?></a>
+                <a href="" class="card-link">Auteur</a>
+                le <time>date</time> 
+                dans <a href="" class="card-link">#Category</a>
               </p>
             </div>
           </article>
-          <?php endforeach; ?>
 
           <!-- Je met un element de navigation: https://getbootstrap.com/docs/4.1/components/pagination/ -->
           <nav aria-label="Page navigation example">

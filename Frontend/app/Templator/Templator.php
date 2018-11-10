@@ -1,5 +1,5 @@
 <?php
-namespace oBlog\Utils;
+namespace oBlog\Templator;
 
 class Templator {
     private $absolutWay;
@@ -14,7 +14,21 @@ class Templator {
     public function setVar($name, $content) {
         $this->var[$name] = $content;
     }
-
+    public function getVar($indexName) {
+        // si l'index existe on l'envoi
+        if(isset($this->var[$indexName])) {
+            return $this->var[$indexName];
+        }
+    }    
+    // Méthode permettant d'inclure UN template bien préci dont le nom est donné en paramètre
+    public function include($template) {
+        // verify = chemin complet vers le template demandé
+        $verify = $this->absolutWay. '/'.$template.'.tpl.php';
+        // si le fichier existe je l'inclu
+        if (file_exists($verify)) {
+            include $this->absolutWay. '/'.$template.'.tpl.php';
+        }
+    }
     // cette méthode permet d'afficher TOUT les templates, avec comme contenu principal: le nom du template donné en parametre
     public function display ($template) {
         // verify = chemin complet vers le template demandé
@@ -35,22 +49,5 @@ class Templator {
         }
     }
 
-    // Méthode permettant d'inclure UN template bien préci dont le nom est donné en paramètre
-    public function include($template) {
-        // verify = chemin complet vers le template demandé
-        $verify = $this->absolutWay. '/'.$template.'.tpl.php';
-        // si le fichier existe je l'inclu
-        if (file_exists($verify)) {
-            include $this->absolutWay. '/'.$template.'.tpl.php';
-        }
-        
-    }
 
-    // Méthode permettant de retourner le contenu d'un index du tableau $var[] 
-    public function getVar($indexName) {
-        // si l'index existe on l'envoi
-        if(isset($this->var[$indexName])) {
-            return $this->var[$indexName];
-        }
-    }
 }

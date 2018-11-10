@@ -8,14 +8,14 @@
           <!-- Je dispose une card: https://getbootstrap.com/docs/4.1/components/card/ -->
           <article class="card">
             <div class="card-body">
-              <h2 class="card-title"> <?= $this->var['post']->getTitle() ?> </h2>
-              <h3 class="card-text"><?= $this->var['post']->getResume() ?></h3>
-              <p class="card-text"><?= $this->var['post']->getContent() ?></p>
+              <h2 class="card-title">Titre </h2>
+              <h3 class="card-text">Resume</h3>
+              <p class="card-text">Content</p>
               <p class="infos">
                 Posté par 
-                <a href="<?= $this->router->generate('author',['id' => $this->var['post']->getAuthorId()]);?>" class="card-link"><?= $this->var['post']->getAuthorName();?></a> 
-                le <time><?= $this->var['post']->getCreatedAt();?></time> 
-                dans <a href="<?= $this->router->generate('category',['id' => $this->var['post']->getCategoryId()]);?>" class="card-link">#<?= str_replace(' ', '', $this->var['post']->getCategoryName());?></a>
+                <a href="">Auteur</a> 
+                le <time>date</time> 
+                dans <a href="" class="card-link">#Category</a>
               </p>
             </div>
           </article>

@@ -10,7 +10,7 @@ class Application
         // Lancer AltoRouter
         $this->router = new \AltoRouter();
         // Récuperation de BASE_URI
-        $baseUrl = isset($_SERVER['BASE_URI']) ? trim($_SERVER['BASE_URI']) : '/';
+        $baseUrl = isset($_SERVER['BASE_URI']) ? trim($_SERVER['BASE_URI']) : '';
         // Définition de la BASE_URI pour AltoRouter
         $this->router->setBasePath($baseUrl);
         // Appel de la fonction pour générer les routes

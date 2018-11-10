@@ -1,12 +1,6 @@
 <?php
 namespace oBlog\Controllers;
-use PDO;
-use oBlog\Utils\Database;
-use oBlog\Utils\Templator;
-use oBlog\Models\Post;
-use oBlog\Models\Author;
-use oBlog\Models\Category;
-
+use oBlog\Templator\Templator;
 
 // classe parente des controller
 abstract class CoreController 
@@ -21,11 +15,8 @@ abstract class CoreController
     }
     // transmet les variables essentiel à templator 
     // appel templator pour assembler le template voulu
-    protected function show($viewName, $params = array())
+    protected function show($viewName)
     {
-        $this->oTemplator->setVar('params', $params);
-        $this->oTemplator->setVar('allAuthor', Author::getAll());
-        $this->oTemplator->setVar('allCategory', Category::getAll());
         $this->oTemplator->display($viewName);
     }
 }

@@ -1,2 +1,4 @@
-/vendor/
-/app/Utils/config.conf
+Frontend/vendor/
+Frontend/composer.lock
+Backend/vendor/
+Backend/app/Utils/config.conf
