@@ -1,7 +1,7 @@
 <?php
 namespace oBlogApi\Models;
 use PDO;
-use oBlog\Utils\Database;
+use oBlogApi\Utils\Database;
 
 abstract class CoreModel
 {
@@ -9,8 +9,8 @@ abstract class CoreModel
     protected $created_at;
     protected $updated_at;
 
-    abstract static function update();
-    abstract static function insert();
+    abstract function update();
+    abstract function insert();
 
     // Méthode renvoyant TOUT les champs d'une table
     public static function getAll()

@@ -1,7 +1,7 @@
 <?php
 namespace oBlogApi\Models;
 use PDO;
-use oBlog\Utils\Database;
+use oBlogApi\Utils\Database;
 
 class Post extends CoreModel
 {

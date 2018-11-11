@@ -1,7 +1,7 @@
 <?php
 namespace oBlogApi\Controllers;
-use oBlog\Models\Post;
-use oBlog\Models\Author;
+use oBlogApi\Models\Post;
+use oBlogApi\Models\Author;
 
 class AuthorController extends CoreController
 {
@@ -36,52 +36,6 @@ class AuthorController extends CoreController
         // j'ajoute le tableau à ma réponse json : 
         $array_json = [
             'allAuthor' => $allAuthorForJson,
-            'success' => true,
-        ];
-        // j'envoi le tableau à showJson
-        $this->showJson($array_json);
-    }
-
-    // Méthode pour récuperer TOUT les POST d'UN auteur et les envoyer en json
-    public function allPostByAuthor() 
-    {
-        $idAuthor = isset($_POST['idAuthor']) ? strip_tags(trim($_POST['idAuthor'])) : '';
-            // si id vide
-            if(empty($idAuthor)) 
-            {
-                // message d'erreur, fin du programme
-                $array_json['msg'] = 'Veuillez préciser l\'identifiant de l\'auteur';
-                $this->showJson($array_json);
-                die();
-            }
-        // je récupère tout les posts de ma bdd sous forme d'objet
-        $allPostByAuthor = Post::getAllPostBy('author');
-
-        // si la bdd ne m'a rien renvoyé
-        if(empty($allPostByAuthor)) 
-        {
-            //  message d'erreur , fin du programme
-            $array_json['msg'] = 'La bdd n\'a retourné aucun résultat';
-            $this->showJson($array_json);
-            die();
-        }
-
-        // je déclare le tableau qui contiendra tout les posts
-        $forJson = array();
-        // je rempli le tableau : 
-        foreach( $allPostByAuthor as $index => $currentObject) 
-        {
-            $forJson[$index] = [
-                'id'            => $currentObject->getId(),
-                'name '         => $currentObject->getName(),
-                'email '        => $currentObject->getEmail(),
-                'created_at'    => $currentObject->getCreatedAt(),
-                'updated_at'    => $currentObject->getUpdatedAt(),
-            ];
-        }
-        // j'ajoute le tableau à ma réponse json : 
-        $array_json = [
-            'allPostByAuthor' => $forJson,
             'success' => true,
         ];
         // j'envoi le tableau à showJson

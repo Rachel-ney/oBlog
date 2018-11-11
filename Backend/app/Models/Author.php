@@ -1,7 +1,7 @@
 <?php
 namespace oBlogApi\Models;
 use PDO;
-use oBlog\Utils\Database;
+use oBlogApi\Utils\Database;
 
 class Author extends CoreModel
 {

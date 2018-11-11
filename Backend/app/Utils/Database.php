@@ -1,5 +1,5 @@
 <?php
-namespace oBlog\Utils;
+namespace oBlogApi\Utils;
 use PDO;
 /**
  * Classe permettant de retourner des données stockées dans la base de données

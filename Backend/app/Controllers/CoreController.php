@@ -1,11 +1,16 @@
 <?php
 namespace oBlogApi\Controllers;
 use PDO;
-use oBlog\Utils\Database;
+use oBlogApi\Utils\Database;
 
 // classe parente des controller
 abstract class CoreController 
 {
+    protected $router;
+
+    public function __construc($router) {
+        $this->router = $router;
+    }
     // affiche la réponse en JSON
     protected function showJson($data)
     {

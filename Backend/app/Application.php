@@ -29,8 +29,8 @@ class Application
         }
         else 
         {
-            $controllerName = 'MainController';
-            $methodName = 'Error404';
+            $controllerName = 'ErrorController';
+            $methodName = 'error404';
             $params = array();
         }
 
@@ -48,19 +48,23 @@ class Application
         // PostController
         $this->router->map('GET', '/all-post', 'PostController#all', 'allPost');
         $this->router->map('GET', '/one-post/[i:id]', 'PostController#one', 'onePost');
+        $this->router->map('GET', '/all-post-by/[a:action]/[i:id]', 'PostController#allPostBy', 'allPostBy'); // action = author ou category
+        /* à tester : */
         $this->router->map('POST', '/add-update-post', 'PostController#addOrUpdate', 'addPost');
+        /* méthode à créer : */
         //$this->router->map('POST', '/delete-post', 'PostController#delete', 'deletePost');
         
         // CategoryController
         $this->router->map('GET', '/all-category', 'CategoryController#all', 'allCategory');
-        $this->router->map('GET', '/all-post-by-category/[i:id]', 'CategoryController#allPostByCategory', 'postByCategory');
+        /* méthode à créer : */
         //$this->router->map('POST', '/add-update-category', 'CategoryController#addOrUpdate', 'addCategory');
         //$this->router->map('POST', '/delete-category', 'CategoryController#delete', 'deleteCategory');
         
         // AuthorController
         $this->router->map('GET', '/all-author', 'AuthorController#all', 'allAuthor');
-        $this->router->map('GET', '/all-post-by-author/[i:id]', 'AuthorController#allPostByAuthor', 'postByAuthor');
+        /* à tester : */
         $this->router->map('POST', '/add-update-author', 'AuthorController#addOrUpdate', 'addAuthor');
+        /* méthode à créer : */
         //$this->router->map('POST', '/delete-author', 'AuthorController#delete', 'deleteAuthor');
     }
 }

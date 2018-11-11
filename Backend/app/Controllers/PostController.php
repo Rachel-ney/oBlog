@@ -1,9 +1,55 @@
 <?php
 namespace oBlogApi\Controllers;
-use oBlog\Models\Post;
+use oBlogApi\Models\Post;
 
 class PostController extends CoreController
 {
+    // Méthode pour récuperer UN post et l'envoyer en json
+    public function one($params) 
+    { 
+        // je vérifie que l'id tramsmi n'est pas vide , j'elimine les espaces (trim) et les balises(strip_tags)
+        // 
+        //isset($_POST['id']) ? strip_tags(trim($_POST['id'])) : '';
+        $postId = $params['id'];
+        // si le nom est vide 
+        if (empty($postId)) 
+        {
+            // message d'erreur, fin du programme
+            $array_json['msg'] = 'Merci de renseigner un id';
+            $this->showJson($array_json);
+            die();
+        }
+        // je récupère mon post de la bdd sous forme d'objet
+        $post = Post::getOne($postId);
+
+        // si la bdd ne m'a rien renvoyé
+        if(empty($post)) 
+        {
+            // message d'erreur, fin du programme
+            $array_json['msg'] = 'L\'article demandé n\'existe pas';
+            $this->showJson($array_json);
+            die();
+        }
+        // je rempli mon tableau de réponse :
+            $array_json = [
+                'post' => [
+                    'id'            => $post->getId(),
+                    'title'         => $post->getTitle(),
+                    'resume'        => $post->getResume(),
+                    'content'       => $post->getContent(),
+                    'authorId'      => $post->getAuthorId(),
+                    'categoryId'    => $post->getCategoryId(),
+                    'authorName'    => $post->getAuthorName(),
+                    'categoryName'  => $post->getCategoryName(),
+                    'created_at'    => $post->getCreatedAt(),
+                    'updated_at'    => $post->getUpdatedAt(),
+                ],
+                'success' => true,
+            ];
+        // j'envoi le tableau à showJson
+        $this->showJson($array_json);
+    }
+
     // Méthode pour récuperer TOUT les post et les envoyer en json
     public function all() 
     {
@@ -46,46 +92,63 @@ class PostController extends CoreController
         $this->showJson($array_json);
     }
 
-    // Méthode pour récuperer UN post et l'envoyer en json
-    public function one() 
+    // Méthode pour récuperer TOUT les POST d'un auteur OU d'une category
+    public function allPostBy($params) 
     {
-        // je vérifie que l'id tramsmi n'est pas vide , j'elimine les espaces (trim) et les balises(strip_tags)
-        $postId = isset($_POST['id']) ? strip_tags(trim($_POST['id'])) : '';
-        // si le nom est vide 
-        if (empty($postId)) 
+        // isset($_POST['idCategory']) ? strip_tags(trim($_POST['idCategory'])) : '';
+        $id = $params['id'];
+        // si id vide
+        if(empty($id)) 
         {
             // message d'erreur, fin du programme
-            $array_json['msg'] = 'Merci de renseigner un id';
+            $array_json['msg'] = 'Veuillez préciser l\'identifiant de la catégorie ou de l\'auteur choisi';
             $this->showJson($array_json);
             die();
         }
-        // je récupère mon post de la bdd sous forme d'objet
-        $post = Post::getOne($postId);
+        $by = $params['action'];
+        // si action vide
+        if($by !== 'category' && $by !== 'author') 
+        {
+            // message d'erreur, fin du programme
+            $array_json['msg'] = 'Erreur de syntaxe : /all-post-by/author/id ou /all-post-by/category/id. id étant un integer';
+            $this->showJson($array_json);
+            die();
+        }
+        // je récupère tout les posts de ma bdd sous forme d'objet
+        $allPostBy = Post::getAllPostBy($by, $id);
 
         // si la bdd ne m'a rien renvoyé
-        if(empty($post)) 
+        if(empty($allPostBy)) 
         {
-            // message d'erreur, fin du programme
-            $array_json['msg'] = 'L\'article demandé n\'existe pas';
+            //  message d'erreur , fin du programme
+            $array_json['msg'] = 'La bdd n\'a retourné aucun résultat';
             $this->showJson($array_json);
             die();
         }
-        // je rempli mon tableau de réponse :
-            $array_json = [
-                'post' => [
-                    'id'            => $postForJson->getId(),
-                    'title'         => $postForJson->getTitle(),
-                    'resume'        => $postForJson->getResume(),
-                    'content'       => $postForJson->getContent(),
-                    'authorId'      => $postForJson->getAuthorId(),
-                    'categoryId'    => $postForJson->getCategoryId(),
-                    'authorName'    => $postForJson->getAuthorName(),
-                    'categoryName'  => $postForJson->getCategoryName(),
-                    'created_at'    => $postForJson->getCreatedAt(),
-                    'updated_at'    => $postForJson->getUpdatedAt(),
-                ],
-                'success' => true,
+
+        // je déclare le tableau qui contiendra tout les posts
+        $forJson = array();
+        // je rempli le tableau : 
+        foreach( $allPostBy as $index => $currentObject) 
+        {
+            $forJson[$index] = [
+                'id'            => $currentObject->getId(),
+                'title'         => $currentObject->getTitle(),
+                'resume'        => $currentObject->getResume(),
+                'content'       => $currentObject->getContent(),
+                'authorId'      => $currentObject->getAuthorId(),
+                'categoryId'    => $currentObject->getCategoryId(),
+                'authorName'    => $currentObject->getAuthorName(),
+                'categoryName'  => $currentObject->getCategoryName(),
+                'created_at'    => $currentObject->getCreatedAt(),
+                'updated_at'    => $currentObject->getUpdatedAt(),
             ];
+        }
+        // j'ajoute le tableau à ma réponse json : 
+        $array_json = [
+            'allPostBy' => $forJson,
+            'success' => true,
+        ];
         // j'envoi le tableau à showJson
         $this->showJson($array_json);
     }
