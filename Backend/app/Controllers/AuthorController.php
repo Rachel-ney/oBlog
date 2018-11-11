@@ -50,7 +50,7 @@ class AuthorController extends CoreController
             if(empty($idAuthor)) 
             {
                 // message d'erreur, fin du programme
-                $array_json['msg'] = 'Veuillez préciser l\'identifiant de la catégorie';
+                $array_json['msg'] = 'Veuillez préciser l\'identifiant de l\'auteur';
                 $this->showJson($array_json);
                 die();
             }
@@ -66,12 +66,12 @@ class AuthorController extends CoreController
             die();
         }
 
-        // je déclare le tableau qui contiendra touts les posts
-        $allAuthorForJson = array();
+        // je déclare le tableau qui contiendra tout les posts
+        $forJson = array();
         // je rempli le tableau : 
         foreach( $allPostByAuthor as $index => $currentObject) 
         {
-            $allAuthorForJson[$index] = [
+            $forJson[$index] = [
                 'id'            => $currentObject->getId(),
                 'name '         => $currentObject->getName(),
                 'email '        => $currentObject->getEmail(),
@@ -81,7 +81,7 @@ class AuthorController extends CoreController
         }
         // j'ajoute le tableau à ma réponse json : 
         $array_json = [
-            'allAuthor' => $allAuthorForJson,
+            'allPostByAuthor' => $forJson,
             'success' => true,
         ];
         // j'envoi le tableau à showJson

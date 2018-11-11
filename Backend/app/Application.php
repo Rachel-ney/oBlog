@@ -49,13 +49,18 @@ class Application
         $this->router->map('GET', '/all-post', 'PostController#all', 'allPost');
         $this->router->map('GET', '/one-post/[i:id]', 'PostController#one', 'onePost');
         $this->router->map('POST', '/add-update-post', 'PostController#addOrUpdate', 'addPost');
+        //$this->router->map('POST', '/delete-post', 'PostController#delete', 'deletePost');
+        
         // CategoryController
         $this->router->map('GET', '/all-category', 'CategoryController#all', 'allCategory');
         $this->router->map('GET', '/all-post-by-category/[i:id]', 'CategoryController#allPostByCategory', 'postByCategory');
-        $this->router->map('POST', '/add-update-category', 'CategoryController#addOrUpdate', 'addCategory');
+        //$this->router->map('POST', '/add-update-category', 'CategoryController#addOrUpdate', 'addCategory');
+        //$this->router->map('POST', '/delete-category', 'CategoryController#delete', 'deleteCategory');
+        
         // AuthorController
         $this->router->map('GET', '/all-author', 'AuthorController#all', 'allAuthor');
         $this->router->map('GET', '/all-post-by-author/[i:id]', 'AuthorController#allPostByAuthor', 'postByAuthor');
         $this->router->map('POST', '/add-update-author', 'AuthorController#addOrUpdate', 'addAuthor');
+        //$this->router->map('POST', '/delete-author', 'AuthorController#delete', 'deleteAuthor');
     }
 }
