@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" data-<?= $this->getVar('categoryId');?>>
     <main class="col-lg-9">
 
         <h3>Tout les articles de Category</h3>

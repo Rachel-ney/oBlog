@@ -27,8 +27,8 @@ class AuthorController extends CoreController
         {
             $allAuthorForJson[$index] = [
                 'id'            => $currentObject->getId(),
-                'name '         => $currentObject->getName(),
-                'email '        => $currentObject->getEmail(),
+                'name'         => $currentObject->getName(),
+                'email'        => $currentObject->getEmail(),
                 'created_at'    => $currentObject->getCreatedAt(),
                 'updated_at'    => $currentObject->getUpdatedAt(),
             ];
@@ -127,8 +127,8 @@ class AuthorController extends CoreController
         // je rempli mon tableau de réponse : 
         $array_json['post'] = [
             'id'            => $currentObject->getId(),
-            'name '         => $currentObject->getName(),
-            'email '        => $currentObject->getEmail(),
+            'name'         => $currentObject->getName(),
+            'email'        => $currentObject->getEmail(),
             'created_at'    => $currentObject->getCreatedAt(),
             'updated_at'    => $currentObject->getUpdatedAt(),
         ];

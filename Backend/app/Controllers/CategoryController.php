@@ -27,7 +27,7 @@ class CategoryController extends CoreController
         {
             $allCategoryForJson[$index] = [
                 'id'            => $currentObject->getId(),
-                'name '         => $currentObject->getName(),
+                'name'         => $currentObject->getName(),
                 'created_at'    => $currentObject->getCreatedAt(),
                 'updated_at'    => $currentObject->getUpdatedAt(),
             ];

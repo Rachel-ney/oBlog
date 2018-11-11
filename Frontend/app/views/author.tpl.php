@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row"  data-<?= $this->getVar('authorId');?>>
     <main class="col-lg-9">
 
         <h3>Tout les articles de Auteur</h3>
