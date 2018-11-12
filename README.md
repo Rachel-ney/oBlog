@@ -1,3 +1,11 @@
+# Installation : 
+- Le repo peu être cloné pour être testé directement : 
+- + **Pour être fonctionnel il faut seulement faire un `composer install` dans le Frontend** --> dossier vendor
+- Pas besoin de garder le repo Backend pour que le code soit fonctionnel
+- + toutes les requêtes ajax sont lancé vers mon nom de domaine `http://neyress.yo.fr/oblog-Api/`
+- Pas besoin de modifier les dossier aside.js et post.js pour que les liens de redirection soient bon, l'uri est récupérée et utilisée dynamiquement
+
+# TODO : 
 # Backend :  
 - ~~finir les méthodes des Models~~
 - finir les méthodes des Controller
