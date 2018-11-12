@@ -2,14 +2,14 @@ var aside = {
   uri: '',
   init: function () {
     // je récupère la base uri : 
-    aside.uri = $('main').data("uri");
+    aside.uri = $('.container').data("uri");
     aside.recoverCategoryList();
     aside.recoverAuthorList();
   },
 
   recoverCategoryList: function () {
     var jqxhr = $.ajax({
-      url: 'http://localhost/Projet_perso/oBlog/Backend/public/all-category', // URL sur laquelle faire l'appel Ajax
+      url: 'https://neyress.yo.fr/oblog-Api/Backend/all-category', // URL sur laquelle faire l'appel Ajax
       method: 'GET', // La méthode HTTP souhaité pour l'appel Ajax (GET ou POST)
       dataType: 'json', // Le type de données attendu en réponse (text, html, xml, json)
     });
@@ -26,7 +26,7 @@ var aside = {
 
   recoverAuthorList: function () {
     var jqxhr = $.ajax({
-      url: 'http://localhost/Projet_perso/oBlog/Backend/public/all-author', // URL sur laquelle faire l'appel Ajax
+      url: 'https://neyress.yo.fr/oblog-Api/Backend/all-author', // URL sur laquelle faire l'appel Ajax
       method: 'GET', // La méthode HTTP souhaité pour l'appel Ajax (GET ou POST)
       dataType: 'json', // Le type de données attendu en réponse (text, html, xml, json)
     });

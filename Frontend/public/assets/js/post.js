@@ -4,7 +4,7 @@ var appPost = {
 
     init: function() {
       // je récupère la base uri : 
-      appPost.uri = $('main').data("uri");
+      appPost.uri = $('.container').data("uri");
       // je determine quels articles je vais devoir récupérer en fonction du nom du data
       if (typeof $('main').data("category") !== 'undefined') {
           appPost.constructUrl('category');
@@ -35,16 +35,16 @@ var appPost = {
         if (type === 'category' || type === 'author') 
         {
             var id = $('main').data(type);
-            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/public/all-post-by/'+ type +'/'+ id ;
+            appPost.url = 'http://neyress.yo.fr/oblog-Api/Backend/all-post-by/'+ type +'/'+ id ;
         }
         else if(type === 'all') 
         {
-            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/public/all-post';
+            appPost.url = 'https://neyress.yo.fr/oblog-Api/Backend/all-post';
         }
         else if (type === 'one')
         {
             var id = $('main').data(type);
-            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/public/one-post/'+ id;
+            appPost.url = 'https://neyress.yo.fr/oblog-Api/Backend/one-post/'+ id;
         }
     },
 

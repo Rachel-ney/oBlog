@@ -1,7 +1,7 @@
       <!-- Je crée une nouvelle ligne dans ma grille virtuelle: https://getbootstrap.com/docs/4.1/layout/grid/-->
       <div class="row">
       <?php if(isset($this->var['id'])) : ?>
-        <main class="col-lg-9" data-uri="<?=$_SERVER['BASE_URI'];?>" data-<?=$this->getVar('type');?>="<?= $this->getVar('id');?>">
+        <main class="col-lg-9" data-<?=$this->getVar('type');?>="<?= $this->getVar('id');?>">
       <?php else : ?>
       <main class="col-lg-9">
       <?php endif; ?>
@@ -29,5 +29,5 @@
 
         </main>
 
-        <?php $this->include('aside') ?>
+        <?php $this->includeOne('aside') ?>
       </div><!-- /.row -->

@@ -21,7 +21,7 @@ class Templator {
         }
     }    
     // Méthode permettant d'inclure UN template bien préci dont le nom est donné en paramètre
-    public function include($template) {
+    public function includeOne($template) {
         // verify = chemin complet vers le template demandé
         $verify = $this->absolutWay. '/'.$template.'.tpl.php';
         // si le fichier existe je l'inclu
