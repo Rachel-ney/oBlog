@@ -1,5 +1,8 @@
 var aside = {
+  uri: '',
   init: function () {
+    // je récupère la base uri : 
+    aside.uri = $('main').data("uri");
     aside.recoverCategoryList();
     aside.recoverAuthorList();
   },
@@ -78,11 +81,11 @@ var aside = {
     // je préformate l'url à attribuer à mon lien: 
     if (listType === 'category') 
     {
-      var $url = 'http://localhost/Projet_perso/oBlog/Frontend/public/categorie/' + id;
+      var $url = 'http://localhost'+ aside.uri +'/categorie/' + id;
     } 
     else if (listType === 'author') 
     {
-      var $url = 'http://localhost/Projet_perso/oBlog/Frontend/public/auteur/' + id;
+      var $url = 'http://localhost'+ aside.uri +'/auteur/' + id;
     }
     // je rempli le href du lien
     $newList.find('a').attr('href', $url);

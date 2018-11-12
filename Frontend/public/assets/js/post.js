@@ -1,22 +1,25 @@
-var post = {
+var appPost = {
     url: '',
+    uri: '',
 
     init: function() {
+      // je récupère la base uri : 
+      appPost.uri = $('main').data("uri");
       // je determine quels articles je vais devoir récupérer en fonction du nom du data
       if (typeof $('main').data("category") !== 'undefined') {
-          post.constructUrl('category');
+          appPost.constructUrl('category');
       }
       else if (typeof $('main').data("author") !== 'undefined')
       {
-        post.constructUrl('author');
+        appPost.constructUrl('author');
       }
       else if (typeof $('main').data("all") !== 'undefined')
       {
-        post.constructUrl('all');
+        appPost.constructUrl('all');
       }
       else if (typeof $('main').data("one") !== 'undefined')
       {
-        post.constructUrl('one');
+        appPost.constructUrl('one');
       }
       else 
       {
@@ -24,7 +27,7 @@ var post = {
       }
 
       // je récupère les données en passant par mon api
-      post.recoverPost();
+      appPost.recoverPost();
     },
   
     constructUrl: function(type) {
@@ -32,29 +35,29 @@ var post = {
         if (type === 'category' || type === 'author') 
         {
             var id = $('main').data(type);
-            post.url = 'http://localhost/Projet_perso/oBlog/Backend/public/all-post-by/'+ type +'/'+ id ;
+            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/public/all-post-by/'+ type +'/'+ id ;
         }
         else if(type === 'all') 
         {
-            post.url = 'http://localhost/Projet_perso/oBlog/Backend/public/all-post';
+            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/public/all-post';
         }
         else if (type === 'one')
         {
             var id = $('main').data(type);
-            post.url = 'http://localhost/Projet_perso/oBlog/Backend/public/one-post/'+ id;
+            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/public/one-post/'+ id;
         }
     },
 
     recoverPost: function() {
       var jqxhr = $.ajax({
-        url: post.url, // URL sur laquelle faire l'appel Ajax
+        url: appPost.url, // URL sur laquelle faire l'appel Ajax
         method: 'GET', // La méthode HTTP souhaité pour l'appel Ajax (GET ou POST)
         dataType: 'json', // Le type de données attendu en réponse (text, html, xml, json)
       });
       // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
       jqxhr.done(function (response) {
         // j'affiche la liste de mes auteurs
-        post.displayPost(response.post);
+        appPost.displayPost(response.post);
         if (typeof response.msg !== 'undefined') 
         {
             $error = $('<div>').html('Oups on dirais bien qu\'il n\'y a pas encore d\'article ici');
@@ -71,7 +74,7 @@ var post = {
         // si la page concerne le détail d'un article
         if (typeof $('main').data("one") !== 'undefined')
         {
-            var $newPost = post.generatePost(postList);
+            var $newPost = appPost.generatePost(postList);
             // je l'ajoute à ma page
             $($newPost).prependTo('main');
         }
@@ -81,7 +84,7 @@ var post = {
             for (var currentIndex in postList) 
             {
                 // je genere un nouvel article
-                var $newPost = post.generatePost(postList[currentIndex]);
+                var $newPost = appPost.generatePost(postList[currentIndex]);
                 // je l'ajoute à ma page
                 $($newPost).prependTo('main');
             }
@@ -91,9 +94,9 @@ var post = {
 
     generatePost: function(post) {
         // je préformate les url de mes liens
-        var urlPost = 'http://localhost/Projet_perso/oBlog/Frontend/public/article/' + post['id'];
-        var urlAuthor = 'http://localhost/Projet_perso/oBlog/Frontend/public/auteur/' + post['authorId'];
-        var urlCategory = 'http://localhost/Projet_perso/oBlog/Frontend/public/categorie/' + post['categoryId'];
+        var urlPost =     'http://localhost'+ appPost.uri +'/article/' + post['id'];
+        var urlAuthor =   'http://localhost'+ appPost.uri +'/auteur/' + post['authorId'];
+        var urlCategory = 'http://localhost'+ appPost.uri +'/categorie/' + post['categoryId'];
 
         // je récupère le premier article
         var firstPost = $('main').children()[0];
@@ -126,4 +129,4 @@ var post = {
     }
   };
   
-  $(post.init);
+  $(appPost.init);
