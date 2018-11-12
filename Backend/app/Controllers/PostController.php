@@ -85,7 +85,7 @@ class PostController extends CoreController
         }
         // j'ajoute le tableau à ma réponse json : 
         $array_json = [
-            'allPost' => $allPostForJson,
+            'post' => $allPostForJson,
             'success' => true,
         ];
         // j'envoi le tableau à showJson
@@ -146,7 +146,7 @@ class PostController extends CoreController
         }
         // j'ajoute le tableau à ma réponse json : 
         $array_json = [
-            'allPostBy' => $forJson,
+            'post' => $forJson,
             'success' => true,
         ];
         // j'envoi le tableau à showJson
