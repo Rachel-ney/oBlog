@@ -12,6 +12,7 @@ class MainController extends CoreController
     // j'appel show pour afficher la page d'inscription / connexion
     public function signIn()
     {
+        $this->oTemplator->setVar('js', 'signIn');
         $this->show('signIn');
     }
 

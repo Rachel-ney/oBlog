@@ -108,6 +108,17 @@ aside {
   padding: 2em 0;
 }
 
+form {
+  padding: 2rem 0;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+button {
+  background-color: #3d1d67;
+  color: white;
+}
+
 footer {
   margin-bottom: 1em;
 }

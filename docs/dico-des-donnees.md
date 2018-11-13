@@ -20,8 +20,9 @@
 | - | - | - | - |
 | id | INT | PRIMARY KEY, UNSIGNED, NOT NULL, AUTO_INCREMENT | L'identifiant de notre auteur |
 | name | varchar(50) | NOT NULL | Nom de l'auteur |
-| image | varchar(255) | NOT NULL, DEFAULT 'user.jpg' | Nom de l'image de l'auteur |
-| email | varchar(100) | NOT NULL | Adresse mail de l'auteur |
+| password | varchar(255) | NOT NULL| Mot de passe de l'auteur (celui-ci sera hashé) |
+| token | varchar(255) | NULL | Contiendra une clef à envoyer par mail et à comparer en cas de perte du mot de passe |
+| email | varchar(100) | NOT NULL UNIQUE | Adresse mail de l'auteur |
 | created_at | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Date de création de l'auteur |
 | updated_at | TIMESTAMP | NULL | Date de modification de l'auteur |
 

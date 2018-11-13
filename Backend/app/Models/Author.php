@@ -6,18 +6,31 @@ use oBlogApi\Utils\Database;
 class Author extends CoreModel
 {
     private $name;
-    private $image;
+    private $password;
     private $email;
     const TABLE_NAME = 'author';
+
+    // Méthode renvoyant UN UNIQUE champ d'une table dont le mail est donné
+    public static function getOneByEmail($email)
+    {
+        $sql = 'SELECT * FROM '. static:: TABLE_NAME.'
+        WHERE email = :email;';
+
+        $pdoStatement = Database::getPDO()->prepare($sql);
+        $pdoStatement->bindValue(':email', $email, PDO::PARAM_STR);
+        $pdoStatement->execute();
+        
+        return $pdoStatement->fetchObject(static::class);
+    }
 
     // Méthode permettant d'ajouter un auteur dans la bdd d'après un model reçu en paramètre
     public function insert()
     {
-        $sql = 'INSERT INTO '.self::TABLE_NAME.' (name, image, email) VALUES (:insertName, :insertImage, :insertEmail);';
+        $sql = 'INSERT INTO '.self::TABLE_NAME.' (name, password, email) VALUES (:insertName, :insertPassword, :insertEmail);';
         $pdoStatement = Database::getPDO()->prepare($sql);
 
         $pdoStatement->bindValue(':insertName',  $this->getName(), PDO::PARAM_STR);
-        $pdoStatement->bindValue(':insertImage', $this->getImage(), PDO::PARAM_STR);
+        $pdoStatement->bindValue(':insertPassword', $this->getPassword(), PDO::PARAM_STR);
         $pdoStatement->bindValue(':insertEmail', $this->getEmail(), PDO::PARAM_STR);
 
         $success = false;
@@ -37,13 +50,13 @@ class Author extends CoreModel
     {
         $sql = 'UPDATE '.self::TABLE_NAME.' SET 
         name =  :newName, 
-        image = :newImage, 
+        password = :newPassword, 
         email = :newEmail
         WHERE id = :insertId;';
         $pdoStatement = Database::getPDO()->prepare($sql);
 
         $pdoStatement->bindValue(':newName',  $this->getName(), PDO::PARAM_STR);
-        $pdoStatement->bindValue(':newImage', $this->getImage(), PDO::PARAM_STR);
+        $pdoStatement->bindValue(':newPassword', $this->getPassword(), PDO::PARAM_STR);
         $pdoStatement->bindValue(':newEmail', $this->getEmail(), PDO::PARAM_STR);
         $pdoStatement->bindValue(':insertId', $this->getId(), PDO::PARAM_INT);
 
@@ -69,13 +82,13 @@ class Author extends CoreModel
         return $this;
     }
 
-    public function getImage()
+    public function getPassword()
     {
-        return $this->image;
+        return $this->password;
     }
-    public function setImage($image)
+    public function setPassword($pswd)
     {
-        $this->image = $image;
+        $this->password = $pswd;
 
         return $this;
     }
@@ -91,13 +104,9 @@ class Author extends CoreModel
         return $this;
     }
 
-    public function getAuthorId()
+    public function setId($id)
     {
-        return $this->author_id;
-    }
-    public function setAuthorId($author_id)
-    {
-        $this->author_id = $author_id;
+        $this->id = $id;
 
         return $this;
     }

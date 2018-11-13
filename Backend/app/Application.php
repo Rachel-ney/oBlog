@@ -63,7 +63,8 @@ class Application
         // AuthorController
         $this->router->map('GET', '/all-author', 'AuthorController#all', 'allAuthor');
         /* à tester : */
-        $this->router->map('POST', '/add-update-author', 'AuthorController#addOrUpdate', 'addAuthor');
+        $this->router->map('POST', '/add-author', 'AuthorController#add', 'addAuthor');
+        $this->router->map('POST', '/update-author', 'AuthorController#update', 'updateAuthor');
         /* méthode à créer : */
         //$this->router->map('POST', '/delete-author', 'AuthorController#delete', 'deleteAuthor');
     }

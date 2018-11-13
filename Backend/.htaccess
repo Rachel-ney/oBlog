@@ -3,7 +3,8 @@ RewriteEngine On
 # dynamically setup base URI
 RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
 RewriteRule ^(.*) - [E=BASE_URI:%1]
-ErrorDocument 403 http://localhost/Projet_perso/oBlog/Backend/
+#à configurer pour l'hebergeur : 
+#ErrorDocument 403 https://neyress.yo.fr/oblog-Api/Backend/
 
 # redirect every request to index.php
 # and give the relative URL in "_url" GET param

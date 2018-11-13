@@ -35,16 +35,22 @@ var appPost = {
         if (type === 'category' || type === 'author') 
         {
             var id = $('main').data(type);
-            appPost.url = 'http://neyress.yo.fr/oblog-Api/Backend/all-post-by/'+ type +'/'+ id ;
+            // url hebergeur
+            //appPost.url = 'http://neyress.yo.fr/oblog-Api/Backend/all-post-by/'+ type +'/'+ id ;
+            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/all-post-by/'+ type +'/'+ id ;
         }
         else if(type === 'all') 
         {
-            appPost.url = 'https://neyress.yo.fr/oblog-Api/Backend/all-post';
+            // url hebergeur
+            //appPost.url = 'https://neyress.yo.fr/oblog-Api/Backend/all-post';
+            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/all-post';
         }
         else if (type === 'one')
         {
             var id = $('main').data(type);
-            appPost.url = 'https://neyress.yo.fr/oblog-Api/Backend/one-post/'+ id;
+            // url hebergeur
+            //appPost.url = 'https://neyress.yo.fr/oblog-Api/Backend/one-post/'+ id;
+            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/one-post/'+ id;
         }
     },
 
