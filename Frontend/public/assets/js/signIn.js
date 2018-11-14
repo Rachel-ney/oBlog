@@ -1,5 +1,8 @@
 var appSignIn = {
+  uri: '',
+
   init: function() {
+    appSignIn.uri =  $('.container').data("uri");
     $('.register').on('submit', appSignIn.handleCheckForm);
   },
   handleCheckForm: function(evt) {
@@ -65,10 +68,18 @@ var appSignIn = {
       // j'affiche la liste de mes catégorie
       if (response.success) 
       {
-        var button = $('.register');
-        var text = 'Vous avez été correctement enregistré';
-        var msg = $('<div>').addClass('mx-auto col-11 my-3 border text-light bg-danger rounded py-2 error').html(text);
-        msg.appendTo(button);
+        // je cache les formulaires
+        $('.all-form').addClass('d-none');
+        // j'ajoute un message de redirection vers la page mon compte au dessus des formulaires
+        var container = $('.container');
+        var div = $('<div>').addClass('row mx-auto col-11 my-3 border bg-light rounded py-2');
+        var url = 'http://localhost'+ appSignIn.uri +'/mon-compte';
+        var a = $('<a>').html('Mon compte.').attr('href', url).addClass('alert-link');
+        var text = 'Vous avez été correctement enregistré. <br/> Merci de vous être inscrit ! Vous pouvez désormais publier et consulter vos propres articles, ainsi que modifier vos informations personnelles depuis votre page : ';
+        var p = $('<p>').html(text);
+        a.appendTo(p);
+        p.appendTo(div);
+        div.prependTo(container);
       }
       else 
       {

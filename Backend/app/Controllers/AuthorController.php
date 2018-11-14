@@ -130,6 +130,7 @@ class AuthorController extends CoreController
             // et j'active ma session en stockant l'id du nouvel auteur
             $array_json['success'] = true;
             session_start();
+            $idAuthor = $author->getId();
             $_SESSION['idUser'] = $author->getId();
         } 
         else 

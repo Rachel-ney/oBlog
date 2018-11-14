@@ -16,9 +16,18 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $this->router->generate('blog');?>">Le blog</a>
                 </li>
+                <?php if (isset($_SESSION['idUser'])) : ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= $this->router->generate('account');?>">Mon compte</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= $this->router->generate('signIn');?>?disconnect=1">Deconnexion</a>
+                </li>
+                <?php else : ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $this->router->generate('signIn');?>">Connexion / Inscription</a>
                 </li>
+                <?php endif ; ?>
             </ul>
         </div>
     </nav>

@@ -1,3 +1,11 @@
+<?php session_start(); 
+if (!empty($_GET['disconnect'])) {
+    if($_GET['disconnect'] === '1') {
+        session_unset();
+        $_GET['disconnect'] = 0;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,6 +42,6 @@
             </p>
         </section>
     </header>
-
+    <?php dump($_SESSION); ?>
     <!-- Mon container (avec une max-width) dans lequel mon contenu va être placé: https://getbootstrap.com/docs/4.1/layout/overview/#containers -->
     <div class="container" data-uri="<?=$_SERVER['BASE_URI'];?>">

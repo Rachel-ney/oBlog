@@ -29,7 +29,7 @@ class Application
         }
         else 
         {
-            $controllerName = 'MainController';
+            $controllerName = 'ErrorController';
             $methodName = 'Error404';
             $params = array();
         }
@@ -45,15 +45,19 @@ class Application
 
     private function defineRoutes()
     {
-        // mapping des route
+        // MainController
         $this->router->map('GET', '/', 'MainController#home', 'home');
         $this->router->map('GET', '/connexion-inscription', 'MainController#signIn', 'signIn');
         $this->router->map('GET', '/me-contacter', 'MainController#contact', 'contact');
         $this->router->map('GET', '/qui-suis-je', 'MainController#aboutUs', 'aboutUs');
         $this->router->map('GET', '/mentions-legales', 'MainController#legalMention', 'legalMention');
+        // BlogController
         $this->router->map('GET', '/le-blog', 'BlogController#blog', 'blog');
         $this->router->map('GET', '/article/[i:id]', 'BlogController#post', 'post');
         $this->router->map('GET', '/categorie/[i:id]', 'BlogController#category', 'category');
-        $this->router->map('GET', '/auteur/[i:id]', 'BlogController#author', 'author');        
+        $this->router->map('GET', '/auteur/[i:id]', 'BlogController#author', 'author');
+        // UserController
+        $this->router->map('GET', '/mon-compte', 'UserController#account', 'account');
+        
     }
 }

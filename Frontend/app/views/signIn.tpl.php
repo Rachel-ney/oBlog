@@ -1,8 +1,18 @@
+<?php if (!empty($_SESSION['idUser'])) : ?>
 
 <div class="row">
-    <main class="col-lg-12 d-flex flex-row">
+    <main class="col-lg-9">
+        <h3>Tu es connecté</h3>
+        <p>Acceder à la page <a href="<?= $this->router->generate('account');?>"> Mon compte </a></p>
+    </main>
+</div>
+
+<?php else : ?>
+
+<div class="row all-form">
+    <main class="col-lg-12 d-flex flex-row ">
         
-        <form class="col-5 mx-auto border d-flex flex-column sign-in">
+        <form class="col-5 mx-auto border d-flex flex-column sign-in ">
             <h3 class="text-center">Se connecter</h3>
             <div class="form-group">
                 <label>Adresse mail</label>
@@ -34,3 +44,4 @@
         </form>
     </main>
 </div>
+<?php endif; ?>
