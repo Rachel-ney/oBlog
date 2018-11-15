@@ -113,6 +113,9 @@ class AuthorController extends CoreController
             $this->showJson($array_json);
             die();
         }
+        // je rajoute un salt au mdp
+        $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
+        $datas['Password'] .= $salt;
         // je hash le mdp
         $datas['Password'] = password_hash($datas['Password'], PASSWORD_DEFAULT);
         // Je créer une instance de auteur
@@ -153,63 +156,133 @@ class AuthorController extends CoreController
         $this->showJson($array_json);
     }
 
-        // Méthode pour ajouter / modifier un auteur en bdd
-        public function update() 
+    // Méthode pour ajouter / modifier un auteur en bdd
+    public function update() 
+    {
+        // je récupère les data
+        // j'elimine les espaces (trim) et les balises(strip_tags)
+        // je hash le mot de passe
+        $datas = [
+            'Id' => isset($_SESSION['idUser'])  ? strip_tags(trim($_SESSION['idUser']))  : '',
+            'Name'  => isset($_POST['name'])  ? strip_tags(trim($_POST['name']))  : '',
+            'Password' => isset($_POST['password']) ? sha1(trim($_POST['password'])) : '',
+            'Email' => isset($_POST['email']) ? strip_tags(trim($_POST['email'])) : '',
+        ];
+        // je vérifie que les data reçu ne sont pas vide
+        foreach ($datas as $dataName => $dataValue) 
         {
-            // je récupère les data
-            // j'elimine les espaces (trim) et les balises(strip_tags)
-            // je hash le mot de passe
-            $datas = [
-                'Id' => isset($_SESSION['idUser'])  ? strip_tags(trim($_SESSION['idUser']))  : '',
-                'Name'  => isset($_POST['name'])  ? strip_tags(trim($_POST['name']))  : '',
-                'Password' => isset($_POST['password']) ? sha1(trim($_POST['password'])) : '',
-                'Email' => isset($_POST['email']) ? strip_tags(trim($_POST['email'])) : '',
-            ];
-            // je vérifie que les data reçu ne sont pas vide
-            foreach ($datas as $dataName => $dataValue) 
+            // si vide
+            if(empty($dataValue)) 
             {
-                // si vide
-                if(empty($dataValue)) 
-                {
-                    // message d'erreur, fin du programme
-                    $array_json['success'] = false;
-                    $array_json['msg'] = 'Le champ ' . $dataName . ' est vide.';
-                    $this->showJson($array_json);
-                    die();
-                }
-            }
-            // Je créer une instance de auteur
-            $author = new AuthorModel();
-            // je lui donne les data à ajouter : 
-            foreach ($datas as $dataName => $dataValue) 
-            {
-                $setterName = 'set'.$dataName;
-                $author->$setterName($dataValue);
-            }
-            
-            // je test la modification en bdd
-            if ($author->update()) 
-            {
-                // si update ok j'ajoute une clef true à transmettre
-                $array_json['success'] = true;
-            } 
-            else 
-            {
-                // sinon la clef = false + message d'erreur, fin du programme
+                // message d'erreur, fin du programme
                 $array_json['success'] = false;
-                $array_json['msg'] = 'Une erreur est survenue lors de la modification.';
+                $array_json['msg'] = 'Le champ ' . $dataName . ' est vide.';
                 $this->showJson($array_json);
                 die();
             }
-            // je rempli mon tableau de réponse : 
-            $array_json['post'] = [
-                'id'            => $author->getId(),
-                'name'          => $author->getName(),
-                'email'         => $author->getEmail(),
-                'created_at'    => $author->getCreatedAt(),
-                'updated_at'    => $author->getUpdatedAt(),
-            ];
-            // j'envoi le tableau à showJson
-            $this->showJson($array_json);
         }
+        // Je créer une instance de auteur
+        $author = new AuthorModel();
+        // je lui donne les data à ajouter : 
+        foreach ($datas as $dataName => $dataValue) 
+        {
+            $setterName = 'set'.$dataName;
+            $author->$setterName($dataValue);
+        }
+        
+        // je test la modification en bdd
+        if ($author->update()) 
+        {
+            // si update ok j'ajoute une clef true à transmettre
+            $array_json['success'] = true;
+        } 
+        else 
+        {
+            // sinon la clef = false + message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $array_json['msg'] = 'Une erreur est survenue lors de la modification.';
+            $this->showJson($array_json);
+            die();
+        }
+        // je rempli mon tableau de réponse : 
+        $array_json['post'] = [
+            'id'            => $author->getId(),
+            'name'          => $author->getName(),
+            'email'         => $author->getEmail(),
+            'created_at'    => $author->getCreatedAt(),
+            'updated_at'    => $author->getUpdatedAt(),
+        ];
+        // j'envoi le tableau à showJson
+        $this->showJson($array_json);
+    }
+
+    public function connexion() {
+        // je récupère les data
+        // j'elimine les espaces (trim)
+        $datas = [
+            'Password' => isset($_GET['password']) ? trim($_GET['password']) : '',
+            'Email' => isset($_GET['email']) ? trim($_GET['email']) : '',
+        ];
+        // je vérifie que les data reçu ne sont pas vide
+        foreach ($datas as $dataName => $dataValue) 
+        {
+            // si vide
+            if(empty($dataValue)) 
+            {
+                // message d'erreur, fin du programme
+                $array_json['success'] = false;
+                $array_json['msg'] = 'Le champ ' . $dataName . ' est vide.';
+                $this->showJson($array_json);
+                die();
+            }
+        }
+
+        // je cherche l'auteur par son mail
+        $authorFind = Author::getOneByEmail($datas['Email']);
+        // si je ne le trouve pas
+        if (!$authorFind)
+        {
+            // message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $array_json['msg'] = 'Cette adresse mail n\'existe pas';
+            $this->showJson($array_json);
+            die();
+        }
+        // si j'en trouve un
+        else 
+        {
+            // je rajoute le salt que j'avais défini à l'inscription
+            $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
+            $datas['Password'] .= $salt;
+            $hash = $authorFind->getPassword();
+            // si le mdp donné correspond à celui stocké en bdd
+            if (password_verify($datas['Password'], $hash)) 
+            {
+                // j'active la session et enregistre son id
+                $array_json['success'] = true;
+                session_start();
+                $_SESSION['idUser'] = $authorFind->getId();
+            }
+            // si les mot de passes sont différents
+            else 
+            {
+                // message d'erreur, fin du programme
+                $array_json['success'] = false;
+                $array_json['msg'] = 'Mot de passe incorect';
+                $this->showJson($array_json);
+                die();
+            }
+        }
+        
+        // je rempli mon tableau de réponse : 
+        $array_json['author'] = [
+            'id'            => $authorFind->getId(),
+            'name'          => $authorFind->getName(),
+            'email'         => $authorFind->getEmail(),
+            'created_at'    => $authorFind->getCreatedAt(),
+            'updated_at'    => $authorFind->getUpdatedAt(),
+        ];
+        // j'envoi le tableau à showJson
+        $this->showJson($array_json);
+    }
 }

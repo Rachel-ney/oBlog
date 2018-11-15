@@ -21,10 +21,6 @@ var appPost = {
       {
         appPost.constructUrl('one');
       }
-      else 
-      {
-          console.log('pas de data à analyser');
-      }
 
       // je récupère les données en passant par mon api
       appPost.recoverPost();

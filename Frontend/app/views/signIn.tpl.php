@@ -38,7 +38,7 @@
             <div class="form-group">
                 <label>Mot de passe</label>
                 <input type="password" class="form-control password" placeholder="Password">
-                <small id="emailHelp" class="form-text text-muted">Le mot de passe doit contenir au moins 8 caractère dont : minuscule, majuscule, chiffre et au moins un des caractères suivant _ ? . !</small>
+                <small id="emailHelp" class="form-text text-muted">Le mot de passe doit contenir au moins 8 caractères dont : minuscule(s), majuscule(s), chiffre(s) et au moins un des caractères suivant _ ? . !</small>
             </div>
             <button type="submit" class="btn d-block mx-auto">Inscription</button>
         </form>

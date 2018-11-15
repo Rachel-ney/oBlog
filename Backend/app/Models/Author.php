@@ -14,7 +14,7 @@ class Author extends CoreModel
     public static function getOneByEmail($email)
     {
         $sql = 'SELECT * FROM '. static:: TABLE_NAME.'
-        WHERE email = :email;';
+        WHERE email = :email';
 
         $pdoStatement = Database::getPDO()->prepare($sql);
         $pdoStatement->bindValue(':email', $email, PDO::PARAM_STR);
