@@ -1,11 +1,3 @@
-<?php session_start(); 
-if (!empty($_GET['disconnect'])) {
-    if($_GET['disconnect'] === '1') {
-        session_unset();
-        $_GET['disconnect'] = 0;
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 

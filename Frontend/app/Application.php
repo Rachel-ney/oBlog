@@ -47,7 +47,6 @@ class Application
     {
         // MainController
         $this->router->map('GET', '/', 'MainController#home', 'home');
-        $this->router->map('GET', '/connexion-inscription', 'MainController#signIn', 'signIn');
         $this->router->map('GET', '/me-contacter', 'MainController#contact', 'contact');
         $this->router->map('GET', '/qui-suis-je', 'MainController#aboutUs', 'aboutUs');
         $this->router->map('GET', '/mentions-legales', 'MainController#legalMention', 'legalMention');
@@ -58,6 +57,6 @@ class Application
         $this->router->map('GET', '/auteur/[i:id]', 'BlogController#author', 'author');
         // UserController
         $this->router->map('GET', '/mon-compte', 'UserController#account', 'account');
-        
+        $this->router->map('GET', '/connexion-inscription', 'UserController#signIn', 'signIn');
     }
 }

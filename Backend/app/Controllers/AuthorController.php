@@ -134,7 +134,7 @@ class AuthorController extends CoreController
             $array_json['success'] = true;
             session_start();
             $idAuthor = $author->getId();
-            $_SESSION['idUser'] = $author->getId();
+            $_SESSION['userId'] = $author->getId();
         } 
         else 
         {
@@ -163,7 +163,7 @@ class AuthorController extends CoreController
         // j'elimine les espaces (trim) et les balises(strip_tags)
         // je hash le mot de passe
         $datas = [
-            'Id' => isset($_SESSION['idUser'])  ? strip_tags(trim($_SESSION['idUser']))  : '',
+            'Id' => isset($_SESSION['userId'])  ? strip_tags(trim($_SESSION['userId']))  : '',
             'Name'  => isset($_POST['name'])  ? strip_tags(trim($_POST['name']))  : '',
             'Password' => isset($_POST['password']) ? sha1(trim($_POST['password'])) : '',
             'Email' => isset($_POST['email']) ? strip_tags(trim($_POST['email'])) : '',
@@ -261,7 +261,7 @@ class AuthorController extends CoreController
                 // j'active la session et enregistre son id
                 $array_json['success'] = true;
                 session_start();
-                $_SESSION['idUser'] = $authorFind->getId();
+                $_SESSION['userId'] = $authorFind->getId();
             }
             // si les mot de passes sont différents
             else 

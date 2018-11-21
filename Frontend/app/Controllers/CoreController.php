@@ -10,6 +10,16 @@ abstract class CoreController
 
     public function __construct($router)
     {
+        session_start(); 
+        if (!empty($_GET['disconnect'])) 
+        {
+            if($_GET['disconnect'] === '1') 
+            {
+                session_unset();
+                $_GET['disconnect'] = 0;
+            }
+        }
+
         // j'envoi le router + le chemin absolu vers views en instanciant templator
         $this->oTemplator = new Templator(__DIR__.'/../views', $router);
     }

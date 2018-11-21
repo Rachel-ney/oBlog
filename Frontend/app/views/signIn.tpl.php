@@ -1,14 +1,3 @@
-<?php if (!empty($_SESSION['idUser'])) : ?>
-
-<div class="row">
-    <main class="col-lg-9">
-        <h3>Tu es connecté</h3>
-        <p>Acceder à la page <a href="<?= $this->router->generate('account');?>"> Mon compte </a></p>
-    </main>
-</div>
-
-<?php else : ?>
-
 <div class="row all-form">
     <main class="col-lg-12 d-flex flex-row ">
         
@@ -44,4 +33,3 @@
         </form>
     </main>
 </div>
-<?php endif; ?>
