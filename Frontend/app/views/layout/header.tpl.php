@@ -25,7 +25,7 @@
 
     <!-- HEADER -->
     <header>
-        <?php $this->includeOne('nav') ?>
+        <?php $this->includeOne('/layout/nav') ?>
         <section class="text-center">
             <h1>A la dérive</h1>
             <hr />
@@ -34,5 +34,6 @@
             </p>
         </section>
     </header>
+    <?php dump($_SESSION); ?>
     <!-- Mon container (avec une max-width) dans lequel mon contenu va être placé: https://getbootstrap.com/docs/4.1/layout/overview/#containers -->
     <div class="container" data-uri="<?=$_SERVER['BASE_URI'];?>">

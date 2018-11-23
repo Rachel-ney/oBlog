@@ -16,7 +16,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $this->router->generate('blog');?>">Le blog</a>
                 </li>
-                <?php if (isset($_SESSION['userId'])) : ?>
+                <?php if (isset($_SESSION['user'])) : ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $this->router->generate('account');?>">Mon compte</a>
                 </li>

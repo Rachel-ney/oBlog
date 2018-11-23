@@ -29,5 +29,5 @@
 
         </main>
 
-        <?php $this->includeOne('aside') ?>
+        <?php $this->includeOne('/layout/aside') ?>
       </div><!-- /.row -->

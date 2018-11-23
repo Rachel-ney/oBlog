@@ -8,6 +8,7 @@ class Author extends CoreModel
     private $name;
     private $password;
     private $email;
+    private $status;
     const TABLE_NAME = 'author';
 
     // Méthode renvoyant UN UNIQUE champ d'une table dont le mail est donné
@@ -23,7 +24,21 @@ class Author extends CoreModel
         return $pdoStatement->fetchObject(static::class);
     }
 
+    // Méthode renvoyant UN UNIQUE champ d'une table dont le mail est donné
+    public static function getOneById($id)
+    {
+        $sql = 'SELECT * FROM '. static:: TABLE_NAME.'
+        WHERE id = :id';
+
+        $pdoStatement = Database::getPDO()->prepare($sql);
+        $pdoStatement->bindValue(':id', $id, PDO::PARAM_STR);
+        $pdoStatement->execute();
+        
+        return $pdoStatement->fetchObject(static::class);
+    }
+
     // Méthode permettant d'ajouter un auteur dans la bdd d'après un model reçu en paramètre
+    // je ne précise pas le status car par défaut à 1 dans ma bdd
     public function insert()
     {
         $sql = 'INSERT INTO '.self::TABLE_NAME.' (name, password, email) VALUES (:insertName, :insertPassword, :insertEmail);';
@@ -69,6 +84,25 @@ class Author extends CoreModel
              return false;
         }
     }
+
+    public static function desactivate($id)
+    {
+        $sql = 'UPDATE '.self::TABLE_NAME.' SET 
+        status = 0
+        WHERE id = :insertId;';
+        $pdoStatement = Database::getPDO()->prepare($sql);
+
+        $pdoStatement->bindValue(':insertId', $id, PDO::PARAM_INT);
+
+        if ($pdoStatement->execute()) 
+        {
+            return $pdoStatement->rowCount() > 0;
+        } 
+        else 
+        {
+             return false;
+        }
+    }
     
     // GETTERS & SETTERS 
     public function getName()
@@ -100,6 +134,17 @@ class Author extends CoreModel
     public function setEmail($email)
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    public function setStatus($status)
+    {
+        $this->status = $status;
 
         return $this;
     }

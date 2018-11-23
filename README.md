@@ -1,8 +1,4 @@
 # TODO : 
-
-# Frontend :
-- router et ajouter au UserController les page lostPassword et resetPassword
-
 ## Coté template : 
 
 - Finir les templates des pages : 
@@ -14,19 +10,12 @@
   + legal mention
 
 ## Faire le JS + ajax : 
-- du formulaire pour modifier ses info personnel --> bdd update author
-- du formulaire pour poster un article --> bdd add post
-- de la possibilité de modifier un article --> bdd update post
-- de la possibilité de supprimer un article --> bdd delete post
-  - penser à mettre une fenêtre de confirmation pour la supression
+- vendredi 23 : du formulaire pour modifier son mdp --> bdd update author
+- dimanche 25: du formulaire pour poster un article --> bdd add post
+- lundi 26: la possibilité de modifier un article --> bdd update post
+- mardi 27: la possibilité de supprimer un article --> bdd delete post
 
 # Backend :  
 
-- ajouter fonction delete() dans le PostController
-- ajouter un champ "status" (1 = inscrit, 0 si désinscription) sur les auteurs
-  - modifier le modèle Author en conséquence
-- gérer la désinscription d'un membre (auteur) 
-  - status 1 --> 0
-  - modifier la fonction connexion() de AuthorController pour vérifier le status à la connexion
-- gérer la perte de mot de passe
+- mercredi 28: gérer la perte de mot de passe
   - avec mail + token

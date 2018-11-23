@@ -36,9 +36,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
         crossorigin="anonymous"></script>
-    <script src="<?=$_SERVER['BASE_URI']?>/assets/js/aside.js"></script>
     <?php if(isset($this->var['js'])) : ?>
-        <script src="<?=$_SERVER['BASE_URI']?>/assets/js/<?=$this->var['js']?>.js"></script>
+        <?php foreach ($this->var['js'] as $js) : ?>
+            <script src="<?=$_SERVER['BASE_URI']?>/assets/js/<?=$js;?>.js"></script>
+        <?php endforeach ?>
     <?php endif; ?>
 </body>
 </html>

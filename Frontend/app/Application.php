@@ -58,5 +58,7 @@ class Application
         // UserController
         $this->router->map('GET', '/mon-compte', 'UserController#account', 'account');
         $this->router->map('GET', '/connexion-inscription', 'UserController#signIn', 'signIn');
+        $this->router->map('GET', '/mot-de-passe-perdu', 'UserController#lostPass', 'lostPass');
+        $this->router->map('GET', '/reinitialisation-mot-de-passe', 'UserController#resetPass', 'resetPass');
     }
 }

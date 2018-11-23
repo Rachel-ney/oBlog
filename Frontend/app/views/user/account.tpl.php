@@ -1,4 +1,4 @@
-<div class="row  justify-content-center">
+<div class="row  justify-content-center data">
     <main class="col-lg-10">
         <div class="accordion" id="accordionExample">
 
@@ -13,21 +13,25 @@
 
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body">
-                        <div class=" d-md-flex justify-content-around">
+                        <div class=" d-md-flex justify-content-around my-infos">
                             <ul class="list-group list-group-flush col-md-4 col-12 mb-3">
-                                <li class="list-group-item text-center">Pseudo</li>
-                                <li class="list-group-item text-center">email</li>
+                                <li class="list-group-item text-center"><?=$_SESSION['user']['name'];?></li>
+                                <li class="list-group-item text-center"><?=$_SESSION['user']['email'];?></li>
+                                <button type="button" class="btn btn-danger mt-3 unsubscribe" data-toggle="modal" data-target="#confirm-modal" data-whatever="@getbootstrap">Désactiver mon compte</button>
+                                <?php if (isset($_SESSION['error'])) : ?>
+                                    <span class="text-center"><?=$_SESSION['error']; ?></span>
+                                <?php endif ?>
                             </ul>
-                            <form class="col-md-5 col-12">
+                            <form class="col-md-5 col-12 form-password">
                                 <div class="form-group mb-1">
                                     <p>Changer de mot de passe</p>
-                                    <input type="password" class="form-control" id="password" aria-describedby="emailHelp" placeholder="Mot de passe actuel">
+                                    <input type="password" class="form-control password" placeholder="Mot de passe actuel">
                                 </div>
                                 <div class="form-group mb-1">
-                                    <input type="password" class="form-control" id="newPassword" placeholder="Nouveau mot de passe">
+                                    <input type="password" class="form-control newPassword" placeholder="Nouveau mot de passe">
                                 </div>
                                 <div class="form-group mb-1">
-                                    <input type="password" class="form-control" id="newPasswordConfirm" placeholder="Confirmer le nouveau mot de passe">
+                                    <input type="password" class="form-control newPasswordConfirm" placeholder="Confirmer le nouveau mot de passe">
                                 </div>
                                 <button type="submit" class="btn btn-light">Valider</button>
                             </form>
@@ -78,39 +82,61 @@
                         </button>
                     </h5>
                 </div>
+                
                 <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
                     <div class="card-body">
-                        <article class="card">
-                            <div class="card-body">
-                                <h2 class="card-title">Title</h2>
-                                <p class="card-subtitle">Resume</p>
-                                <p class="card-text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Deserunt, porro. Nihil, adipisci vel minima temporibus eos iste, tempora perferendis eius inventore odio optio nobis aperiam sed laboriosam quia deserunt voluptates cumque architecto suscipit! Ab aut rerum dolorum error, illo quaerat. Possimus assumenda aperiam numquam consequatur voluptatum facere illum deserunt amet!</p>
-                                <p class="infos">
-                                    Posté le <time>date</time> 
-                                    dans <span>#Category</span>
-                                </p>
-                                <button type="button" class="btn btn-danger">Supprimer</button>
-                                <button type="button" class="btn btn-warning">Modifier</button>
-                            </div>
-                        </article>
-                        <article class="card">
-                            <div class="card-body">
-                                <h2 class="card-title">Title</h2>
-                                <p class="card-subtitle">Resume</p>
-                                <p class="card-text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Optio ducimus et deserunt iure quia voluptates placeat, eligendi nesciunt iusto corrupti expedita sed tenetur laborum quasi cum quidem corporis labore fuga temporibus dolorem illo voluptatum alias rem! Ipsum est mollitia assumenda vel aspernatur eum accusantium temporibus explicabo repudiandae aliquid ratione corporis cupiditate labore delectus, quas id ex error alias non, eligendi quae! Ducimus totam praesentium expedita iste molestiae, ratione eaque aperiam magnam quod officia obcaecati consectetur ipsa accusamus, esse fugit odit sapiente. Doloribus eligendi beatae aut amet ea inventore itaque numquam consectetur nesciunt ad nostrum, voluptatum reprehenderit consequuntur modi asperiores culpa.</p>
-                                <p class="infos">
-                                    Posté le <time>date</time> 
-                                    dans <span>#Category</span>
-                                </p>
-                                <button type="button" class="btn btn-danger">Supprimer</button>
-                                <button type="button" class="btn btn-warning">Modifier</button>
-                            </div>
-                        </article>
+                        <?php if(isset($_SESSION['user']['posts'])) : 
+                              foreach ($_SESSION['user']['posts'] as $post) :?>
                         
+                                <article class="card" data-postid="<?=$post['id'];?>">
+                                    <div class="card-body">
+                                        <h2 class="card-title"><?=$post['title'];?></h2>
+                                        <p class="card-text"><?=$post['resume'];?></p>
+                                        <p class="card-text"><?=$post['content'];?></p>
+                                        <p class="infos">
+                                            Posté le <time><?=$post['created_at'];?></time> 
+                                            <?php if(!is_null($post['updated_at'])): ?>
+                                                modifié le <time><?=$post['updated_at'];?></time>
+                                            <?php endif; ?>
+                                            dans <span><?=$post['category'];?></span>
+                                        </p>
+                                        <button type="button" class="btn btn-danger">Supprimer</button>
+                                        <button type="button" class="btn btn-warning">Modifier</button>
+                                    </div>
+                                </article>
+                        <?php endforeach; ?>
+                        <?php else : ?>
+                        <p>Vous n'avez pas encore écris d'article</p>
+                        <?php endif; ?>
                     </div>
                 </div>
-
             </div>
         </div>
     </main>
+</div>
+
+
+<div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Entrez votre mot de passe pour confirmer </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-modal">
+          <div class="form-group">
+            <input type="password" class="form-control" id="pass-confirm">
+          </div>
+        <div class="modal-footer border-0">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger confirm-button">Confirmer</button>
+        </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
 </div>

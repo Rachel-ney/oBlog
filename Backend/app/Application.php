@@ -7,6 +7,7 @@ class Application
 
     public function __construct() 
     {
+        session_start();
         // Lancer AltoRouter
         $this->router = new \AltoRouter();
         // Récuperation de BASE_URI
@@ -62,11 +63,11 @@ class Application
         
         // AuthorController
         $this->router->map('GET', '/all-author', 'AuthorController#all', 'allAuthor');
+        $this->router->map('GET', '/one-author-by-id/[i:id]', 'AuthorController#one', 'oneAuthor');
         $this->router->map('POST', '/add-author', 'AuthorController#add', 'addAuthor');
         $this->router->map('GET', '/connexion', 'AuthorController#connexion', 'connexion');
         /* à tester : */
         $this->router->map('POST', '/update-author', 'AuthorController#update', 'updateAuthor');
-        /* méthode à créer : */
-        //$this->router->map('POST', '/delete-author', 'AuthorController#delete', 'deleteAuthor');
+        $this->router->map('GET', '/desactivate-author', 'AuthorController#desactivate', 'desactivAuthor');
     }
 }

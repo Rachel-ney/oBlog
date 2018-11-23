@@ -20,7 +20,7 @@ var appSignIn = {
       register = false;
     }
     // je retire tout les messages d'erreur s'il y en as
-    appSignIn.clearError();
+    $('.error').remove();
     // dans tout les cas je récupère email et password
     var data = {
       'email': $.trim($($(evt.target).find('.email')).val()),
@@ -30,6 +30,7 @@ var appSignIn = {
     if(register) 
     {
       data['name'] = $.trim($($(evt.target).find('.name')).val());
+      data['pass_confirm'] = $.trim($($(evt.target).find('.password-confirm')).val());
     }
     // par défaut je considère que des valeurs on été mis dans chaque input
     var notEmpty = true;
@@ -58,19 +59,23 @@ var appSignIn = {
       }
     }
 
+    if(register)
+    {
+      if(data['password'] !== data['pass_confirm'])
+      {
+        var textError = 'Vos mot de passe doivent êtres identiques';
+        var error = $('<div>').addClass('mx-auto col-11 my-3 border text-light bg-danger rounded py-2 error').html(textError);
+        error.appendTo(evt.target);
+        notEmpty = false;
+      }
+    }
+
     // si notEmpty = true, alors aucun input n'était vide
+    // et les deux mdp sont identiques
     if (notEmpty) 
     {
       // je lance la requête vers le back
       appSignIn.dataRequest(data, register);
-    }
-  },
-
-  clearError: function() {
-    // s'il y a bien des messages d'erreur
-    if(typeof $('.error') !== 'undefined')
-    {
-      $('.error').remove();
     }
   },
 
@@ -86,6 +91,7 @@ var appSignIn = {
         data: {
           name: dataValue['name'],
           password: dataValue['password'],
+          pass_confirm: dataValue['pass_confirm'],
           email: dataValue['email']
         }
       });

@@ -10,6 +10,7 @@
             <div class="form-group">
                 <label>Mot de passe</label>
                 <input type="password" class="form-control password" placeholder="Password">
+                <small class="form-text"> <a class="text-muted" href="<?=$this->router->generate('lostPass'); ?>" >Mot de passe oublié ?</a> </small>
             </div>
             <button type="submit" class="btn d-block mx-auto mt-auto">Connexion</button>
         </form>
@@ -27,7 +28,11 @@
             <div class="form-group">
                 <label>Mot de passe</label>
                 <input type="password" class="form-control password" placeholder="Password">
-                <small id="emailHelp" class="form-text text-muted">Le mot de passe doit contenir au moins 8 caractères dont : minuscule(s), majuscule(s), chiffre(s) et au moins un des caractères suivant _ ? . !</small>
+            </div>
+            <div class="form-group">
+                <label>Confirmation du mot de passe</label>
+                <input type="password" class="form-control password-confirm" placeholder="Password confirm">
+                <small class="form-text text-muted">Le mot de passe doit contenir au moins 8 caractères dont : minuscule(s), majuscule(s), chiffre(s) et au moins un des caractères suivant _ ? . !</small>
             </div>
             <button type="submit" class="btn d-block mx-auto">Inscription</button>
         </form>

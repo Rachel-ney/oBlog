@@ -42,6 +42,43 @@ class AuthorController extends CoreController
         $this->showJson($array_json);
     }
     
+    // Méthode pour récuperer UN auteur et renvoyer ses info
+    public function one($param) 
+    {
+        // je récupère tout les posts de ma bdd sous forme d'objet
+        $oneAuthor = Author::getOneById($param['id']);
+
+        // si la bdd ne m'a rien renvoyé
+        if(empty($oneAuthor)) 
+        {
+            //  message d'erreur , fin du programme
+            $array_json['success'] = false;
+            $array_json['msg'] = 'La bdd n\'a retourné aucun résultat';
+            $this->showJson($array_json);
+            die();
+        }
+
+        // je déclare le tableau qui contiendra touts les posts
+        $authorForJson = array();
+        // je rempli le tableau : 
+
+        $authorForJson = [
+            'id'            => $oneAuthor->getId(),
+            'name'          => $oneAuthor->getName(),
+            'email'         => $oneAuthor->getEmail(),
+            'created_at'    => $oneAuthor->getCreatedAt(),
+            'updated_at'    => $oneAuthor->getUpdatedAt(),
+        ];
+
+        // j'ajoute le tableau à ma réponse json : 
+        $array_json = [
+            'author' => $authorForJson,
+            'success' => true,
+        ];
+        // j'envoi le tableau à showJson
+        $this->showJson($array_json);
+    }
+
     // Méthode pour ajouter / modifier un auteur en bdd
     public function add() 
     {
@@ -50,6 +87,7 @@ class AuthorController extends CoreController
         $datas = [
             'Name'  => isset($_POST['name'])  ? strip_tags(trim($_POST['name']))  : '',
             'Password' => isset($_POST['password']) ? trim($_POST['password']) : '',
+            'Pass_confirm' => isset($_POST['pass_confirm']) ? trim($_POST['pass_confirm']) : '',
             'Email' => isset($_POST['email']) ? strip_tags(trim($_POST['email'])) : '',
         ];
         // je vérifie que les data reçu ne sont pas vide
@@ -90,7 +128,17 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $array_json['msg'] = 'Cette adresse mail est déjà enregistré pour un compte';
+            $array_json['msg'] = 'Cette adresse mail est déjà enregistré';
+            $this->showJson($array_json);
+            die();
+        }
+
+        // je vérifie que le mdp et la confirmation du mdp soient identiques
+        if ($datas['Password'] !== $datas['Pass_confirm']) 
+        {
+            // message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $array_json['msg'] = 'Les mots de passe doivent êtres identiques';
             $this->showJson($array_json);
             die();
         }
@@ -123,8 +171,11 @@ class AuthorController extends CoreController
         // je lui donne les data à ajouter : 
         foreach ($datas as $dataName => $dataValue) 
         {
-            $setterName = 'set'.$dataName;
-            $author->$setterName($dataValue);
+            if ($dataName !== 'Pass_confirm')
+            {
+                $setterName = 'set'.$dataName;
+                $author->$setterName($dataValue);    
+            }
         }
         // je test l'insertion en bdd
         if ($author->insert()) 
@@ -132,9 +183,8 @@ class AuthorController extends CoreController
             // si insertion ok j'ajoute une clef true à transmettre
             // et j'active ma session en stockant l'id du nouvel auteur
             $array_json['success'] = true;
-            session_start();
             $idAuthor = $author->getId();
-            $_SESSION['userId'] = $author->getId();
+            $_SESSION['user'] = $author->getId();
         } 
         else 
         {
@@ -163,7 +213,7 @@ class AuthorController extends CoreController
         // j'elimine les espaces (trim) et les balises(strip_tags)
         // je hash le mot de passe
         $datas = [
-            'Id' => isset($_SESSION['userId'])  ? strip_tags(trim($_SESSION['userId']))  : '',
+            'Id' => isset($_SESSION['user'])  ? strip_tags(trim($_SESSION['user']))  : '',
             'Name'  => isset($_POST['name'])  ? strip_tags(trim($_POST['name']))  : '',
             'Password' => isset($_POST['password']) ? sha1(trim($_POST['password'])) : '',
             'Email' => isset($_POST['email']) ? strip_tags(trim($_POST['email'])) : '',
@@ -244,13 +294,23 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $array_json['msg'] = 'Cette adresse mail n\'existe pas';
+            $array_json['msg'] = 'Identifiant ou mot de passe invalide';
             $this->showJson($array_json);
             die();
         }
         // si j'en trouve un
         else 
         {
+            $status = $authorFind->getStatus();
+
+            if ($status !== '1') 
+            {
+                // message d'erreur, fin du programme
+                $array_json['success'] = false;
+                $array_json['msg'] = 'Identifiant ou mot de passe invalide';
+                $this->showJson($array_json);
+                die();
+            }
             // je rajoute le salt que j'avais défini à l'inscription
             $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
             $datas['Password'] .= $salt;
@@ -260,15 +320,35 @@ class AuthorController extends CoreController
             {
                 // j'active la session et enregistre son id
                 $array_json['success'] = true;
-                session_start();
-                $_SESSION['userId'] = $authorFind->getId();
+                $_SESSION['user'] = [
+                    'id' => $authorFind->getId(),
+                    'name' => $authorFind->getName(),
+                    'email' => $authorFind->getEmail()
+                ];
+                $allPost = Post::getAllPostBy('author', $_SESSION['user']['id']);
+
+                if(!empty($allPost))
+                {
+                    foreach($allPost as $post)
+                    {
+                        $_SESSION['user']['posts'][] = [
+                            'id'         => $post->getId(),
+                            'title'      => $post->getTitle(),
+                            'resume'     => $post->getResume(),
+                            'content'    => $post->getContent(),
+                            'category'   => $post->getCategoryName(),
+                            'created_at' => $post->getCreatedAt(),
+                            'updated_at' => $post->getUpdatedAt()
+                        ];
+                    }
+                }
             }
             // si les mot de passes sont différents
             else 
             {
                 // message d'erreur, fin du programme
                 $array_json['success'] = false;
-                $array_json['msg'] = 'Mot de passe incorect';
+                $array_json['msg'] = 'Identifiant ou mot de passe invalide';
                 $this->showJson($array_json);
                 die();
             }
@@ -284,5 +364,68 @@ class AuthorController extends CoreController
         ];
         // j'envoi le tableau à showJson
         $this->showJson($array_json);
+    }
+
+    public function desactivate() {
+
+        $password = isset($_GET['password']) ? trim($_GET['password']) : '';
+        $id = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '';
+
+        if(empty($password) || empty($id)) 
+        {
+            // message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $_SESSION['error'] = 'Une erreur est survenue';
+            $this->showJson($array_json);
+            die();
+        }
+
+        $authorFind = Author::getOneById($id);
+
+        if(empty($authorFind))
+        {
+            // message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $_SESSION['error'] = 'Une erreur est survenue';
+            $this->showJson($array_json);
+            die();
+        }
+
+        $hash = $authorFind->getPassword();
+        $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
+        $password.= $salt;
+        
+        // si le mdp donné correspond à celui stocké en bdd
+        if (!password_verify($password, $hash))
+        {
+            // message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $_SESSION['error'] = 'Mot de passe incorrect';
+            $this->showJson($array_json);
+            die();
+        }
+
+        $desactivate = Author:: desactivate($id);
+
+        if($desactivate)
+        {
+            // message d'erreur, fin du programme
+            $array_json['success'] = true;
+            session_unset();
+            $this->showJson($array_json);
+        }
+        else 
+        {
+            // message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $_SESSION['error'] = 'Une erreur est survenue';
+            $this->showJson($array_json);
+            die();
+        }
+
+
+
+
+
     }
 }

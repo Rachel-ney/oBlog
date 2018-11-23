@@ -36,16 +36,16 @@ class Templator {
         // si le fichier existe
         if (file_exists($verify)) {
             // je fais tout mes includes.
-            include $this->absolutWay. '/header.tpl.php';
+            include $this->absolutWay. '/layout/header.tpl.php';
             include $verify;
-            include $this->absolutWay. '/footer.tpl.php';
+            include $this->absolutWay. '/layout/footer.tpl.php';
         }
         // S'il n'existe pas == affichage page 404
         else {
             header("HTTP/1.0 404 Not Found");
-            include $this->absolutWay. '/header.tpl.php';
+            include $this->absolutWay. '/layout/header.tpl.php';
             include $this->absolutWay. '/error404.tpl.php';
-            include $this->absolutWay. '/footer.tpl.php';
+            include $this->absolutWay. '/layout/footer.tpl.php';
         }
     }
 
