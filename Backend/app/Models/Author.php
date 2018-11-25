@@ -24,7 +24,7 @@ class Author extends CoreModel
         return $pdoStatement->fetchObject(static::class);
     }
 
-    // Méthode renvoyant UN UNIQUE champ d'une table dont le mail est donné
+    // Méthode renvoyant UN UNIQUE champ d'une table dont l'id est donné
     public static function getOneById($id)
     {
         $sql = 'SELECT * FROM '. static:: TABLE_NAME.'
@@ -60,20 +60,17 @@ class Author extends CoreModel
         return $success;
     }
 
-    // Méthode permettant de modifier les infos d'un auteur dans la bdd d'après un model reçu en paramètre + l'id de l'auteur
-    public function update()
+    // Méthode permettant de modifier le mdp d'un auteur
+    public static function updatePassword($id, $newPass)
     {
         $sql = 'UPDATE '.self::TABLE_NAME.' SET 
-        name =  :newName, 
         password = :newPassword, 
-        email = :newEmail
-        WHERE id = :insertId;';
+        updated_at = NOW()
+        WHERE id = :id;';
         $pdoStatement = Database::getPDO()->prepare($sql);
 
-        $pdoStatement->bindValue(':newName',  $this->getName(), PDO::PARAM_STR);
-        $pdoStatement->bindValue(':newPassword', $this->getPassword(), PDO::PARAM_STR);
-        $pdoStatement->bindValue(':newEmail', $this->getEmail(), PDO::PARAM_STR);
-        $pdoStatement->bindValue(':insertId', $this->getId(), PDO::PARAM_INT);
+        $pdoStatement->bindValue(':newPassword', $newPass, PDO::PARAM_STR);
+        $pdoStatement->bindValue(':id', $id, PDO::PARAM_INT);
 
         if ($pdoStatement->execute()) 
         {

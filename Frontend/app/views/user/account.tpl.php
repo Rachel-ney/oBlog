@@ -18,9 +18,9 @@
                                 <li class="list-group-item text-center"><?=$_SESSION['user']['name'];?></li>
                                 <li class="list-group-item text-center"><?=$_SESSION['user']['email'];?></li>
                                 <button type="button" class="btn btn-danger mt-3 unsubscribe" data-toggle="modal" data-target="#confirm-modal" data-whatever="@getbootstrap">Désactiver mon compte</button>
-                                <?php if (isset($_SESSION['error'])) : ?>
-                                    <span class="text-center"><?=$_SESSION['error']; ?></span>
-                                <?php endif ?>
+                                <?php if (isset($_SESSION['error']['desactivateFail'])) : ?>
+                                    <span class="text-center bg-warning rounded p-2 mt-2"><?=$_SESSION['error']['desactivateFail']; ?></span>
+                                <?php endif; ?>
                             </ul>
                             <form class="col-md-5 col-12 form-password">
                                 <div class="form-group mb-1">
@@ -34,6 +34,12 @@
                                     <input type="password" class="form-control newPasswordConfirm" placeholder="Confirmer le nouveau mot de passe">
                                 </div>
                                 <button type="submit" class="btn btn-light">Valider</button>
+                                <?php if (isset($_SESSION['error']['changePassFail'])) : ?>
+                                    <div class="text-center bg-warning rounded p-2 mt-2"><?=$_SESSION['error']['changePassFail']; ?></div>
+                                <?php endif ?>
+                                <?php if (isset($_SESSION['success']['changePass'])) : ?>
+                                        <div class="text-center bg-success rounded p-2 mt-2 text-light"><?=$_SESSION['success']['changePass']; ?></div>
+                                <?php endif ?>
                             </form>
                         </div>
                     </div>
@@ -140,3 +146,11 @@
     </div>
   </div>
 </div>
+
+<?php
+// j'attend la fin du chargement de la page pour remettre à 0 mes messages d'erreur / succes stocké en session
+
+unset($_SESSION['error']);
+unset($_SESSION['success']);
+
+?>

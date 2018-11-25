@@ -57,17 +57,13 @@ class Application
         
         // CategoryController
         $this->router->map('GET', '/all-category', 'CategoryController#all', 'allCategory');
-        /* méthode à créer : */
-        //$this->router->map('POST', '/add-update-category', 'CategoryController#addOrUpdate', 'addCategory');
-        //$this->router->map('POST', '/delete-category', 'CategoryController#delete', 'deleteCategory');
         
         // AuthorController
         $this->router->map('GET', '/all-author', 'AuthorController#all', 'allAuthor');
         $this->router->map('GET', '/one-author-by-id/[i:id]', 'AuthorController#one', 'oneAuthor');
         $this->router->map('POST', '/add-author', 'AuthorController#add', 'addAuthor');
-        $this->router->map('GET', '/connexion', 'AuthorController#connexion', 'connexion');
-        /* à tester : */
-        $this->router->map('POST', '/update-author', 'AuthorController#update', 'updateAuthor');
-        $this->router->map('GET', '/desactivate-author', 'AuthorController#desactivate', 'desactivAuthor');
+        $this->router->map('POST', '/connexion', 'AuthorController#connexion', 'connexion');
+        $this->router->map('POST', '/change-pass', 'AuthorController#changePass', 'changePass');
+        $this->router->map('POST', '/desactivate', 'AuthorController#desactivate', 'desactivateAuthor');
     }
 }

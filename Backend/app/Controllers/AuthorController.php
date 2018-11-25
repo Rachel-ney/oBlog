@@ -60,8 +60,8 @@ class AuthorController extends CoreController
 
         // je déclare le tableau qui contiendra touts les posts
         $authorForJson = array();
-        // je rempli le tableau : 
 
+        // je rempli le tableau : 
         $authorForJson = [
             'id'            => $oneAuthor->getId(),
             'name'          => $oneAuthor->getName(),
@@ -98,7 +98,7 @@ class AuthorController extends CoreController
             {
                 // message d'erreur, fin du programme
                 $array_json['success'] = false;
-                $array_json['msg'] = 'Le champ ' . $dataName . ' est vide.';
+                $_SESSION['error']['registerFail'] = 'Vous ne pouvez pas laisser de champs vide';
                 $this->showJson($array_json);
                 die();
             }
@@ -109,7 +109,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $array_json['msg'] = 'Le nom ne doit pas contenir d\'espace ou de caractère spéciaux';
+            $_SESSION['error']['registerFail'] = 'Le nom ne doit pas contenir d\'espace ou de caractère spéciaux';
             $this->showJson($array_json);
             die();
         }
@@ -118,7 +118,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $array_json['msg'] = 'Email invalide.';
+            $_SESSION['error']['registerFail'] = 'Email invalide.';
             $this->showJson($array_json);
             die();
         }
@@ -128,7 +128,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $array_json['msg'] = 'Cette adresse mail est déjà enregistré';
+            $_SESSION['error']['registerFail'] = 'Cette adresse mail est déjà enregistré';
             $this->showJson($array_json);
             die();
         }
@@ -138,7 +138,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $array_json['msg'] = 'Les mots de passe doivent êtres identiques';
+            $_SESSION['error']['registerFail'] = 'Les mots de passe doivent êtres identiques';
             $this->showJson($array_json);
             die();
         }
@@ -147,7 +147,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $array_json['msg'] = 'Le mot de passe doit contenir au moins 8 caractères';
+            $_SESSION['error']['registerFail'] = 'Le mot de passe doit contenir au moins 8 caractères';
             $this->showJson($array_json);
             die();
         }
@@ -157,7 +157,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $array_json['msg'] = 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et l\'un des caractère suivant _ ? . !  ';
+            $_SESSION['error']['registerFail'] = 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et l\'un des caractère suivant _ ? . !  ';
             $this->showJson($array_json);
             die();
         }
@@ -183,85 +183,20 @@ class AuthorController extends CoreController
             // si insertion ok j'ajoute une clef true à transmettre
             // et j'active ma session en stockant l'id du nouvel auteur
             $array_json['success'] = true;
-            $idAuthor = $author->getId();
-            $_SESSION['user'] = $author->getId();
+            $_SESSION['user'] = [
+                'id' => $author->getId(),
+                'name' => $author->getName(),
+                'email' => $author->getEmail()
+            ];
         } 
         else 
         {
             // sinon la clef = false + message d'erreur, fin du programme
             $array_json['success'] = false;
-            $array_json['msg'] = 'Une erreur est survenue lors de l\'inscription, veuillez recommencer.';
+            $_SESSION['error']['registerFail'] = 'Une erreur est survenue lors de l\'inscription, veuillez recommencer.';
             $this->showJson($array_json);
             die();
         }
-        // je rempli mon tableau de réponse : 
-        $array_json['post'] = [
-            'id'            => $author->getId(),
-            'name'          => $author->getName(),
-            'email'         => $author->getEmail(),
-            'created_at'    => $author->getCreatedAt(),
-            'updated_at'    => $author->getUpdatedAt(),
-        ];
-        // j'envoi le tableau à showJson
-        $this->showJson($array_json);
-    }
-
-    // Méthode pour ajouter / modifier un auteur en bdd
-    public function update() 
-    {
-        // je récupère les data
-        // j'elimine les espaces (trim) et les balises(strip_tags)
-        // je hash le mot de passe
-        $datas = [
-            'Id' => isset($_SESSION['user'])  ? strip_tags(trim($_SESSION['user']))  : '',
-            'Name'  => isset($_POST['name'])  ? strip_tags(trim($_POST['name']))  : '',
-            'Password' => isset($_POST['password']) ? sha1(trim($_POST['password'])) : '',
-            'Email' => isset($_POST['email']) ? strip_tags(trim($_POST['email'])) : '',
-        ];
-        // je vérifie que les data reçu ne sont pas vide
-        foreach ($datas as $dataName => $dataValue) 
-        {
-            // si vide
-            if(empty($dataValue)) 
-            {
-                // message d'erreur, fin du programme
-                $array_json['success'] = false;
-                $array_json['msg'] = 'Le champ ' . $dataName . ' est vide.';
-                $this->showJson($array_json);
-                die();
-            }
-        }
-        // Je créer une instance de auteur
-        $author = new AuthorModel();
-        // je lui donne les data à ajouter : 
-        foreach ($datas as $dataName => $dataValue) 
-        {
-            $setterName = 'set'.$dataName;
-            $author->$setterName($dataValue);
-        }
-        
-        // je test la modification en bdd
-        if ($author->update()) 
-        {
-            // si update ok j'ajoute une clef true à transmettre
-            $array_json['success'] = true;
-        } 
-        else 
-        {
-            // sinon la clef = false + message d'erreur, fin du programme
-            $array_json['success'] = false;
-            $array_json['msg'] = 'Une erreur est survenue lors de la modification.';
-            $this->showJson($array_json);
-            die();
-        }
-        // je rempli mon tableau de réponse : 
-        $array_json['post'] = [
-            'id'            => $author->getId(),
-            'name'          => $author->getName(),
-            'email'         => $author->getEmail(),
-            'created_at'    => $author->getCreatedAt(),
-            'updated_at'    => $author->getUpdatedAt(),
-        ];
         // j'envoi le tableau à showJson
         $this->showJson($array_json);
     }
@@ -270,8 +205,8 @@ class AuthorController extends CoreController
         // je récupère les data
         // j'elimine les espaces (trim)
         $datas = [
-            'Password' => isset($_GET['password']) ? trim($_GET['password']) : '',
-            'Email' => isset($_GET['email']) ? trim($_GET['email']) : '',
+            'Password' => isset($_POST['password']) ? trim($_POST['password']) : '',
+            'Email' => isset($_POST['email']) ? trim($_POST['email']) : '',
         ];
         // je vérifie que les data reçu ne sont pas vide
         foreach ($datas as $dataName => $dataValue) 
@@ -281,7 +216,7 @@ class AuthorController extends CoreController
             {
                 // message d'erreur, fin du programme
                 $array_json['success'] = false;
-                $array_json['msg'] = 'Le champ ' . $dataName . ' est vide.';
+                $_SESSION['error']['connectionFail'] = 'Vous ne pouvez pas laisser de champs vide';
                 $this->showJson($array_json);
                 die();
             }
@@ -294,7 +229,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $array_json['msg'] = 'Identifiant ou mot de passe invalide';
+            $_SESSION['error']['connectionFail']= 'Auteur inexistant';
             $this->showJson($array_json);
             die();
         }
@@ -307,7 +242,7 @@ class AuthorController extends CoreController
             {
                 // message d'erreur, fin du programme
                 $array_json['success'] = false;
-                $array_json['msg'] = 'Identifiant ou mot de passe invalide';
+                $_SESSION['error']['connectionFail'] = 'a été desactivé';
                 $this->showJson($array_json);
                 die();
             }
@@ -318,13 +253,14 @@ class AuthorController extends CoreController
             // si le mdp donné correspond à celui stocké en bdd
             if (password_verify($datas['Password'], $hash)) 
             {
-                // j'active la session et enregistre son id
+                // j'enregistre ses info en session
                 $array_json['success'] = true;
                 $_SESSION['user'] = [
                     'id' => $authorFind->getId(),
                     'name' => $authorFind->getName(),
                     'email' => $authorFind->getEmail()
                 ];
+                // ainsi que ses articles
                 $allPost = Post::getAllPostBy('author', $_SESSION['user']['id']);
 
                 if(!empty($allPost))
@@ -342,40 +278,140 @@ class AuthorController extends CoreController
                         ];
                     }
                 }
+                // j'envoi mon retour comme positif
+                $array_json['success'] = true;
+                // j'envoi le tableau à showJson
+                $this->showJson($array_json);
             }
             // si les mot de passes sont différents
             else 
             {
                 // message d'erreur, fin du programme
                 $array_json['success'] = false;
-                $array_json['msg'] = 'Identifiant ou mot de passe invalide';
+                $_SESSION['error']['connectionFail'] = 'Mot de passe incorrect';
                 $this->showJson($array_json);
                 die();
             }
         }
-        
-        // je rempli mon tableau de réponse : 
-        $array_json['author'] = [
-            'id'            => $authorFind->getId(),
-            'name'          => $authorFind->getName(),
-            'email'         => $authorFind->getEmail(),
-            'created_at'    => $authorFind->getCreatedAt(),
-            'updated_at'    => $authorFind->getUpdatedAt(),
+    }
+
+    // Méthode pour ajouter / modifier un auteur en bdd
+    public function changePass() 
+    {
+        // je récupère les data
+        // j'elimine les espaces (trim) et les balises(strip_tags)
+        $datas = [
+            'id'             => isset($_SESSION['user']['id'])  ? $_SESSION['user']['id']        : '',
+            'oldPass'        => isset($_POST['oldPass'])        ? trim($_POST['oldPass'])        : '',
+            'newPass'        => isset($_POST['newPass'])        ? trim($_POST['newPass'])        : '',
+            'newPassConfirm' => isset($_POST['newPassConfirm']) ? trim($_POST['newPassConfirm']) : '',
         ];
-        // j'envoi le tableau à showJson
-        $this->showJson($array_json);
+        // par défaut je considère les champs plein
+        $notEmpty = true;
+
+        // je vérifie que les data reçu ne sont pas vide
+        foreach ($datas as $dataName => $dataValue) 
+        {
+            // si vide
+            if(empty($dataValue)) 
+            {
+                $notEmpty = false;
+            }
+        }
+        // si une des données n'est pas renseigné
+        if(!$notEmpty)
+        {
+            // message d'erreur, fin du programme
+            $_SESSION['error']['changePassFail'] = 'Vous ne pouvez pas laisser de champs vide';
+            $array_json['success'] = false;
+            $this->showJson($array_json);
+            die();
+        }
+        // Je cherche si l'auteur existe bien 
+        $authorFind = Author::getOneById($datas['id']);
+        if (!$authorFind)
+        {
+            // message d'erreur, fin du programme
+            $_SESSION['error']['changePassFail'] = 'La bdd na rien renvoyé';
+            $array_json['success'] = false;
+            $this->showJson($array_json);
+            die(); 
+        }
+        // si trouvé je vérifie son mot de passe 
+        // je rajoute le salt que j'avais défini à l'inscription
+        $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
+        $datas['oldPass'] .= $salt;
+
+        $hash = $authorFind->getPassword();
+        // si le mdp donné ne correspond pas à celui stocké en bdd
+        if (!password_verify($datas['oldPass'], $hash)) 
+        {
+            // message d'erreur, fin du programme
+            $_SESSION['error']['changePassFail'] = 'Mot de passe incorrect';
+            $array_json['success'] = false;
+            $this->showJson($array_json);
+            die();
+        }
+        // je vérifie que le mdp et la confirmation du mdp soient identiques
+        if ($datas['newPass'] !== $datas['newPassConfirm']) 
+        {
+            $_SESSION['error']['changePassFail'] = 'Le nouveau mots de passe et sa confirmation doivent êtres identiques';
+            $array_json['success'] = false;
+            $this->showJson($array_json);
+            die();
+        }
+        // je vérifie que le nouveau mot de passe fasse bien 8 caractère ou plus
+        if(strlen($datas['newPass']) < 8 )
+        {
+            // message d'erreur, fin du programme
+            $_SESSION['error']['changePassFail'] = 'Le nouveau mots de passe doit contenir minimum 8 caractères';
+            $array_json['success'] = false;
+            $this->showJson($array_json);
+            die();
+        }
+        // je vérifie que le nouveau mot de passe contienne bien maj, min, chiffre et . ou ? ou ! ou _ (1x ou plus)
+        $regexPass = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[.?!_])/';
+        if(!preg_match($regexPass, $datas['newPass'])) 
+        {
+            // message d'erreur, fin du programme
+            $_SESSION['error']['changePassFail'] = 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et l\'un des caractère suivant _ ? . !';
+            $array_json['success'] = false;
+            $this->showJson($array_json);
+            die();
+        }
+
+        // j'ajoute le salt + hash le nouveau mdp
+        $datas['newPass'] .= $salt;
+        $datas['newPass'] = password_hash($datas['newPass'], PASSWORD_DEFAULT);
+
+        // Si mdp valide je test la modification en bdd
+        if (Author::updatePassword($datas['id'], $datas['newPass'])) 
+        {
+            // si update ok j'ajoute une clef true à transmettre
+            $_SESSION['success']['changePass'] = 'Votre mot de passe a bien été modifié';
+            $array_json['success'] = true;
+            $this->showJson($array_json);
+        } 
+        else 
+        {
+            // message d'erreur, fin du programme
+            $_SESSION['error']['changePassFail'] = 'Une erreur est survenue';
+            $array_json['success'] = false;
+            $this->showJson($array_json);
+            die();
+        }
     }
 
     public function desactivate() {
 
-        $password = isset($_GET['password']) ? trim($_GET['password']) : '';
+        $password = isset($_POST['password']) ? trim($_POST['password']) : '';
         $id = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '';
 
         if(empty($password) || empty($id)) 
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error'] = 'Une erreur est survenue';
+            $_SESSION['error']['desactivateFail'] = 'Une erreur est survenue';
             $this->showJson($array_json);
             die();
         }
@@ -386,7 +422,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error'] = 'Une erreur est survenue';
+            $_SESSION['error']['desactivateFail'] = 'Une erreur est survenue';
             $this->showJson($array_json);
             die();
         }
@@ -400,7 +436,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error'] = 'Mot de passe incorrect';
+            $_SESSION['error']['desactivateFail'] = 'Mot de passe incorrect';
             $this->showJson($array_json);
             die();
         }
@@ -418,14 +454,9 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error'] = 'Une erreur est survenue';
+            $_SESSION['error']['desactivateFail'] = 'Une erreur est survenue';
             $this->showJson($array_json);
             die();
         }
-
-
-
-
-
     }
 }

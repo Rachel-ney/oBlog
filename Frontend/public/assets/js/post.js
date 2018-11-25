@@ -31,30 +31,24 @@ var appPost = {
         if (type === 'category' || type === 'author') 
         {
             var id = $('main').data(type);
-            // url hebergeur
-            //appPost.url = 'http://neyress.yo.fr/oblog-Api/Backend/all-post-by/'+ type +'/'+ id ;
             appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/all-post-by/'+ type +'/'+ id ;
         }
         else if(type === 'all') 
         {
-            // url hebergeur
-            //appPost.url = 'https://neyress.yo.fr/oblog-Api/Backend/all-post';
             appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/all-post';
         }
         else if (type === 'one')
         {
             var id = $('main').data(type);
-            // url hebergeur
-            //appPost.url = 'https://neyress.yo.fr/oblog-Api/Backend/one-post/'+ id;
             appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/one-post/'+ id;
         }
     },
 
     recoverPost: function() {
       var jqxhr = $.ajax({
-        url: appPost.url, // URL sur laquelle faire l'appel Ajax
-        method: 'GET', // La méthode HTTP souhaité pour l'appel Ajax (GET ou POST)
-        dataType: 'json', // Le type de données attendu en réponse (text, html, xml, json)
+        url: appPost.url, 
+        method: 'GET', 
+        dataType: 'json', 
       });
       // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
       jqxhr.done(function (response) {

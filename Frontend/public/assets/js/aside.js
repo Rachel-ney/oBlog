@@ -9,11 +9,9 @@ var aside = {
 
   recoverCategoryList: function () {
     var jqxhr = $.ajax({
-      //url hebergeur : 
-      // url: 'https://neyress.yo.fr/oblog-Api/Backend/all-category', 
       url: 'http://localhost/Projet_perso/oBlog/Backend/all-category', 
-      method: 'GET', // La méthode HTTP souhaité pour l'appel Ajax (GET ou POST)
-      dataType: 'json', // Le type de données attendu en réponse (text, html, xml, json)
+      method: 'GET', 
+      dataType: 'json',
     });
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
     jqxhr.done(function (response) {
@@ -28,11 +26,9 @@ var aside = {
 
   recoverAuthorList: function () {
     var jqxhr = $.ajax({
-      //url hebergeur :
-      //url: 'https://neyress.yo.fr/oblog-Api/Backend/all-author',
       url: 'http://localhost/Projet_perso/oBlog/Backend/all-author',
-      method: 'GET', // La méthode HTTP souhaité pour l'appel Ajax (GET ou POST)
-      dataType: 'json', // Le type de données attendu en réponse (text, html, xml, json)
+      method: 'GET', 
+      dataType: 'json',
     });
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
     jqxhr.done(function (response) {

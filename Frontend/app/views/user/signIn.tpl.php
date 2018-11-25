@@ -13,6 +13,9 @@
                 <small class="form-text"> <a class="text-muted" href="<?=$this->router->generate('lostPass'); ?>" >Mot de passe oublié ?</a> </small>
             </div>
             <button type="submit" class="btn d-block mx-auto mt-auto">Connexion</button>
+        <?php if(isset($_SESSION['error']['connectionFail'])) : ?>
+            <div class="bg-danger text-light rounded p-2 mt-2 mb-2" ><?=$_SESSION['error']['connectionFail'];?></div>
+        <?php endif ; ?>
         </form>
         
         <form class="col-5 mx-auto border register">
@@ -35,6 +38,16 @@
                 <small class="form-text text-muted">Le mot de passe doit contenir au moins 8 caractères dont : minuscule(s), majuscule(s), chiffre(s) et au moins un des caractères suivant _ ? . !</small>
             </div>
             <button type="submit" class="btn d-block mx-auto">Inscription</button>
+            <?php if(isset($_SESSION['error']['registerFail'])) : ?>
+            <div class="bg-danger text-light rounded p-2 mt-2 mb-2" ><?=$_SESSION['error']['registerFail'];?></div>
+            <?php endif ; ?>
         </form>
     </main>
 </div>
+
+<?php 
+// J'attends la fin du chargement pour remettre à 0 mes erreurs / success en session : 
+
+unset($_SESSION['error']);
+
+?>
