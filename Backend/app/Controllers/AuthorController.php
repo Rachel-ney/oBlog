@@ -5,6 +5,8 @@ use oBlogApi\Models\Author;
 
 class AuthorController extends CoreController
 {
+    private $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
+
     // Méthode pour récuperer TOUT les auteurs et les envoyer en json
     public function all() 
     {
@@ -132,38 +134,15 @@ class AuthorController extends CoreController
             $this->showJson($array_json);
             die();
         }
-
-        // je vérifie que le mdp et la confirmation du mdp soient identiques
-        if ($datas['Password'] !== $datas['Pass_confirm']) 
+        // je test le mot de passe
+        if (!$this->passwordIntegrity($datas['Password'], $datas['Pass_confirm']))
         {
-            // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['registerFail'] = 'Les mots de passe doivent êtres identiques';
-            $this->showJson($array_json);
-            die();
-        }
-        // je vérifie que mon mot de passe fasse bien 8 caractère ou plus
-        if(strlen($datas['Password']) < 8 )
-        {
-            // message d'erreur, fin du programme
-            $array_json['success'] = false;
-            $_SESSION['error']['registerFail'] = 'Le mot de passe doit contenir au moins 8 caractères';
-            $this->showJson($array_json);
-            die();
-        }
-        // je vérifie que le mot de passe contienne bien maj, min, chiffre et . ou ? ou ! ou _ (1x ou plus)
-        $regexPass = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[.?!_])/';
-        if(!preg_match($regexPass, $datas['Password'])) 
-        {
-            // message d'erreur, fin du programme
-            $array_json['success'] = false;
-            $_SESSION['error']['registerFail'] = 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et l\'un des caractère suivant _ ? . !  ';
             $this->showJson($array_json);
             die();
         }
         // je rajoute un salt au mdp
-        $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
-        $datas['Password'] .= $salt;
+        $datas['Password'] .= $this->salt;
         // je hash le mdp
         $datas['Password'] = password_hash($datas['Password'], PASSWORD_DEFAULT);
         // Je créer une instance de auteur
@@ -247,8 +226,7 @@ class AuthorController extends CoreController
                 die();
             }
             // je rajoute le salt que j'avais défini à l'inscription
-            $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
-            $datas['Password'] .= $salt;
+            $datas['Password'] .= $this->salt;
             $hash = $authorFind->getPassword();
             // si le mdp donné correspond à celui stocké en bdd
             if (password_verify($datas['Password'], $hash)) 
@@ -338,9 +316,8 @@ class AuthorController extends CoreController
             die(); 
         }
         // si trouvé je vérifie son mot de passe 
-        // je rajoute le salt que j'avais défini à l'inscription
-        $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
-        $datas['oldPass'] .= $salt;
+        // je rajoute le salt 
+        $datas['oldPass'] .= $this->salt;
 
         $hash = $authorFind->getPassword();
         // si le mdp donné ne correspond pas à celui stocké en bdd
@@ -352,36 +329,15 @@ class AuthorController extends CoreController
             $this->showJson($array_json);
             die();
         }
-        // je vérifie que le mdp et la confirmation du mdp soient identiques
-        if ($datas['newPass'] !== $datas['newPassConfirm']) 
+        // je test le nouveau mot de passe
+        if (!$this->passwordIntegrity($datas['newPass'], $datas['newPassConfirm']))
         {
-            $_SESSION['error']['changePassFail'] = 'Le nouveau mots de passe et sa confirmation doivent êtres identiques';
             $array_json['success'] = false;
             $this->showJson($array_json);
             die();
         }
-        // je vérifie que le nouveau mot de passe fasse bien 8 caractère ou plus
-        if(strlen($datas['newPass']) < 8 )
-        {
-            // message d'erreur, fin du programme
-            $_SESSION['error']['changePassFail'] = 'Le nouveau mots de passe doit contenir minimum 8 caractères';
-            $array_json['success'] = false;
-            $this->showJson($array_json);
-            die();
-        }
-        // je vérifie que le nouveau mot de passe contienne bien maj, min, chiffre et . ou ? ou ! ou _ (1x ou plus)
-        $regexPass = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[.?!_])/';
-        if(!preg_match($regexPass, $datas['newPass'])) 
-        {
-            // message d'erreur, fin du programme
-            $_SESSION['error']['changePassFail'] = 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et l\'un des caractère suivant _ ? . !';
-            $array_json['success'] = false;
-            $this->showJson($array_json);
-            die();
-        }
-
         // j'ajoute le salt + hash le nouveau mdp
-        $datas['newPass'] .= $salt;
+        $datas['newPass'] .= $this->salt;
         $datas['newPass'] = password_hash($datas['newPass'], PASSWORD_DEFAULT);
 
         // Si mdp valide je test la modification en bdd
@@ -428,8 +384,7 @@ class AuthorController extends CoreController
         }
 
         $hash = $authorFind->getPassword();
-        $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
-        $password.= $salt;
+        $password.= $this->salt;
         
         // si le mdp donné correspond à celui stocké en bdd
         if (!password_verify($password, $hash))
@@ -441,7 +396,7 @@ class AuthorController extends CoreController
             die();
         }
 
-        $desactivate = Author:: desactivate($id);
+        $desactivate = Author::desactivate($id);
 
         if($desactivate)
         {
@@ -458,5 +413,32 @@ class AuthorController extends CoreController
             $this->showJson($array_json);
             die();
         }
+    }
+
+    private function passwordIntegrity($pass, $passConfirm) {
+        // je vérifie que le mdp et la confirmation du mdp soient identiques
+        if ($pass !== $passConfirm) 
+        {
+            // message d'erreur
+            $_SESSION['error']['passwordFail'] = 'Le nouveau mot de passe et sa confirmation doivent êtres identiques';
+            return false;
+        }
+        // je vérifie que mon mot de passe fasse bien 8 caractère ou plus
+        if (strlen($pass) < 8 )
+        {
+            // message d'erreur
+            $_SESSION['error']['passwordFail'] = 'Le mot de passe doit contenir au moins 8 caractères';
+            return false;
+        }
+        // je vérifie que le mot de passe contienne bien maj, min, chiffre et . ou ? ou ! ou _ (1x ou plus)
+        $regexPass = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[.?!_])/';
+        if (!preg_match($regexPass, $pass))
+        {
+            // message d'erreur
+            $_SESSION['error']['passwordFail'] = 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et un des caractère suivant _ ? . !';
+            return false;
+        }
+        // s'il n'y a pas de problème on return true
+        return true;
     }
 }

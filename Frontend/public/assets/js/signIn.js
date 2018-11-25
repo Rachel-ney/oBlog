@@ -46,15 +46,13 @@ var appSignIn = {
         // si formulaire d'inscription
         if(register) 
         {
-          var error = $('<div>').addClass('mx-auto col-11 my-3 border text-light bg-danger rounded py-2 error').html(textError);
+          var errorEmpty = $('<div>').addClass('mx-auto col-11 my-3 border text-light bg-danger rounded py-2 error').html(textError);
         }
         // sinon formulaire connexion
         else
         {
           var error = $('<div>').addClass('mx-auto my-2 border text-light bg-danger rounded p-2 error').html(textError);
         }
-        // j'ajoute le message au formulaire
-        error.appendTo(evt.target);
         notEmpty = false;
       }
     }
@@ -74,6 +72,7 @@ var appSignIn = {
     // et les deux mdp sont identiques
     if (notEmpty) 
     {
+      
       // je lance la requête vers le back
       appSignIn.dataRequest(data, register);
     }
@@ -81,6 +80,7 @@ var appSignIn = {
     {
       // je bloque l'envoi du formulaire
       evt.preventDefault();
+      errorEmpty.appendTo(evt.target)
     }
   },
 

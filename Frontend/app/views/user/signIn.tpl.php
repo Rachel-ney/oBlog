@@ -41,6 +41,9 @@
             <?php if(isset($_SESSION['error']['registerFail'])) : ?>
             <div class="bg-danger text-light rounded p-2 mt-2 mb-2" ><?=$_SESSION['error']['registerFail'];?></div>
             <?php endif ; ?>
+            <?php if(isset($_SESSION['error']['passwordFail'])) : ?>
+            <div class="bg-danger text-light rounded p-2 mt-2 mb-2" ><?=$_SESSION['error']['passwordFail'];?></div>
+            <?php endif ; ?>
         </form>
     </main>
 </div>

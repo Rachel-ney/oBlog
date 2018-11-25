@@ -1,6 +1,7 @@
 # TODO : 
 ## Coté template : 
 
+### Vendredi 30 : 
 - Finir les templates des pages : 
   + lostPassword
   + resetPassword
@@ -9,11 +10,13 @@
   + error404
   + legal mention
 
-## Faire le JS + ajax : 
-- dimanche 25: du formulaire pour poster un article --> bdd add post
-- lundi 26: la possibilité de modifier un article --> bdd update post
-- mardi 27: la possibilité de supprimer un article --> bdd delete post
-
-# Backend :  
-- mercredi 28: gérer la perte de mot de passe
+## JS + Ajax + Backend : 
+### Lundi 26: 
+- formulaire pour poster un article --> bdd add post
+### Mardi 27: 
+- possibilité de modifier un article --> bdd update post
+### Mercredi 28: 
+- possibilité de supprimer un article --> bdd delete post
+### Jeudi 29: 
+- gérer la perte de mot de passe
   - avec mail + token

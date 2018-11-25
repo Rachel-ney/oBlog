@@ -37,6 +37,9 @@
                                 <?php if (isset($_SESSION['error']['changePassFail'])) : ?>
                                     <div class="text-center bg-warning rounded p-2 mt-2"><?=$_SESSION['error']['changePassFail']; ?></div>
                                 <?php endif ?>
+                                <?php if (isset($_SESSION['error']['passwordFail'])) : ?>
+                                        <div class="text-center bg-warning rounded p-2 mt-2"><?=$_SESSION['error']['passwordFail']; ?></div>
+                                <?php endif ?>
                                 <?php if (isset($_SESSION['success']['changePass'])) : ?>
                                         <div class="text-center bg-success rounded p-2 mt-2 text-light"><?=$_SESSION['success']['changePass']; ?></div>
                                 <?php endif ?>
