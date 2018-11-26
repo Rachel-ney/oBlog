@@ -1,5 +1,15 @@
 <div class="row  justify-content-center data">
     <main class="col-lg-10">
+    <?php if (isset($_SESSION['error']['addPostFail'])) : ?>
+    <p class="col-lg-12 bg-warning rounded p-2 text-center ">
+        <?=$_SESSION['error']['addPostFail'];?>
+    </p>
+    <?php endif; ?>
+    <?php if (isset($_SESSION['success']['addPost'])) : ?>
+    <p class="col-lg-12 bg-success rounded p-2 text-center text-light ">
+        <?=$_SESSION['success']['addPost'];?>
+    </p>
+    <?php endif; ?>
         <div class="accordion" id="accordionExample">
 
             <div class="card">
@@ -59,7 +69,7 @@
                 </div>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
                     <div class="card-body d-md-flex justify-content-center">
-                        <form class="col-md-9 col-12">
+                        <form class="col-md-9 col-12 form-new-post">
                             <div class="form-group">
                                 <p>Titre de l'article</p>
                                 <input type="text" class="form-control" id="title" aria-describedby="emailHelp">
@@ -74,7 +84,10 @@
                             </div>
                             <div class="form-group">
                                 <select class="form-control" id="category">
-                                <option>Catégorie</option>
+                                <option selected disabled>Catégorie</option>
+                                <?php foreach ($_SESSION['category'] as $id => $name) : ?>
+                                <option value="<?=$id?>"><?=$name?></option>
+                                <?php endforeach; ?>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-light">Valider</button>

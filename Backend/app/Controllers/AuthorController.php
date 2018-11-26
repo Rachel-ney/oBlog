@@ -2,6 +2,7 @@
 namespace oBlogApi\Controllers;
 use oBlogApi\Models\Post;
 use oBlogApi\Models\Author;
+use oBlogApi\Models\Category;
 
 class AuthorController extends CoreController
 {
@@ -212,65 +213,68 @@ class AuthorController extends CoreController
             $this->showJson($array_json);
             die();
         }
-        // si j'en trouve un
-        else 
+        // je vérifie que son status sois actif (1)
+        $status = $authorFind->getStatus();
+        if ($status !== '1') 
         {
-            $status = $authorFind->getStatus();
+            // message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $_SESSION['error']['connectionFail'] = 'a été desactivé';
+            $this->showJson($array_json);
+            die();
+        }
+        // je rajoute le salt que j'avais défini à l'inscription
+        $datas['Password'] .= $this->salt;
+        $hash = $authorFind->getPassword();
+        // si le mdp donné ne correspond pas à celui stocké en bdd
+        if (!password_verify($datas['Password'], $hash)) 
+        {
+            // message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $_SESSION['error']['connectionFail'] = 'Mot de passe incorrect';
+            $this->showJson($array_json);
+            die();
+        }
+        // j'enregistre ses info en session
+        $array_json['success'] = true;
+        $_SESSION['user'] = [
+            'id' => $authorFind->getId(),
+            'name' => $authorFind->getName(),
+            'email' => $authorFind->getEmail()
+        ];
+        // ainsi que ses articles
+        $allPost = Post::getAllPostBy('author', $_SESSION['user']['id']);
 
-            if ($status !== '1') 
+        if(!empty($allPost))
+        {
+            foreach($allPost as $post)
             {
-                // message d'erreur, fin du programme
-                $array_json['success'] = false;
-                $_SESSION['error']['connectionFail'] = 'a été desactivé';
-                $this->showJson($array_json);
-                die();
-            }
-            // je rajoute le salt que j'avais défini à l'inscription
-            $datas['Password'] .= $this->salt;
-            $hash = $authorFind->getPassword();
-            // si le mdp donné correspond à celui stocké en bdd
-            if (password_verify($datas['Password'], $hash)) 
-            {
-                // j'enregistre ses info en session
-                $array_json['success'] = true;
-                $_SESSION['user'] = [
-                    'id' => $authorFind->getId(),
-                    'name' => $authorFind->getName(),
-                    'email' => $authorFind->getEmail()
+                $_SESSION['user']['posts'][] = [
+                    'id'         => $post->getId(),
+                    'title'      => $post->getTitle(),
+                    'resume'     => $post->getResume(),
+                    'content'    => $post->getContent(),
+                    'category'   => $post->getCategoryName(),
+                    'created_at' => $post->getCreatedAt(),
+                    'updated_at' => $post->getUpdatedAt()
                 ];
-                // ainsi que ses articles
-                $allPost = Post::getAllPostBy('author', $_SESSION['user']['id']);
-
-                if(!empty($allPost))
-                {
-                    foreach($allPost as $post)
-                    {
-                        $_SESSION['user']['posts'][] = [
-                            'id'         => $post->getId(),
-                            'title'      => $post->getTitle(),
-                            'resume'     => $post->getResume(),
-                            'content'    => $post->getContent(),
-                            'category'   => $post->getCategoryName(),
-                            'created_at' => $post->getCreatedAt(),
-                            'updated_at' => $post->getUpdatedAt()
-                        ];
-                    }
-                }
-                // j'envoi mon retour comme positif
-                $array_json['success'] = true;
-                // j'envoi le tableau à showJson
-                $this->showJson($array_json);
-            }
-            // si les mot de passes sont différents
-            else 
-            {
-                // message d'erreur, fin du programme
-                $array_json['success'] = false;
-                $_SESSION['error']['connectionFail'] = 'Mot de passe incorrect';
-                $this->showJson($array_json);
-                die();
             }
         }
+        // Pour pouvoir les afficher dans la page mon compte sans avoir à faire de requêtes
+        // je récupère les catégories en session directement à la connexion
+        $allCategory = Category::getAll();
+
+        if(!empty($allCategory))
+        {
+            foreach($allCategory as $category)
+            {
+                $_SESSION['category'][$category->getId()] = $category->getName();
+            }
+        }
+        // j'envoi mon retour comme positif
+        $array_json['success'] = true;
+        // j'envoi le tableau à showJson
+        $this->showJson($array_json);
     }
 
     // Méthode pour ajouter / modifier un auteur en bdd

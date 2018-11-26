@@ -1,6 +1,7 @@
 <?php
 namespace oBlogApi\Controllers;
 use oBlogApi\Models\Post;
+use oBlogApi\Models\Category;
 
 class PostController extends CoreController
 {
@@ -157,19 +158,21 @@ class PostController extends CoreController
     public function addOrUpdate() 
     {
         // je récupère la variable qui détermine si l'action sera de type add ou de type update
-        $insertOrUpdate = isset($_POST['insertOrUpdate']) ? strip_tags(trim($_POST['insertOrUpdate'])) : '';
+        $insertOrUpdate = isset($_POST['action']) ? strip_tags(trim($_POST['action'])) : '';
         // si vide
         if(empty($insertOrUpdate)) 
         {
             // message d'erreur, fin du programme
-            $array_json['msg'] = 'Merci de préciser la méthode : insert pour créer un article / update pour modifier un article';
+            $array_json['success'] = false;
+            $_SESSION['error']['addPostFail'] = 'Une erreur est survenue';
             $this->showJson($array_json);
             die();
         }
         // si la méthode renseigné n'est pas update ou insert
         if ($insertOrUpdate !== 'update' && $insertOrUpdate !== 'insert') {
             // message d'erreur, fin du programme
-            $array_json['msg'] = 'Erreur syntaxe : insert pour créer un article / update pour modifier un article';
+            $array_json['success'] = false;
+            $_SESSION['error']['addPostFail'] = 'Une erreur est survenue';
             $this->showJson($array_json);
             die();
         }
@@ -193,8 +196,8 @@ class PostController extends CoreController
             'Title'      => isset($_POST['title'])      ? strip_tags(trim($_POST['title']))      : '',
             'Resume'     => isset($_POST['resume'])     ? strip_tags(trim($_POST['resume']))     : '',
             'Content'    => isset($_POST['content'])    ? strip_tags(trim($_POST['content']))    : '',
-            'AuthorId'   => isset($_POST['auhtorId'])   ? strip_tags(trim($_POST['auhtorId']))   : '',
-            'CategoryId' => isset($_POST['categoryId']) ? strip_tags(trim($_POST['categoryId'])) : ''
+            'AuthorId'   => isset($_SESSION['user']['id'])   ? strip_tags(trim($_SESSION['user']['id']))   : '',
+            'CategoryId' => isset($_POST['category_id']) ? strip_tags(trim($_POST['category_id'])) : ''
         ];
         // je vérifie que les data reçu ne sont pas vide
         foreach ($datas as $dataName => $dataValue) 
@@ -203,13 +206,25 @@ class PostController extends CoreController
             if(empty($dataValue)) 
             {
                 // message d'erreur, fin du programme
-                $array_json['msg'] = 'Le champ ' . $dataName . ' est vide.';
+                $array_json['success'] = false;
+                $_SESSION['error']['addPostFail'] = 'Vous ne pouvez pas laisser de champs vide';
                 $this->showJson($array_json);
                 die();
             }
         }
+        // je vérifie que la catégorie reçu existe bien 
+        $categoryExist = Category::getOne($datas['CategoryId']);
+
+        if(!$categoryExist)
+        {
+            // message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $_SESSION['error']['addPostFail'] = 'Cette categorie n\'existe pas';
+            $this->showJson($array_json);
+            die();
+        }
         // Je créer une instance de post
-        $post = new PostModel();
+        $post = new Post();
         // je lui donne les data à ajouter : 
         foreach ($datas as $dataName => $dataValue) 
         {
@@ -228,29 +243,37 @@ class PostController extends CoreController
         {
             // si insertion / update ok j'ajoute une clef true à transmettre
             $array_json['success'] = true;
+            $_SESSION['success']['addPost'] = 'Votre article a bien été ajouté';
+
+            // je met à jours la liste d'article de l'auteur contenu en session
+            unset($_SESSION['user']['posts']);
+            $allPost = Post::getAllPostBy('author', $_SESSION['user']['id']);
+
+            if(!empty($allPost)) 
+            {
+                foreach($allPost as $post)
+                {
+                    $_SESSION['user']['posts'][] = [
+                        'id'         => $post->getId(),
+                        'title'      => $post->getTitle(),
+                        'resume'     => $post->getResume(),
+                        'content'    => $post->getContent(),
+                        'category'   => $post->getCategoryName(),
+                        'created_at' => $post->getCreatedAt(),
+                        'updated_at' => $post->getUpdatedAt()
+                    ];
+                }
+            }
+            $this->showJson($array_json);
         } 
         else 
         {
             // sinon la clef = false + message d'erreur, fin du programme
             $array_json['success'] = false;
-            $array_json['msg'] = 'Une erreur est survenue lors de l\''.$insertOrUpdate.'.';
+            $_SESSION['error']['addPostFail'] = 'Une erreur est survenue lors de l\'ajout.';
             $this->showJson($array_json);
             die();
         }
-        // je rempli mon tableau de réponse : 
-        $array_json['post'] = [
-            'id'            => $post->getId(),
-            'title'         => $post->getTitle(),
-            'resume'        => $post->getResume(),
-            'content'       => $post->getContent(),
-            'authorId'      => $post->getAuthorId(),
-            'categoryId'    => $post->getCategoryId(),
-            'authorName'    => $post->getAuthorName(),
-            'categoryName'  => $post->getCategoryName(),
-            'created_at'    => $post->getCreatedAt(),
-            'updated_at'    => $post->getUpdatedAt(),
-        ];
-        // j'envoi le tableau à showJson
-        $this->showJson($array_json);
     }
-}
+
+}// end class

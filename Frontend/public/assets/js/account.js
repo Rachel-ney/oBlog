@@ -7,11 +7,13 @@ var app = {
     // j'ajoute mes events
     $('.form-modal').on('submit', app.handleConfirmModal);
     $('.form-password').on('submit', app.handleCheckPasswordChange);
+    $('.form-new-post').on('submit', app.handleCheckNewPost);
   },
 
   handleConfirmModal: function(evt) {
+    evt.preventDefault();
     var password = $.trim($('input#pass-confirm').val());
-
+    console.log(evt.target);
     if(password !== '')
     {
       app.unsubscribeUser(password);
@@ -27,8 +29,6 @@ var app = {
   },
 
   handleCheckPasswordChange: function(evt) {
-    //evt.preventDefault();
-    console.log('change pass');
     // je supprime les erreurs qui été déjà la pour ne pas les accumuler et pour supprimer celle qui on pu être résolu par l'user
     $('.error').remove();
 
@@ -76,6 +76,47 @@ var app = {
     }
   },
 
+  handleCheckNewPost: function(evt) {
+    var data = {
+      title    : $.trim($('input#title').val()),
+      resume   : $.trim($('textarea#resume').val()),
+      content  : $.trim($('textarea#content').val()),
+      category : $('select#category').val()
+    };
+
+    var notEmpty = true;
+    var categoryChoose = true;
+    for ( var index in data)
+    {
+      if (data[index] === '')
+      {
+        notEmpty = false;
+      }
+      if(data['category'] === null)
+      {
+        categoryChoose = false;
+      }
+    }
+
+    $('.error').remove();
+    var div = $('<div>').addClass('error bg-danger p-2 mt-2 text-light text-center rounded');
+    if(!notEmpty)
+    {
+      evt.preventDefault();
+      div.html('Vous ne pouvez pas laisser de champ vide');
+      div.appendTo($('.form-new-post'));
+    }
+    else if(!categoryChoose)
+    {
+      evt.preventDefault();
+      div.html('Vous devez choisir une catégorie');
+      div.appendTo($('.form-new-post'));
+    }
+    else{
+      app.sendNewPost(data);
+    }
+  },
+
   unsubscribeUser: function(passwordEntry) {
     var jqxhr = $.ajax({
       url: 'http://localhost/Projet_perso/oBlog/Backend/desactivate', 
@@ -115,5 +156,28 @@ var app = {
       alert('Requête échouée');
     });
   },
+
+  sendNewPost: function(arrayData) {
+    var jqxhr = $.ajax({
+      url: 'http://localhost/Projet_perso/oBlog/Backend/add-update-post', 
+      method: 'POST', 
+      dataType: 'json', 
+      data: {
+        action   : 'insert',
+        title    : arrayData['title'],
+        resume   : arrayData['resume'],
+        content  : arrayData['content'],
+        category_id : arrayData['category']
+      } 
+    });
+    // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
+    jqxhr.done(function (response) {
+
+    });
+    // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
+    jqxhr.fail(function () {
+      alert('Requête échouée');
+    });
+  }
 };
 $(app.init)
