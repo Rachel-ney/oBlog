@@ -1,10 +1,12 @@
 var appPost = {
     url: '',
     uri: '',
+    back: '',
 
     init: function() {
       // je récupère la base uri : 
       appPost.uri = $('.container').data("uri");
+      appPost.back = $('.container').data("back");
       // je determine quels articles je vais devoir récupérer en fonction du nom du data
       if (typeof $('main').data("category") !== 'undefined') {
           appPost.constructUrl('category');
@@ -31,16 +33,16 @@ var appPost = {
         if (type === 'category' || type === 'author') 
         {
             var id = $('main').data(type);
-            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/all-post-by/'+ type +'/'+ id ;
+            appPost.url = 'http://'+ appPost.back +'/all-post-by/'+ type +'/'+ id ;
         }
         else if(type === 'all') 
         {
-            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/all-post';
+            appPost.url = 'http://'+ appPost.back +'/all-post';
         }
         else if (type === 'one')
         {
             var id = $('main').data(type);
-            appPost.url = 'http://localhost/Projet_perso/oBlog/Backend/one-post/'+ id;
+            appPost.url = 'http://'+ appPost.back +'/one-post/'+ id;
         }
     },
 
@@ -90,9 +92,9 @@ var appPost = {
 
     generatePost: function(post) {
         // je préformate les url de mes liens
-        var urlPost =     'http://localhost'+ appPost.uri +'/article/' + post['id'];
-        var urlAuthor =   'http://localhost'+ appPost.uri +'/auteur/' + post['authorId'];
-        var urlCategory = 'http://localhost'+ appPost.uri +'/categorie/' + post['categoryId'];
+        var urlPost =       appPost.uri +'/article/' + post['id'];
+        var urlAuthor =     appPost.uri +'/auteur/' + post['authorId'];
+        var urlCategory =   appPost.uri +'/categorie/' + post['categoryId'];
 
         // je récupère le premier article
         var firstPost = $('main').children()[0];

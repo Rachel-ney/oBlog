@@ -11,8 +11,6 @@
   + legal mention
 
 ## JS + Ajax + Backend : 
-### Lundi 26: 
-- formulaire pour poster un article --> bdd add post
 ### Mardi 27: 
 - possibilité de modifier un article --> bdd update post
 ### Mercredi 28: 

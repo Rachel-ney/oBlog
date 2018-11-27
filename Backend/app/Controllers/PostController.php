@@ -164,7 +164,7 @@ class PostController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['addPostFail'] = 'Une erreur est survenue';
+            $array_json['msg'] = 'Une erreur est survenue';
             $this->showJson($array_json);
             die();
         }
@@ -172,7 +172,7 @@ class PostController extends CoreController
         if ($insertOrUpdate !== 'update' && $insertOrUpdate !== 'insert') {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['addPostFail'] = 'Une erreur est survenue';
+            $array_json['msg'] = 'Une erreur est survenue';
             $this->showJson($array_json);
             die();
         }
@@ -185,7 +185,8 @@ class PostController extends CoreController
             if(empty($idPostToUpdate)) 
             {
                 // message d'erreur, fin du programme
-                $array_json['msg'] = 'Veuillez préciser l\'identifiant de l\'article à modifier';
+                $array_json['success'] = false;
+                $array_json['msg'] = 'Une erreur est survenue';
                 $this->showJson($array_json);
                 die();
             }
@@ -193,11 +194,11 @@ class PostController extends CoreController
         // je récupère les data
         // j'elimine les espaces (trim) et les balises(strip_tags)
         $datas = [
-            'Title'      => isset($_POST['title'])      ? strip_tags(trim($_POST['title']))      : '',
-            'Resume'     => isset($_POST['resume'])     ? strip_tags(trim($_POST['resume']))     : '',
-            'Content'    => isset($_POST['content'])    ? strip_tags(trim($_POST['content']))    : '',
-            'AuthorId'   => isset($_SESSION['user']['id'])   ? strip_tags(trim($_SESSION['user']['id']))   : '',
-            'CategoryId' => isset($_POST['category_id']) ? strip_tags(trim($_POST['category_id'])) : ''
+            'Title'      => isset($_POST['title'])         ? strip_tags(trim($_POST['title']))         : '',
+            'Resume'     => isset($_POST['resume'])        ? strip_tags(trim($_POST['resume']))        : '',
+            'Content'    => isset($_POST['content'])       ? strip_tags(trim($_POST['content']))       : '',
+            'AuthorId'   => isset($_SESSION['user']['id']) ? strip_tags(trim($_SESSION['user']['id'])) : '',
+            'CategoryId' => isset($_POST['category_id'])   ? strip_tags(trim($_POST['category_id']))   : ''
         ];
         // je vérifie que les data reçu ne sont pas vide
         foreach ($datas as $dataName => $dataValue) 
@@ -207,7 +208,7 @@ class PostController extends CoreController
             {
                 // message d'erreur, fin du programme
                 $array_json['success'] = false;
-                $_SESSION['error']['addPostFail'] = 'Vous ne pouvez pas laisser de champs vide';
+                $array_json['msg'] = 'Vous ne pouvez pas laisser de champs vide';
                 $this->showJson($array_json);
                 die();
             }
@@ -219,7 +220,7 @@ class PostController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['addPostFail'] = 'Cette categorie n\'existe pas';
+            $array_json['msg'] = 'Cette categorie n\'existe pas';
             $this->showJson($array_json);
             die();
         }
@@ -270,7 +271,7 @@ class PostController extends CoreController
         {
             // sinon la clef = false + message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['addPostFail'] = 'Une erreur est survenue lors de l\'ajout.';
+            $array_json['msg'] = 'Une erreur est survenue';
             $this->showJson($array_json);
             die();
         }

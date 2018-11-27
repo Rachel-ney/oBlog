@@ -1,9 +1,12 @@
 var app = {
   uri: '',
+  back: '',
+  target: '',
 
   init: function () {
     // je récupère la base uri : 
     app.uri = $('.container').data('uri');
+    app.back = $('.container').data("back");
     // j'ajoute mes events
     $('.form-modal').on('submit', app.handleConfirmModal);
     $('.form-password').on('submit', app.handleCheckPasswordChange);
@@ -12,16 +15,14 @@ var app = {
 
   handleConfirmModal: function(evt) {
     evt.preventDefault();
+
     var password = $.trim($('input#pass-confirm').val());
-    console.log(evt.target);
     if(password !== '')
     {
       app.unsubscribeUser(password);
-      console.log('passé');
     }
     else
     {
-      evt.preventDefault();
       $('.error').remove();
       var span = $('<span>').html('Veuillez entrer votre mot de passe pour confirmer').addClass('error');
       span.prependTo($('.form-modal'));
@@ -29,6 +30,8 @@ var app = {
   },
 
   handleCheckPasswordChange: function(evt) {
+    evt.preventDefault();
+
     // je supprime les erreurs qui été déjà la pour ne pas les accumuler et pour supprimer celle qui on pu être résolu par l'user
     $('.error').remove();
 
@@ -57,12 +60,13 @@ var app = {
       // je déclare une erreur
       notError = false;
       errorMsg[1] = 'Le nouveau mot de passe et sa confirmation doivent êtres identiques';
+      $('.password').val('');
+      $('.newPassword').val('');
+      $('.newPasswordConfirm').val('');
     }
     // s'il y a eu une erreur
     if (!notError) 
     {
-      // je stoppe le formulaire
-      evt.preventDefault();
       // j'affiche un message en fonction de l'erreur
       for (var index in errorMsg)
       {
@@ -77,6 +81,8 @@ var app = {
   },
 
   handleCheckNewPost: function(evt) {
+    evt.preventDefault();
+
     var data = {
       title    : $.trim($('input#title').val()),
       resume   : $.trim($('textarea#resume').val()),
@@ -99,16 +105,14 @@ var app = {
     }
 
     $('.error').remove();
-    var div = $('<div>').addClass('error bg-danger p-2 mt-2 text-light text-center rounded');
+    var div = $('<div>').addClass('error bg-warning p-2 mt-2 text-center rounded');
     if(!notEmpty)
     {
-      evt.preventDefault();
       div.html('Vous ne pouvez pas laisser de champ vide');
       div.appendTo($('.form-new-post'));
     }
     else if(!categoryChoose)
     {
-      evt.preventDefault();
       div.html('Vous devez choisir une catégorie');
       div.appendTo($('.form-new-post'));
     }
@@ -119,7 +123,7 @@ var app = {
 
   unsubscribeUser: function(passwordEntry) {
     var jqxhr = $.ajax({
-      url: 'http://localhost/Projet_perso/oBlog/Backend/desactivate', 
+      url:'http://'+ app.back +'/desactivate', 
       method: 'POST', 
       dataType: 'json',
       data: {
@@ -128,7 +132,15 @@ var app = {
     });
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
     jqxhr.done(function (response) {
-
+      if (response.success)
+      {
+        location.reload(true);
+      }
+      else 
+      {
+          app.target = 'desactivate';
+          app.displayError('other',response.msg);
+      }
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
@@ -138,7 +150,7 @@ var app = {
 
   changePassword: function(arrayData) {
     var jqxhr = $.ajax({
-      url: 'http://localhost/Projet_perso/oBlog/Backend/change-pass', 
+      url:'http://'+ app.back +'/change-pass', 
       method: 'POST', 
       dataType: 'json', 
       data: {
@@ -149,7 +161,22 @@ var app = {
     });
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
     jqxhr.done(function (response) {
-
+      if (response.success)
+      {
+        location.reload(true);
+      }
+      else 
+      {
+        app.target = 'changePass';
+        if(response.msg.pass)
+        {
+          app.displayError('pass',response.msg);
+        }
+        else
+        {
+          app.displayError('other',response.msg);
+        }
+      }
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
@@ -159,7 +186,7 @@ var app = {
 
   sendNewPost: function(arrayData) {
     var jqxhr = $.ajax({
-      url: 'http://localhost/Projet_perso/oBlog/Backend/add-update-post', 
+      url:'http://'+ app.back +'/add-update-post', 
       method: 'POST', 
       dataType: 'json', 
       data: {
@@ -172,12 +199,55 @@ var app = {
     });
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
     jqxhr.done(function (response) {
-
+      if (response.success)
+      {
+        location.reload(true);
+      }
+      else 
+      {
+          app.target = 'newPost';
+          app.displayError('other',response.msg);
+      }
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
       alert('Requête échouée');
     });
+  },
+
+  displayError: function(type, msg) {
+    $('.error').remove();
+
+    var div = $('<div>').addClass('error bg-warning text-center rounded p-2 mt-2 mb-2');
+
+    if(type === 'pass')
+    {
+      div.html(msg['pass']);
+      $('.password').val('');
+      $('.newPassword').val('');
+      $('.newPasswordConfirm').val('');
+    }
+    else
+    {
+      div.html(msg);
+    }
+    
+    if(app.target === 'desactivate')
+    {
+      div.appendTo($('.form-modal'));
+    }
+    else if (app.target === 'changePass')
+    {
+      div.appendTo($('.form-password'));
+    }
+    else if (app.target === 'newPost')
+    {
+      div.appendTo($('.form-new-post'));
+    }
+    else 
+    {
+      div.prependTo($('main'));
+    }
   }
 };
 $(app.init)

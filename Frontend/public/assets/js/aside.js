@@ -1,7 +1,10 @@
 var aside = {
   uri: '',
+  back: '',
+
   init: function () {
     // je récupère la base uri : 
+    aside.back = $('.container').data("back");
     aside.uri = $('.container').data("uri");
     aside.recoverCategoryList();
     aside.recoverAuthorList();
@@ -9,7 +12,7 @@ var aside = {
 
   recoverCategoryList: function () {
     var jqxhr = $.ajax({
-      url: 'http://localhost/Projet_perso/oBlog/Backend/all-category', 
+      url:'http://'+ aside.back +'/all-category', 
       method: 'GET', 
       dataType: 'json',
     });
@@ -26,7 +29,7 @@ var aside = {
 
   recoverAuthorList: function () {
     var jqxhr = $.ajax({
-      url: 'http://localhost/Projet_perso/oBlog/Backend/all-author',
+      url:'http://'+ aside.back +'/all-author',
       method: 'GET', 
       dataType: 'json',
     });
@@ -81,11 +84,11 @@ var aside = {
     // je préformate l'url à attribuer à mon lien: 
     if (listType === 'category') 
     {
-      var $url = 'http://localhost'+ aside.uri +'/categorie/' + id;
+      var $url =   aside.uri +'/categorie/' + id;
     } 
     else if (listType === 'author') 
     {
-      var $url = 'http://localhost'+ aside.uri +'/auteur/' + id;
+      var $url =   aside.uri +'/auteur/' + id;
     }
     // je rempli le href du lien
     $newList.find('a').attr('href', $url);

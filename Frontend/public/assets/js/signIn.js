@@ -1,15 +1,22 @@
 var appSignIn = {
   uri: '',
+  back: '',
+  target: '',
 
   init: function() {
     appSignIn.uri =  $('.container').data('uri');
+    appSignIn.back = $('.container').data("back");
     $('.register').on('submit', appSignIn.handleCheckForm);
     $('.sign-in').on('submit', appSignIn.handleCheckForm)
   },
 
   handleCheckForm: function(evt) {
+    // je bloque l'envoi du formulaire
+    evt.preventDefault();
+    appSignIn.target = evt.target;
     // je détermine si c'est sign in ou register par la présence / absence de l'input name
     var register = $($(evt.target).find('.name')).val();
+    //debugger;
     if(typeof register !== 'undefined')
     {
       register = true;
@@ -34,6 +41,7 @@ var appSignIn = {
   
     // par défaut je considère que des valeurs on été mis dans chaque input
     var notEmpty = true;
+    var error = [];
     // je vérifie qu'aucun input n'est vide
     // NB : les vérif sur l'intégrité seront faite coté back
     for ( var index in data) 
@@ -46,12 +54,12 @@ var appSignIn = {
         // si formulaire d'inscription
         if(register) 
         {
-          var errorEmpty = $('<div>').addClass('mx-auto col-11 my-3 border text-light bg-danger rounded py-2 error').html(textError);
+          error[0] = $('<div>').addClass('mx-auto col-11 my-3 border text-light bg-danger rounded py-2 error').html(textError);
         }
         // sinon formulaire connexion
         else
         {
-          var error = $('<div>').addClass('mx-auto my-2 border text-light bg-danger rounded p-2 error').html(textError);
+          error[0] = $('<div>').addClass('mx-auto my-2 border text-light bg-danger rounded p-2 error').html(textError);
         }
         notEmpty = false;
       }
@@ -62,8 +70,7 @@ var appSignIn = {
       if(data['password'] !== data['pass_confirm'])
       {
         var textError = 'Vos mot de passe doivent êtres identiques';
-        var error = $('<div>').addClass('mx-auto col-11 my-3 border text-light bg-danger rounded py-2 error').html(textError);
-        error.appendTo(evt.target);
+        error[1] = $('<div>').addClass('mx-auto col-11 my-3 border text-light bg-danger rounded py-2 error').html(textError);
         notEmpty = false;
       }
     }
@@ -72,15 +79,16 @@ var appSignIn = {
     // et les deux mdp sont identiques
     if (notEmpty) 
     {
-      
       // je lance la requête vers le back
       appSignIn.dataRequest(data, register);
     }
     else 
     {
-      // je bloque l'envoi du formulaire
-      evt.preventDefault();
-      errorEmpty.appendTo(evt.target)
+      for (var index in error)
+      {
+        error[index].appendTo($(evt.target));
+      }
+      
     }
   },
 
@@ -88,7 +96,7 @@ var appSignIn = {
     if(register)
     {
       var jqxhr = $.ajax({
-        url: 'http://localhost/Projet_perso/oBlog/Backend/add-author', 
+        url:'http://'+ appSignIn.back +'/add-author', 
         method: 'POST',
         dataType: 'json',
         data: {
@@ -102,7 +110,7 @@ var appSignIn = {
     else 
     {
       var jqxhr = $.ajax({
-        url: 'http://localhost/Projet_perso/oBlog/Backend/connexion', 
+        url:'http://'+ appSignIn.back +'/connexion', 
         method: 'POST',
         dataType: 'json',
         data: {
@@ -113,12 +121,45 @@ var appSignIn = {
     }
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
     jqxhr.done(function (response) {
-
+        if (response.success)
+        {
+          location.reload(true);
+        }
+        else 
+        {
+          if(response.msg.pass)
+          {
+            appSignIn.displayError('pass',response.msg);
+          }
+          else
+          {
+            appSignIn.displayError('other',response.msg);
+          }
+        }
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
       alert('Requête échouée');
     });
   },
+
+  displayError: function(type, msg) {
+    $('.error').remove();
+
+    var div = $('<div>').addClass('error bg-danger text-light text-center rounded p-2 mt-2 mb-2');
+
+    if(type === 'pass')
+    {
+      div.html(msg['pass']);
+      $('.password').val('');
+      $('.password-confirm').val('');
+    }
+    else
+    {
+      div.html(msg);
+    }
+    
+    div.appendTo(appSignIn.target);
+  }
 };
 $(appSignIn.init);

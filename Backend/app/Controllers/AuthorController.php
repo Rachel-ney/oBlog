@@ -7,6 +7,7 @@ use oBlogApi\Models\Category;
 class AuthorController extends CoreController
 {
     private $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
+    private $msgPassword = '';
 
     // Méthode pour récuperer TOUT les auteurs et les envoyer en json
     public function all() 
@@ -88,10 +89,10 @@ class AuthorController extends CoreController
         // je récupère les data
         // j'elimine les espaces (trim) et les balises(strip_tags)
         $datas = [
-            'Name'  => isset($_POST['name'])  ? strip_tags(trim($_POST['name']))  : '',
-            'Password' => isset($_POST['password']) ? trim($_POST['password']) : '',
-            'Pass_confirm' => isset($_POST['pass_confirm']) ? trim($_POST['pass_confirm']) : '',
-            'Email' => isset($_POST['email']) ? strip_tags(trim($_POST['email'])) : '',
+            'Name'         => isset($_POST['name'])         ? strip_tags(trim($_POST['name']))  : '',
+            'Password'     => isset($_POST['password'])     ? trim($_POST['password'])          : '',
+            'Pass_confirm' => isset($_POST['pass_confirm']) ? trim($_POST['pass_confirm'])      : '',
+            'Email'        => isset($_POST['email'])        ? strip_tags(trim($_POST['email'])) : '',
         ];
         // je vérifie que les data reçu ne sont pas vide
         foreach ($datas as $dataName => $dataValue) 
@@ -101,7 +102,7 @@ class AuthorController extends CoreController
             {
                 // message d'erreur, fin du programme
                 $array_json['success'] = false;
-                $_SESSION['error']['registerFail'] = 'Vous ne pouvez pas laisser de champs vide';
+                $array_json['msg'] = 'Vous ne pouvez pas laisser de champs vide';
                 $this->showJson($array_json);
                 die();
             }
@@ -112,7 +113,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['registerFail'] = 'Le nom ne doit pas contenir d\'espace ou de caractère spéciaux';
+            $array_json['msg'] = 'Le nom ne doit pas contenir d\'espace ou de caractère spéciaux';
             $this->showJson($array_json);
             die();
         }
@@ -121,7 +122,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['registerFail'] = 'Email invalide.';
+            $array_json['msg'] = 'Email invalide.';
             $this->showJson($array_json);
             die();
         }
@@ -131,7 +132,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['registerFail'] = 'Cette adresse mail est déjà enregistré';
+            $array_json['msg'] = 'Cette adresse mail est déjà enregistré';
             $this->showJson($array_json);
             die();
         }
@@ -139,6 +140,7 @@ class AuthorController extends CoreController
         if (!$this->passwordIntegrity($datas['Password'], $datas['Pass_confirm']))
         {
             $array_json['success'] = false;
+            $array_json['msg']['pass'] = $this->msgPassword;
             $this->showJson($array_json);
             die();
         }
@@ -168,12 +170,24 @@ class AuthorController extends CoreController
                 'name' => $author->getName(),
                 'email' => $author->getEmail()
             ];
+
+            // Pour pouvoir les afficher dans la page mon compte sans avoir à faire de requêtes
+            // je récupère les catégories si l'user c'est correctement enregistré
+            $allCategory = Category::getAll();
+
+            if(!empty($allCategory))
+            {
+                foreach($allCategory as $category)
+                {
+                    $_SESSION['category'][$category->getId()] = $category->getName();
+                }
+            }
         } 
         else 
         {
             // sinon la clef = false + message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['registerFail'] = 'Une erreur est survenue lors de l\'inscription, veuillez recommencer.';
+            $array_json['msg'] = 'Une erreur est survenue lors de l\'inscription, veuillez recommencer.';
             $this->showJson($array_json);
             die();
         }
@@ -185,8 +199,8 @@ class AuthorController extends CoreController
         // je récupère les data
         // j'elimine les espaces (trim)
         $datas = [
-            'Password' => isset($_POST['password']) ? trim($_POST['password']) : '',
-            'Email' => isset($_POST['email']) ? trim($_POST['email']) : '',
+            'Password' => isset($_POST['password']) ? trim(strip_tags($_POST['password'])) : '',
+            'Email'    => isset($_POST['email'])    ? trim(strip_tags($_POST['email']))    : '',
         ];
         // je vérifie que les data reçu ne sont pas vide
         foreach ($datas as $dataName => $dataValue) 
@@ -196,7 +210,7 @@ class AuthorController extends CoreController
             {
                 // message d'erreur, fin du programme
                 $array_json['success'] = false;
-                $_SESSION['error']['connectionFail'] = 'Vous ne pouvez pas laisser de champs vide';
+                $array_json['msg'] = 'Vous ne pouvez pas laisser de champs vide';
                 $this->showJson($array_json);
                 die();
             }
@@ -209,7 +223,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['connectionFail']= 'Auteur inexistant';
+            $array_json['msg'] = 'Auteur inexistant';
             $this->showJson($array_json);
             die();
         }
@@ -219,7 +233,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['connectionFail'] = 'a été desactivé';
+            $array_json['msg'] = 'Le compte a été desactivé';
             $this->showJson($array_json);
             die();
         }
@@ -231,7 +245,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['connectionFail'] = 'Mot de passe incorrect';
+            $array_json['msg']['pass'] = 'Mot de passe incorrect';
             $this->showJson($array_json);
             die();
         }
@@ -304,7 +318,7 @@ class AuthorController extends CoreController
         if(!$notEmpty)
         {
             // message d'erreur, fin du programme
-            $_SESSION['error']['changePassFail'] = 'Vous ne pouvez pas laisser de champs vide';
+            $array_json['msg'] = 'Vous ne pouvez pas laisser de champs vide';
             $array_json['success'] = false;
             $this->showJson($array_json);
             die();
@@ -314,7 +328,7 @@ class AuthorController extends CoreController
         if (!$authorFind)
         {
             // message d'erreur, fin du programme
-            $_SESSION['error']['changePassFail'] = 'La bdd na rien renvoyé';
+            $array_json['msg'] = 'La bdd na rien renvoyé';
             $array_json['success'] = false;
             $this->showJson($array_json);
             die(); 
@@ -328,7 +342,7 @@ class AuthorController extends CoreController
         if (!password_verify($datas['oldPass'], $hash)) 
         {
             // message d'erreur, fin du programme
-            $_SESSION['error']['changePassFail'] = 'Mot de passe incorrect';
+            $array_json['msg'] = 'Mot de passe incorrect';
             $array_json['success'] = false;
             $this->showJson($array_json);
             die();
@@ -337,6 +351,7 @@ class AuthorController extends CoreController
         if (!$this->passwordIntegrity($datas['newPass'], $datas['newPassConfirm']))
         {
             $array_json['success'] = false;
+            $array_json['msg']['pass'] = $this->msgPassword;
             $this->showJson($array_json);
             die();
         }
@@ -355,7 +370,7 @@ class AuthorController extends CoreController
         else 
         {
             // message d'erreur, fin du programme
-            $_SESSION['error']['changePassFail'] = 'Une erreur est survenue';
+            $array_json['msg'] = 'Une erreur est survenue';
             $array_json['success'] = false;
             $this->showJson($array_json);
             die();
@@ -364,14 +379,14 @@ class AuthorController extends CoreController
 
     public function desactivate() {
 
-        $password = isset($_POST['password']) ? trim($_POST['password']) : '';
-        $id = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '';
+        $password = isset($_POST['password'])      ? trim(strip_tags($_POST['password'])) : '';
+        $id       = isset($_SESSION['user']['id']) ? $_SESSION['user']['id']              : '';
 
         if(empty($password) || empty($id)) 
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['desactivateFail'] = 'Une erreur est survenue';
+            $array_json['msg'] = 'Une erreur est survenue';
             $this->showJson($array_json);
             die();
         }
@@ -382,7 +397,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['desactivateFail'] = 'Une erreur est survenue';
+            $array_json['msg'] = 'Une erreur est survenue';
             $this->showJson($array_json);
             die();
         }
@@ -395,7 +410,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['desactivateFail'] = 'Mot de passe incorrect';
+            $array_json['msg'] = 'Mot de passe incorrect';
             $this->showJson($array_json);
             die();
         }
@@ -413,7 +428,7 @@ class AuthorController extends CoreController
         {
             // message d'erreur, fin du programme
             $array_json['success'] = false;
-            $_SESSION['error']['desactivateFail'] = 'Une erreur est survenue';
+            $array_json['msg'] = 'Une erreur est survenue';
             $this->showJson($array_json);
             die();
         }
@@ -424,14 +439,14 @@ class AuthorController extends CoreController
         if ($pass !== $passConfirm) 
         {
             // message d'erreur
-            $_SESSION['error']['passwordFail'] = 'Le nouveau mot de passe et sa confirmation doivent êtres identiques';
+            $this->msgPassword = 'Le nouveau mot de passe et sa confirmation doivent êtres identiques';
             return false;
         }
         // je vérifie que mon mot de passe fasse bien 8 caractère ou plus
         if (strlen($pass) < 8 )
         {
             // message d'erreur
-            $_SESSION['error']['passwordFail'] = 'Le mot de passe doit contenir au moins 8 caractères';
+            $this->msgPassword = 'Le mot de passe doit contenir au moins 8 caractères';
             return false;
         }
         // je vérifie que le mot de passe contienne bien maj, min, chiffre et . ou ? ou ! ou _ (1x ou plus)
@@ -439,7 +454,7 @@ class AuthorController extends CoreController
         if (!preg_match($regexPass, $pass))
         {
             // message d'erreur
-            $_SESSION['error']['passwordFail'] = 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et un des caractère suivant _ ? . !';
+            $this->msgPassword = 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et un des caractère suivant _ ? . !';
             return false;
         }
         // s'il n'y a pas de problème on return true

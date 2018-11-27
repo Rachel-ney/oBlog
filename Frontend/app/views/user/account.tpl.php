@@ -1,10 +1,5 @@
 <div class="row  justify-content-center data">
     <main class="col-lg-10">
-    <?php if (isset($_SESSION['error']['addPostFail'])) : ?>
-    <p class="col-lg-12 bg-warning rounded p-2 text-center ">
-        <?=$_SESSION['error']['addPostFail'];?>
-    </p>
-    <?php endif; ?>
     <?php if (isset($_SESSION['success']['addPost'])) : ?>
     <p class="col-lg-12 bg-success rounded p-2 text-center text-light ">
         <?=$_SESSION['success']['addPost'];?>
@@ -28,9 +23,6 @@
                                 <li class="list-group-item text-center"><?=$_SESSION['user']['name'];?></li>
                                 <li class="list-group-item text-center"><?=$_SESSION['user']['email'];?></li>
                                 <button type="button" class="btn btn-danger mt-3 unsubscribe" data-toggle="modal" data-target="#confirm-modal" data-whatever="@getbootstrap">Désactiver mon compte</button>
-                                <?php if (isset($_SESSION['error']['desactivateFail'])) : ?>
-                                    <span class="text-center bg-warning rounded p-2 mt-2"><?=$_SESSION['error']['desactivateFail']; ?></span>
-                                <?php endif; ?>
                             </ul>
                             <form class="col-md-5 col-12 form-password">
                                 <div class="form-group mb-1">
@@ -44,12 +36,6 @@
                                     <input type="password" class="form-control newPasswordConfirm" placeholder="Confirmer le nouveau mot de passe">
                                 </div>
                                 <button type="submit" class="btn btn-light">Valider</button>
-                                <?php if (isset($_SESSION['error']['changePassFail'])) : ?>
-                                    <div class="text-center bg-warning rounded p-2 mt-2"><?=$_SESSION['error']['changePassFail']; ?></div>
-                                <?php endif ?>
-                                <?php if (isset($_SESSION['error']['passwordFail'])) : ?>
-                                        <div class="text-center bg-warning rounded p-2 mt-2"><?=$_SESSION['error']['passwordFail']; ?></div>
-                                <?php endif ?>
                                 <?php if (isset($_SESSION['success']['changePass'])) : ?>
                                         <div class="text-center bg-success rounded p-2 mt-2 text-light"><?=$_SESSION['success']['changePass']; ?></div>
                                 <?php endif ?>
@@ -164,9 +150,6 @@
 </div>
 
 <?php
-// j'attend la fin du chargement de la page pour remettre à 0 mes messages d'erreur / succes stocké en session
-
-unset($_SESSION['error']);
+// j'attend la fin du chargement de la page pour remettre à 0 mes messages success stocké en session
 unset($_SESSION['success']);
-
 ?>

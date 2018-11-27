@@ -34,6 +34,7 @@
             </p>
         </section>
     </header>
-    <?php dump($_SESSION); ?>
+
     <!-- Mon container (avec une max-width) dans lequel mon contenu va être placé: https://getbootstrap.com/docs/4.1/layout/overview/#containers -->
-    <div class="container" data-uri="<?=$_SERVER['BASE_URI'];?>">
+    <!-- Serveur : data-back="92.243.19.210/oBlog/Backend" -->
+    <div class="container" data-uri="<?=$_SERVER['BASE_URI'];?>" data-back="localhost/Projet_perso/oBlog/Backend">
