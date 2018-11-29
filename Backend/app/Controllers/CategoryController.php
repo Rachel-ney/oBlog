@@ -14,10 +14,7 @@ class CategoryController extends CoreController
         // si la bdd ne m'a rien renvoyé
         if(empty($allCategory)) 
         {
-            //  message d'erreur , fin du programme
-            $array_json['msg'] = 'La bdd n\'a retourné aucun résultat';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Aucune catégorie n\'est enregistré');
         }
 
         // je déclare le tableau qui contiendra touts les posts

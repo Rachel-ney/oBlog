@@ -88,7 +88,6 @@ var appSignIn = {
       {
         error[index].appendTo($(evt.target));
       }
-      
     }
   },
 

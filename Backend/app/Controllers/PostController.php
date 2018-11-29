@@ -10,16 +10,11 @@ class PostController extends CoreController
     public function one($params) 
     { 
         // je vérifie que l'id tramsmi n'est pas vide , j'elimine les espaces (trim) et les balises(strip_tags)
-        // 
-        //isset($_POST['id']) ? strip_tags(trim($_POST['id'])) : '';
         $postId = $params['id'];
         // si le nom est vide 
         if (empty($postId)) 
         {
-            // message d'erreur, fin du programme
-            $array_json['msg'] = 'Merci de renseigner un id';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Une erreur est survenue');
         }
         // je récupère mon post de la bdd sous forme d'objet
         $post = Post::getOne($postId);
@@ -27,10 +22,7 @@ class PostController extends CoreController
         // si la bdd ne m'a rien renvoyé
         if(empty($post)) 
         {
-            // message d'erreur, fin du programme
-            $array_json['msg'] = 'L\'article demandé n\'existe pas';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('L\'article demandé n\'existe pas');
         }
         // je rempli mon tableau de réponse :
             $array_json = [
@@ -61,10 +53,7 @@ class PostController extends CoreController
         // si la bdd ne m'a rien renvoyé
         if(empty($allPost)) 
         {
-            //  message d'erreur , fin du programme
-            $array_json['msg'] = 'La bdd n\'a retourné aucun résultat';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Aucun article enregistré');
         }
 
         // je déclare le tableau qui contiendra touts les posts
@@ -102,19 +91,13 @@ class PostController extends CoreController
         // si id vide
         if(empty($id)) 
         {
-            // message d'erreur, fin du programme
-            $array_json['msg'] = 'Veuillez préciser l\'identifiant de la catégorie ou de l\'auteur choisi';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Veuillez préciser l\'identifiant de la catégorie ou de l\'auteur choisi');
         }
         $by = $params['action'];
         // si action vide
         if($by !== 'category' && $by !== 'author') 
         {
-            // message d'erreur, fin du programme
-            $array_json['msg'] = 'Erreur de syntaxe : /all-post-by/author/id ou /all-post-by/category/id. id étant un integer';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Une erreur est survenue');
         }
         // je récupère tout les posts de ma bdd sous forme d'objet
         $allPostBy = Post::getAllPostBy($by, $id);
@@ -122,10 +105,7 @@ class PostController extends CoreController
         // si la bdd ne m'a rien renvoyé
         if(empty($allPostBy)) 
         {
-            //  message d'erreur , fin du programme
-            $array_json['msg'] = 'La bdd n\'a retourné aucun résultat';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Aucun article enregistré');
         }
 
         // je déclare le tableau qui contiendra tout les posts
@@ -163,19 +143,11 @@ class PostController extends CoreController
         // si vide
         if(empty($insertOrUpdate)) 
         {
-            // message d'erreur, fin du programme
-            $array_json['success'] = false;
-            $array_json['msg'] = 'Une erreur est survenue';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Une erreur est survenue');
         }
         // si la méthode renseigné n'est pas update ou insert
         if ($insertOrUpdate !== 'update' && $insertOrUpdate !== 'insert') {
-            // message d'erreur, fin du programme
-            $array_json['success'] = false;
-            $array_json['msg'] = 'Une erreur est survenue';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Une erreur est survenue');
         }
         // si la méthode choisi est update 
         if ($insertOrUpdate === 'update') 
@@ -185,11 +157,7 @@ class PostController extends CoreController
             // si id vide
             if(empty($idPostToUpdate)) 
             {
-                // message d'erreur, fin du programme
-                $array_json['success'] = false;
-                $array_json['msg'] = 'Une erreur est survenue';
-                $this->showJson($array_json);
-                die();
+                $this->sendError('Une erreur est survenue');
             }
         }
         // je récupère les data
@@ -201,29 +169,14 @@ class PostController extends CoreController
             'AuthorId'   => isset($_SESSION['user']['id']) ? strip_tags(trim($_SESSION['user']['id'])) : '',
             'CategoryId' => isset($_POST['category_id'])   ? strip_tags(trim((int)$_POST['category_id']))   : ''
         ];
-        // je vérifie que les data reçu ne sont pas vide
-        foreach ($datas as $dataName => $dataValue) 
-        {
-            // si vide
-            if(empty($dataValue)) 
-            {
-                // message d'erreur, fin du programme
-                $array_json['success'] = false;
-                $array_json['msg'] = 'Vous ne pouvez pas laisser de champs vide';
-                $this->showJson($array_json);
-                die();
-            }
-        }
+        // je vérifie que les datas ne soient pas vide
+        $this->notEmptyDatas($datas);
         // je vérifie que la catégorie reçu existe bien 
         $categoryExist = Category::getOne($datas['CategoryId']);
 
         if(!$categoryExist)
         {
-            // message d'erreur, fin du programme
-            $array_json['success'] = false;
-            $array_json['msg'] = 'Cette categorie n\'existe pas';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Cette categorie n\'existe pas');
         }
         // Je créer une instance de post
         $post = new Post();
@@ -254,39 +207,17 @@ class PostController extends CoreController
                 $_SESSION['success']['addPost'] = 'Votre article a bien été ajouté';
             }
             // je met à jours la liste d'article de l'auteur contenu en session
-            unset($_SESSION['user']['posts']);
-            $allPost = Post::getAllPostBy('author', $_SESSION['user']['id']);
-
-            if(!empty($allPost)) 
-            {
-                foreach($allPost as $post)
-                {
-                    $_SESSION['user']['posts'][] = [
-                        'id'         => $post->getId(),
-                        'title'      => $post->getTitle(),
-                        'resume'     => $post->getResume(),
-                        'content'    => $post->getContent(),
-                        'category'   => [
-                            'id'=> $post->getCategoryId(),
-                            'name' => $post->getCategoryName()
-                        ],
-                        'created_at' => $post->getCreatedAt(),
-                        'updated_at' => $post->getUpdatedAt()
-                    ];
-                }
-            }
+            $this->addPostAuthorInSession();
+            
             $this->showJson($array_json);
         } 
         else 
         {
-            // sinon la clef = false + message d'erreur, fin du programme
-            $array_json['success'] = false;
-            $array_json['msg'] = 'Une erreur est survenue';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Une erreur est survenue');
         }
     }
 
+    // Méthode pour supprimer le post d'un auteur en bdd 
     public function delete() {
         // je récupère les données
         $datas = [
@@ -296,39 +227,21 @@ class PostController extends CoreController
         ];
     
         //je vérifie qu'elles ne soient pas vide
-        foreach($datas as $value)
-        {
-            if (empty($value))
-            {
-                // sinon la clef = false + message d'erreur, fin du programme
-                $array_json['success'] = false;
-                $array_json['msg'] = 'Vous ne pouvez pas laisser de champs vide';
-                $this->showJson($array_json);
-                die();
-            }
-        }
-
+        $this->notEmptyDatas($datas);
+        // je récupère l'auteur
         $authorExist = Author::getOne($datas['idAuthor']);
         if (!$authorExist)
         {
-            // sinon la clef = false + message d'erreur, fin du programme
-            $array_json['success'] = false;
-            $array_json['msg'] = 'Une erreur est survenu';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Une erreur est survenu');
         }
-
         // et son mot de passe
         $hash = $authorExist->getPassword();
         $datas['password'].= $this->salt;
         // pour le comparer au mot de passe entré par l'utilisateur
         if (!password_verify($datas['password'], $hash))
         {
-            // sinon la clef = false + message d'erreur, fin du programme
-            $array_json['success'] = false;
-            $array_json['msg']['pass'] = 'Mot de passe incorect';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Mot de passe incorect', true);
+
         }
 
         // je récupère le post d'après l'id du post ET l'id de l'auteur
@@ -336,11 +249,7 @@ class PostController extends CoreController
 
         if (!$postToAuthor)
         {
-            // sinon la clef = false + message d'erreur, fin du programme
-            $array_json['success'] = false;
-            $array_json['msg'] = 'Une erreur est survenu';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Une erreur est survenu');
         }
 
         // je supprime le post lié à l'auteur
@@ -349,36 +258,12 @@ class PostController extends CoreController
             $array_json['success'] = true;
             $_SESSION['success']['deletePost'] = 'Votre article a bien été supprimé';
             // je met à jours la liste d'article de l'auteur contenu en session
-            unset($_SESSION['user']['posts']);
-            $allPost = Post::getAllPostBy('author', $_SESSION['user']['id']);
-
-            if(!empty($allPost)) 
-            {
-                foreach($allPost as $post)
-                {
-                    $_SESSION['user']['posts'][] = [
-                        'id'         => $post->getId(),
-                        'title'      => $post->getTitle(),
-                        'resume'     => $post->getResume(),
-                        'content'    => $post->getContent(),
-                        'category'   => [
-                            'id'=> $post->getCategoryId(),
-                            'name' => $post->getCategoryName()
-                        ],
-                        'created_at' => $post->getCreatedAt(),
-                        'updated_at' => $post->getUpdatedAt()
-                    ];
-                }
-            }
+            $this->addPostAuthorInSession();
             $this->showJson($array_json);
         }
         else 
         {
-            // sinon la clef = false + message d'erreur, fin du programme
-            $array_json['success'] = false;
-            $array_json['msg'] = 'Une erreur est survenu';
-            $this->showJson($array_json);
-            die();
+            $this->sendError('Une erreur est survenu');
         }
     }
 }// end class

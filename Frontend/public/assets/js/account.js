@@ -21,6 +21,7 @@ var app = {
     evt.preventDefault();
     console.log('desactivate');
     var password = $.trim($('input#pass-desactivate').val());
+
     if(password !== '')
     {
       app.unsubscribeUser(password);
@@ -44,6 +45,7 @@ var app = {
       'newPass' : $.trim($('.newPassword').val()),
       'newPassConfirm' : $.trim($('.newPasswordConfirm').val())
     };
+
     // je considère par défaut qu'il n'y a pas d'erreur
     var notError = true;
     var errorMsg = [];
@@ -400,7 +402,7 @@ var app = {
     
     if(app.target === 'desactivate')
     {
-      div.appendTo($('.form-modal'));
+      div.appendTo($('.form-modal-desactivate'));
     }
     else if (app.target === 'changePass')
     {
