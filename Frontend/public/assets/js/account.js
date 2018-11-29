@@ -2,21 +2,25 @@ var app = {
   uri: '',
   back: '',
   target: '',
+  postTarget: '',
 
   init: function () {
     // je récupère la base uri : 
     app.uri = $('.container').data('uri');
     app.back = $('.container').data("back");
     // j'ajoute mes events
-    $('.form-modal').on('submit', app.handleConfirmModal);
+    $('.form-modal-desactivate').on('submit', app.handleConfirmModalDesactivate);
     $('.form-password').on('submit', app.handleCheckPasswordChange);
     $('.form-new-post').on('submit', app.handleCheckNewPost);
+    $('.modify-post').on('click', app.handleDisplayFormModifyPost);
+    $('.cancel-modify').on('click', app.handleCancelModidfyPost);
+    $('.form-delete-post').on('submit', app.handleCheckDeletePost);
   },
 
-  handleConfirmModal: function(evt) {
+  handleConfirmModalDesactivate: function(evt) {
     evt.preventDefault();
-
-    var password = $.trim($('input#pass-confirm').val());
+    console.log('desactivate');
+    var password = $.trim($('input#pass-desactivate').val());
     if(password !== '')
     {
       app.unsubscribeUser(password);
@@ -121,6 +125,99 @@ var app = {
     }
   },
 
+  handleDisplayFormModifyPost: function(evt) {
+    // je cible la div contenant l'article et le cache
+    var divPost = $(evt.target).parent();
+    divPost.addClass('d-none'); 
+    // je cible la balise article parente
+    var article = $(divPost).parent();
+    // pour cibler le formulaire et l'afficher
+    var form = $(article).find('form');
+    form.removeClass('d-none');
+
+    form.on('submit', app.handleCheckModifyPost);
+  },
+
+  handleCancelModidfyPost: function(evt) {
+    var divForm = $(evt.target).parent();
+    divForm.addClass('d-none'); 
+    // je cible la balise article parente
+    var article = $(divForm).parent();
+    // pour cibler le formulaire et l'afficher
+    var post = $(article).find('div:first-child');
+    post.removeClass('d-none');
+  },
+
+  handleCheckModifyPost: function(evt) { 
+    evt.preventDefault();
+
+    var form = $(evt.target);
+    
+    var data = {
+      'id'          : form.data('postid'),
+      'title'       : $.trim($(form.find('.modify-title')).val()),
+      'resume'      : $.trim($(form.find('.modify-resume')).val()),
+      'content'     : $.trim($(form.find('.modify-content')).val()),
+      'category' : $(form.find('select.modify-category')).val(),
+    };
+
+    var notEmpty = true;
+    for ( var index in data)
+    {
+      if (data[index] === '')
+      {
+        notEmpty = false;
+      }
+    }
+
+    $('.error').remove();
+    var div = $('<div>').addClass('error bg-warning p-2 mt-2 text-center rounded');
+    if(!notEmpty)
+    {
+      div.html('Vous ne pouvez pas laisser de champ vide');
+      div.appendTo($(evt.target));
+    }
+    else{
+      app.postTarget = evt.target;
+      app.sendPostModification(data);
+    }
+  },
+
+  handleCheckDeletePost: function(evt) {
+    evt.preventDefault();
+
+    var id = $($(evt.target).find('select.to-delete')).val();
+    var password = $.trim($($(evt.target).find('.confirm-delete-post')).val());
+
+    $('.error').remove();
+    var errorMsg = [];
+    var notEmpty = true;
+
+    if (id === null )
+    {
+      errorMsg[0] = 'Vous devez choisir un article pour le supprimer';
+      notEmpty = false;
+    }
+    else if (password === '')
+    {
+      errorMsg[1] = 'Vous devez entrer votre mot de passe pour confirmer';
+      notEmpty = false;
+    }
+
+    if (!notEmpty)
+    {
+      for (var index in errorMsg)
+      {
+        var div = $('<div>').html(errorMsg[index]).addClass('error bg-warning p-2 mt-2 text-center rounded');
+        div.appendTo($(evt.target));
+      }
+    }
+    else
+    {
+      app.removePost(id, password);
+    }
+  },
+
   unsubscribeUser: function(passwordEntry) {
     var jqxhr = $.ajax({
       url:'http://'+ app.back +'/desactivate', 
@@ -215,6 +312,67 @@ var app = {
     });
   },
 
+  sendPostModification: function(arrayData) {
+    var jqxhr = $.ajax({
+      url:'http://'+ app.back +'/add-update-post', 
+      method: 'POST', 
+      dataType: 'json', 
+      data: {
+        action   : 'update',
+        post_id  : arrayData['id'],
+        title    : arrayData['title'],
+        resume   : arrayData['resume'],
+        content  : arrayData['content'],
+        category_id : arrayData['category']
+      } 
+    });
+    // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
+    jqxhr.done(function (response) {
+      if (response.success)
+      {
+        location.reload(true);
+      }
+      else 
+      {
+          app.target = 'modifyPost';
+          app.displayError('other',response.msg);
+      }
+    });
+    // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
+    jqxhr.fail(function () {
+      alert('Requête échouée');
+    });
+  },
+
+  removePost: function(id, passwordUser) {
+    var jqxhr = $.ajax({
+      url:'http://'+ app.back +'/delete-post', 
+      method: 'POST', 
+      dataType: 'json', 
+      data: {
+        post_id   : id,
+        password  : passwordUser,
+      } 
+    });
+    // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
+    jqxhr.done(function (response) {
+      if (response.success)
+      {
+        location.reload(true);
+      }
+      else 
+      {
+          //app.target = 'deletePost';
+          //app.displayError('other',response.msg);
+      }
+    });
+    // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
+    jqxhr.fail(function () {
+      console.log('TODO: coder la partie back pour delete le post');
+      alert('Requête échouée');
+    });
+  },
+
   displayError: function(type, msg) {
     $('.error').remove();
 
@@ -243,6 +401,10 @@ var app = {
     else if (app.target === 'newPost')
     {
       div.appendTo($('.form-new-post'));
+    }
+    else if (app.target === 'modifyPost')
+    {
+      div.appendTo($(app.postTarget));
     }
     else 
     {

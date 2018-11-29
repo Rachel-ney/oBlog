@@ -72,17 +72,15 @@ class Post extends CoreModel
     // Méthode modifiant un article dans la table post d'après un model reçu en paramètre et son id
     public function update()
     {
-        // UPDATE table
-        // SET nom_colonne_1 = 'nouvelle valeur'
-        // WHERE condition
         $sql = 
         'UPDATE '.self::TABLE_NAME.' SET 
-        title =         :newTitle, 
-        resume =        :newResume, 
-        content =       :newContent, 
-        author_id =     :newAuthorId, 
-        category_id =   :newCategoryId 
-        WHERE id =      :insertId ;';
+        title       = :newTitle, 
+        resume      = :newResume, 
+        content     = :newContent, 
+        author_id   = :newAuthorId, 
+        category_id = :newCategoryId,
+        updated_at  = NOW() 
+        WHERE id    = :insertId ;';
 
         $pdoStatement = Database::getPDO()->prepare($sql);
 

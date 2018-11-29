@@ -268,7 +268,10 @@ class AuthorController extends CoreController
                     'title'      => $post->getTitle(),
                     'resume'     => $post->getResume(),
                     'content'    => $post->getContent(),
-                    'category'   => $post->getCategoryName(),
+                    'category'   => [
+                        'id'=> $post->getCategoryId(),
+                        'name' => $post->getCategoryName()
+                    ],
                     'created_at' => $post->getCreatedAt(),
                     'updated_at' => $post->getUpdatedAt()
                 ];

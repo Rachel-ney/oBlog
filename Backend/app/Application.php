@@ -50,10 +50,8 @@ class Application
         $this->router->map('GET', '/all-post', 'PostController#all', 'allPost');
         $this->router->map('GET', '/one-post/[i:id]', 'PostController#one', 'onePost');
         $this->router->map('GET', '/all-post-by/[a:action]/[i:id]', 'PostController#allPostBy', 'allPostBy'); // action = author ou category
-        /* à tester : */
         $this->router->map('POST', '/add-update-post', 'PostController#addOrUpdate', 'addPost');
-        /* méthode à créer : */
-        //$this->router->map('POST', '/delete-post', 'PostController#delete', 'deletePost');
+        $this->router->map('POST', '/delete-post', 'PostController#delete', 'deletePost');
         
         // CategoryController
         $this->router->map('GET', '/all-category', 'CategoryController#all', 'allCategory');

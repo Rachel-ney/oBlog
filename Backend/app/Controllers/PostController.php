@@ -180,7 +180,7 @@ class PostController extends CoreController
         if ($insertOrUpdate === 'update') 
         {
             // je récupère l'id de l'article à modifier
-            $idPostToUpdate = isset($_POST['idToUpdate']) ? strip_tags(trim($_POST['idToUpdate'])) : '';
+            $idPostToUpdate = isset($_POST['post_id']) ? strip_tags(trim((int)$_POST['post_id'])) : '';
             // si id vide
             if(empty($idPostToUpdate)) 
             {
@@ -198,7 +198,7 @@ class PostController extends CoreController
             'Resume'     => isset($_POST['resume'])        ? strip_tags(trim($_POST['resume']))        : '',
             'Content'    => isset($_POST['content'])       ? strip_tags(trim($_POST['content']))       : '',
             'AuthorId'   => isset($_SESSION['user']['id']) ? strip_tags(trim($_SESSION['user']['id'])) : '',
-            'CategoryId' => isset($_POST['category_id'])   ? strip_tags(trim($_POST['category_id']))   : ''
+            'CategoryId' => isset($_POST['category_id'])   ? strip_tags(trim((int)$_POST['category_id']))   : ''
         ];
         // je vérifie que les data reçu ne sont pas vide
         foreach ($datas as $dataName => $dataValue) 
@@ -244,8 +244,14 @@ class PostController extends CoreController
         {
             // si insertion / update ok j'ajoute une clef true à transmettre
             $array_json['success'] = true;
-            $_SESSION['success']['addPost'] = 'Votre article a bien été ajouté';
-
+            if ($insertOrUpdate === 'update') 
+            {
+                $_SESSION['success']['addPost'] = 'Votre article a bien été modifié';
+            }
+            else
+            {
+                $_SESSION['success']['addPost'] = 'Votre article a bien été ajouté';
+            }
             // je met à jours la liste d'article de l'auteur contenu en session
             unset($_SESSION['user']['posts']);
             $allPost = Post::getAllPostBy('author', $_SESSION['user']['id']);
@@ -259,7 +265,10 @@ class PostController extends CoreController
                         'title'      => $post->getTitle(),
                         'resume'     => $post->getResume(),
                         'content'    => $post->getContent(),
-                        'category'   => $post->getCategoryName(),
+                        'category'   => [
+                            'id'=> $post->getCategoryId(),
+                            'name' => $post->getCategoryName()
+                        ],
                         'created_at' => $post->getCreatedAt(),
                         'updated_at' => $post->getUpdatedAt()
                     ];

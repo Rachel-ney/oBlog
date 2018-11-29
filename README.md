@@ -11,10 +11,9 @@
   + legal mention
 
 ## JS + Ajax + Backend : 
-### Mardi 27: 
-- possibilité de modifier un article --> bdd update post
-### Mercredi 28: 
-- possibilité de supprimer un article --> bdd delete post
 ### Jeudi 29: 
+- possibilité de supprimer un article --> bdd delete post
+  - Reste à faire le back seulement
+### Vendredi 30: 
 - gérer la perte de mot de passe
   - avec mail + token
