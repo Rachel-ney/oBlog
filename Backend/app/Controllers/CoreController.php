@@ -7,6 +7,7 @@ use oBlogApi\Utils\Database;
 abstract class CoreController 
 {
     protected $router;
+    protected $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
 
     public function __construc($router) {
         $this->router = $router;

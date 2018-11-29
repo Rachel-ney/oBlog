@@ -24,19 +24,6 @@ class Author extends CoreModel
         return $pdoStatement->fetchObject(static::class);
     }
 
-    // Méthode renvoyant UN UNIQUE champ d'une table dont l'id est donné
-    public static function getOneById($id)
-    {
-        $sql = 'SELECT * FROM '. static:: TABLE_NAME.'
-        WHERE id = :id';
-
-        $pdoStatement = Database::getPDO()->prepare($sql);
-        $pdoStatement->bindValue(':id', $id, PDO::PARAM_STR);
-        $pdoStatement->execute();
-        
-        return $pdoStatement->fetchObject(static::class);
-    }
-
     // Méthode permettant d'ajouter un auteur dans la bdd d'après un model reçu en paramètre
     // je ne précise pas le status car par défaut à 1 dans ma bdd
     public function insert()

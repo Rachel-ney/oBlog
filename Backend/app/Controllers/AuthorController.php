@@ -6,7 +6,6 @@ use oBlogApi\Models\Category;
 
 class AuthorController extends CoreController
 {
-    private $salt = 'My.Favorite.Pony.Is:Pinkie-Pie!';
     private $msgPassword = '';
 
     // Méthode pour récuperer TOUT les auteurs et les envoyer en json
@@ -50,7 +49,7 @@ class AuthorController extends CoreController
     public function one($param) 
     {
         // je récupère tout les posts de ma bdd sous forme d'objet
-        $oneAuthor = Author::getOneById($param['id']);
+        $oneAuthor = Author::getOne($param['id']);
 
         // si la bdd ne m'a rien renvoyé
         if(empty($oneAuthor)) 
@@ -327,7 +326,7 @@ class AuthorController extends CoreController
             die();
         }
         // Je cherche si l'auteur existe bien 
-        $authorFind = Author::getOneById($datas['id']);
+        $authorFind = Author::getOne($datas['id']);
         if (!$authorFind)
         {
             // message d'erreur, fin du programme
@@ -394,7 +393,7 @@ class AuthorController extends CoreController
             die();
         }
 
-        $authorFind = Author::getOneById($id);
+        $authorFind = Author::getOne($id);
 
         if(empty($authorFind))
         {

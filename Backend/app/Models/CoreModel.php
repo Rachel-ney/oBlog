@@ -57,22 +57,6 @@ abstract class CoreModel
         return $results;
     }
 
-    // Méthode supprimant le champ d'une table dont l'id est donné
-    public static function delete($id)
-    {
-        $sql = 'DELETE FROM '.static::TABLE_NAME.' WHERE id = :id;';
-        $pdoStatement = Database::getPDO()->prepare($sql);
-        $pdoStatement->bindValue(':id', $id, PDO::PARAM_INT);
-
-        if ($pdoStatement->execute()) 
-        {
-            return $pdoStatement->rowCount() > 0;
-        } 
-        else 
-        {
-            return false;
-        }
-    }
 
     // GETTERS & SETTERS
 

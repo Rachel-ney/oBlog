@@ -5,6 +5,11 @@
         <?=$_SESSION['success']['addPost'];?>
     </p>
     <?php endif; ?>
+    <?php if (isset($_SESSION['success']['deletePost'])) : ?>
+    <p class="col-lg-12 bg-success rounded p-2 text-center text-light ">
+        <?=$_SESSION['success']['deletePost'];?>
+    </p>
+    <?php endif; ?>
         <div class="accordion" id="accordionExample">
             <!-- Premier accordéon -->
             <div class="card">

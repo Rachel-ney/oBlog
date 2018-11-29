@@ -42,6 +42,20 @@ class Post extends CoreModel
             return false;
         }
     }
+
+    public static function getOnePostFromAuthor($idPost, $idAuthor)
+    {
+            $sql = 'SELECT * FROM '. static:: TABLE_NAME .'
+            WHERE id = :idPost
+            AND author_id = :idAuthor;';
+            $pdoStatement = Database::getPDO()->prepare($sql);
+
+            $pdoStatement->bindValue(':idPost', $idPost, PDO::PARAM_INT);
+            $pdoStatement->bindValue(':idAuthor', $idAuthor, PDO::PARAM_INT);
+            $pdoStatement->execute();
+            $results = $pdoStatement->fetchAll(PDO::FETCH_CLASS, static::class);
+            return $results;
+    }
     
     // Méthode insérant un nouvel article dans la table post d'après un model reçu en paramètre
     public function insert()
@@ -98,6 +112,26 @@ class Post extends CoreModel
         else 
         {
              return false;
+        }
+    }
+
+    // Méthode supprimant le champ d'une table dont l'id est donné
+    public static function delete($idPost, $idAuthor)
+    {
+        $sql = 'DELETE FROM '.static::TABLE_NAME.' 
+        WHERE id = :idPost 
+        AND author_id = :idAuthor;';
+        $pdoStatement = Database::getPDO()->prepare($sql);
+        $pdoStatement->bindValue(':idPost', $idPost, PDO::PARAM_INT);
+        $pdoStatement->bindValue(':idAuthor', $idAuthor, PDO::PARAM_INT);
+
+        if ($pdoStatement->execute()) 
+        {
+            return $pdoStatement->rowCount() > 0;
+        } 
+        else 
+        {
+            return false;
         }
     }
 

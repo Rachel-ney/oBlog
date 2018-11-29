@@ -2,6 +2,7 @@
 namespace oBlogApi\Controllers;
 use oBlogApi\Models\Post;
 use oBlogApi\Models\Category;
+use oBlogApi\Models\Author;
 
 class PostController extends CoreController
 {
@@ -286,4 +287,98 @@ class PostController extends CoreController
         }
     }
 
+    public function delete() {
+        // je récupère les données
+        $datas = [
+            'idAuthor'   => isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id']             : '',
+            'idPost'     => isset($_POST['post_id'])       ? strip_tags(trim((int)$_POST['post_id'])) : '',
+            'password'   => isset($_POST['password'])      ? strip_tags(trim($_POST['password']))     : '',
+        ];
+    
+        //je vérifie qu'elles ne soient pas vide
+        foreach($datas as $value)
+        {
+            if (empty($value))
+            {
+                // sinon la clef = false + message d'erreur, fin du programme
+                $array_json['success'] = false;
+                $array_json['msg'] = 'Vous ne pouvez pas laisser de champs vide';
+                $this->showJson($array_json);
+                die();
+            }
+        }
+
+        $authorExist = Author::getOne($datas['idAuthor']);
+        if (!$authorExist)
+        {
+            // sinon la clef = false + message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $array_json['msg'] = 'Une erreur est survenu';
+            $this->showJson($array_json);
+            die();
+        }
+
+        // et son mot de passe
+        $hash = $authorExist->getPassword();
+        $datas['password'].= $this->salt;
+        // pour le comparer au mot de passe entré par l'utilisateur
+        if (!password_verify($datas['password'], $hash))
+        {
+            // sinon la clef = false + message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $array_json['msg']['pass'] = 'Mot de passe incorect';
+            $this->showJson($array_json);
+            die();
+        }
+
+        // je récupère le post d'après l'id du post ET l'id de l'auteur
+        $postToAuthor = Post::getOnePostFromAuthor($datas['idPost'], $datas['idAuthor']);
+
+        if (!$postToAuthor)
+        {
+            // sinon la clef = false + message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $array_json['msg'] = 'Une erreur est survenu';
+            $this->showJson($array_json);
+            die();
+        }
+
+        // je supprime le post lié à l'auteur
+        if(Post::delete($datas['idPost'], $datas['idAuthor']))
+        {
+            $array_json['success'] = true;
+            $_SESSION['success']['deletePost'] = 'Votre article a bien été supprimé';
+            // je met à jours la liste d'article de l'auteur contenu en session
+            unset($_SESSION['user']['posts']);
+            $allPost = Post::getAllPostBy('author', $_SESSION['user']['id']);
+
+            if(!empty($allPost)) 
+            {
+                foreach($allPost as $post)
+                {
+                    $_SESSION['user']['posts'][] = [
+                        'id'         => $post->getId(),
+                        'title'      => $post->getTitle(),
+                        'resume'     => $post->getResume(),
+                        'content'    => $post->getContent(),
+                        'category'   => [
+                            'id'=> $post->getCategoryId(),
+                            'name' => $post->getCategoryName()
+                        ],
+                        'created_at' => $post->getCreatedAt(),
+                        'updated_at' => $post->getUpdatedAt()
+                    ];
+                }
+            }
+            $this->showJson($array_json);
+        }
+        else 
+        {
+            // sinon la clef = false + message d'erreur, fin du programme
+            $array_json['success'] = false;
+            $array_json['msg'] = 'Une erreur est survenu';
+            $this->showJson($array_json);
+            die();
+        }
+    }
 }// end class

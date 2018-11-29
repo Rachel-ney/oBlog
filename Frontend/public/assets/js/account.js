@@ -362,13 +362,19 @@ var app = {
       }
       else 
       {
-          //app.target = 'deletePost';
-          //app.displayError('other',response.msg);
+        app.target = 'deletePost';
+        if(response.msg.pass)
+        {
+          app.displayError('pass',response.msg);
+        }
+        else
+        {
+          app.displayError('other',response.msg);
+        }
       }
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
-      console.log('TODO: coder la partie back pour delete le post');
       alert('Requête échouée');
     });
   },
@@ -384,6 +390,8 @@ var app = {
       $('.password').val('');
       $('.newPassword').val('');
       $('.newPasswordConfirm').val('');
+      $('.confirm-delete-post').val('');
+      
     }
     else
     {
@@ -406,9 +414,13 @@ var app = {
     {
       div.appendTo($(app.postTarget));
     }
+    else if (app.target === 'deletePost')
+    {
+      div.appendTo($('.form-delete-post'));
+    }
     else 
     {
-      div.prependTo($('main'));
+      console.log('Nani ?!')
     }
   }
 };
