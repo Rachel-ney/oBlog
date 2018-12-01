@@ -56,8 +56,9 @@ class Application
         $this->router->map('GET', '/categorie/[i:id]', 'BlogController#category', 'category');
         $this->router->map('GET', '/auteur/[i:id]', 'BlogController#author', 'author');
         // UserController
-        $this->router->map('GET', '/mon-compte', 'UserController#account', 'account');
         $this->router->map('GET', '/connexion-inscription', 'UserController#signIn', 'signIn');
+        $this->router->map('GET', '/validation', 'UserController#validateAccount', 'validateAccount');
+        $this->router->map('GET', '/mon-compte', 'UserController#account', 'account');
         $this->router->map('GET', '/mot-de-passe-perdu', 'UserController#lostPass', 'lostPass');
         $this->router->map('GET', '/reinitialisation-mot-de-passe', 'UserController#resetPass', 'resetPass');
     }

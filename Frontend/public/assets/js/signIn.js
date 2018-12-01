@@ -122,7 +122,16 @@ var appSignIn = {
     jqxhr.done(function (response) {
         if (response.success)
         {
-          location.reload(true);
+          if(response.success.mail)
+          {
+            var div = $('<div>').html('Un mail vous a été envoyé pour la validation de votre compte').addClass('bg-success text-light text-center rounded p-2 mt-2 mb-2');
+            div.appendTo($('form.register'));
+          }
+          else
+          {
+            location.reload(true);
+          }
+          
         }
         else 
         {

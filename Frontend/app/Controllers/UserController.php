@@ -57,4 +57,17 @@ class UserController extends CoreController
             $this->show('/user/resetPass');
         }
     }
+
+    public function validateAccount() {
+        if (!empty($_SESSION['user']))
+        {
+            $this->oTemplator->setVar('js', ['account']);
+            header('Location: '. $this->router->generate('account'));
+        }
+        else 
+        {
+            $this->oTemplator->setVar('js', ['validateAccount']);
+            $this->show('/user/validateAccount');
+        }
+    }
 }

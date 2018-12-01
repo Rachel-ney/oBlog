@@ -7,9 +7,11 @@ abstract class CoreController
 {
     // contient l'instance du templator
     protected $oTemplator;
+    protected $router;
 
     public function __construct($router)
     {
+        $this->router = $router;
         session_start(); 
         if (!empty($_GET['disconnect'])) 
         {
