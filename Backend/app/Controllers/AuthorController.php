@@ -2,6 +2,8 @@
 namespace oBlogApi\Controllers;
 
 use oBlogApi\Models\Author;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class AuthorController extends CoreController
 {
@@ -107,6 +109,10 @@ class AuthorController extends CoreController
         $datas['Password'] .= $this->salt;
         // je hash le mdp
         $datas['Password'] = password_hash($datas['Password'], PASSWORD_DEFAULT);
+        // création token et ajout au tableau de data 
+        $token = bin2hex(random_bytes(32));
+        $datas['Token'] = $token;
+        
         // Je créer une instance de auteur
         $author = new Author();
         // je lui donne les data à ajouter : 
@@ -121,20 +127,84 @@ class AuthorController extends CoreController
         // je test l'insertion en bdd
         if ($author->insert()) 
         {
-            // si insertion ok j'ajoute une clef true à transmettre
-            $array_json['success'] = true;
-            // et j'active ma session 
-            $this->addUserInSession($author);
-            // Pour pouvoir les afficher dans la page mon compte sans avoir à faire de requêtes
-            // je récupère les catégories
-            $this->addCategoryInSession();
+            // j'assemble mon lien de redirection
+            $urlValidate = 'http://localhost/Projet_perso/oBlog/Frontend/public/validation?id='.$author->getId().'&token='.$token;
+            // Envoi d'un mail de confirmation
+            $mail = new PHPMailer(true);// true active les exceptions
+            //Server settings
+            // debbug : 
+            //$mail->SMTPDebug = 2; // 1 = Erreurs et messages, 2 = messages seulement
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true; // activer l'authentification
+            $mail->Username = 'rachel.oblog@gmail.com';// mail hote
+            $mail->Password = 'ki.gu?ru@mi';// mdp hote
+            $mail->SMTPSecure = 'ssl'; // encryptage
+            $mail->Port = 465;// 587 ou 465 (pour google 465 == sécurisé)
+        
+            //Recipients
+            $mail->setFrom('rachel.oblog@gmail.com', 'oBlog');
+            $mail->addAddress($author->getEmail(), $author->getName());
+        
+            //Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Validation de votre compte oBlog';
+            $mail->Body    = 'Bonjour '.$author->getName().', et bienvenu sur oBlog ! <br/> Veuillez cliquer sur ce lien pour valider votre compte: <br/> <a href="'.$urlValidate.'"> Lien vers oBlog </a>';
+        
+            if(!$mail->Send()) {
+                $this->sendError('Une erreur est survenue lors de l\'envoi du mail.');
+                // debbug : 
+                //echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+            }
+            else
+            {
+                $array_json['success']['mail'] = true;
+                $this->showJson($array_json);
+            }
         } 
         else 
         {
             // sinon la clef = false + message d'erreur, fin du programme
             $this->sendError('Une erreur est survenue lors de l\'inscription, veuillez recommencer.');
         }
-        // j'envoi le tableau à showJson
+    }
+
+    public function validateAccount() {
+        $datas = [
+            'id'    => isset($_GET['id'])    ? trim(strip_tags((int)$_GET['id'])) : '',
+            'token' => isset($_GET['token']) ? trim(strip_tags($_GET['token']))   : '',
+        ];
+        // je vérifie que les data reçu ne soient pas vide
+        $this->notEmptyDatas($datas);
+
+         // je cherche l'auteur par son id
+        $authorFind = Author::getOne($datas['id']);
+        // si je ne le trouve pas
+        if (!$authorFind)
+        {
+            $this->sendError('Compte inexistant');
+        }
+        // vérification status : 0 = inactif, 1 = actif
+        if ($authorFind->getStatus() !== '0') 
+        {
+            $this->sendError('Le compte a déjà été activé');
+        }
+        // vérification token
+        if ($datas['token'] !== $authorFind->getToken()) 
+        {
+            $this->sendError('Une erreur est survenue');
+        }
+        if(!Author::activate($datas['id']))
+        {
+            $this->sendError('Une erreur est survenue');
+        }
+
+        // j'active ma session 
+        $this->addUserInSession($authorFind);
+        // je récupère les catégories
+        $this->addCategoryInSession();
+
+        $array_json['success'] = true;
         $this->showJson($array_json);
     }
 
@@ -154,7 +224,7 @@ class AuthorController extends CoreController
         if (!$authorFind)
         {
             // message d'erreur, fin du programme
-            $this->sendError('Auteur inexistant');
+            $this->sendError('Compte inexistant');
         }
         // je vérifie que son status sois actif (1)
         $status = $authorFind->getStatus();

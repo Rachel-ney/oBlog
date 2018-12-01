@@ -9,6 +9,7 @@ class Author extends CoreModel
     private $password;
     private $email;
     private $status;
+    private $token;
     const TABLE_NAME = 'author';
 
     // Méthode renvoyant UN UNIQUE champ d'une table dont le mail est donné
@@ -28,12 +29,13 @@ class Author extends CoreModel
     // je ne précise pas le status car par défaut à 1 dans ma bdd
     public function insert()
     {
-        $sql = 'INSERT INTO '.self::TABLE_NAME.' (name, password, email) VALUES (:insertName, :insertPassword, :insertEmail);';
+        $sql = 'INSERT INTO '.self::TABLE_NAME.' (name, password, email, token) VALUES (:insertName, :insertPassword, :insertEmail, :insertToken);';
         $pdoStatement = Database::getPDO()->prepare($sql);
 
         $pdoStatement->bindValue(':insertName',  $this->getName(), PDO::PARAM_STR);
         $pdoStatement->bindValue(':insertPassword', $this->getPassword(), PDO::PARAM_STR);
         $pdoStatement->bindValue(':insertEmail', $this->getEmail(), PDO::PARAM_STR);
+        $pdoStatement->bindValue(':insertToken', $this->getToken(), PDO::PARAM_STR);
 
         $success = false;
         if ($pdoStatement->execute()) 
@@ -45,6 +47,23 @@ class Author extends CoreModel
             }
         } 
         return $success;
+    }
+
+    public static function activate($id) {
+        $sql = 'UPDATE '.self::TABLE_NAME.' SET 
+        status = 1
+        WHERE id = :id;';
+        $pdoStatement = Database::getPDO()->prepare($sql);
+        $pdoStatement->bindValue(':id', $id, PDO::PARAM_INT);
+
+        if ($pdoStatement->execute()) 
+        {
+            return $pdoStatement->rowCount() > 0;
+        } 
+        else 
+        {
+             return false;
+        }
     }
 
     // Méthode permettant de modifier le mdp d'un auteur
@@ -133,9 +152,13 @@ class Author extends CoreModel
         return $this;
     }
 
-    public function setId($id)
+    public function getToken()
     {
-        $this->id = $id;
+        return $this->token;
+    }
+    public function setToken($token)
+    {
+        $this->token = $token;
 
         return $this;
     }
