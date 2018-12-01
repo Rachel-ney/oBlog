@@ -49,6 +49,24 @@ class Author extends CoreModel
         return $success;
     }
 
+    public static function insertToken($email, $token) {
+        $sql = 'UPDATE '.self::TABLE_NAME.' SET 
+        token = :tokenToInsert
+        WHERE email = :email;';
+        $pdoStatement = Database::getPDO()->prepare($sql);
+        $pdoStatement->bindValue(':email', $email, PDO::PARAM_STR);
+        $pdoStatement->bindValue(':tokenToInsert', $token, PDO::PARAM_STR);
+
+        if ($pdoStatement->execute()) 
+        {
+            return $pdoStatement->rowCount() > 0;
+        } 
+        else 
+        {
+             return false;
+        }
+    }
+
     public static function activate($id) {
         $sql = 'UPDATE '.self::TABLE_NAME.' SET 
         status = 1

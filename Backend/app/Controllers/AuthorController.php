@@ -257,6 +257,111 @@ class AuthorController extends CoreController
         $this->showJson($array_json);
     }
 
+    public function lostPass() {
+        $data['email'] = isset($_GET['email']) ? trim(strip_tags($_GET['email'])) : '';
+        // je vérifie que les data reçu ne sont pas vide
+        $this->notEmptyDatas($data);
+
+        // je cherche l'auteur par son mail
+        $authorFind = Author::getOneByEmail($data['email']);
+
+        // si je ne le trouve pas
+        if (!$authorFind)
+        {
+            $this->sendError('Compte inexistant');
+        }
+        // je vérifie que son status sois actif (1)
+        $status = $authorFind->getStatus();
+        if ($status !== '1') 
+        {
+            $this->sendError('Le compte a été desactivé');
+        }
+        // création token et ajout au tableau de data 
+        $token = bin2hex(random_bytes(32));
+        // je test l'insertion du token en bdd
+        if (Author::insertToken($data['email'], $token)) 
+        {
+            // j'assemble mon lien de redirection
+            $urlNewPass = 'http://localhost/Projet_perso/oBlog/Frontend/public/reinitialisation-mot-de-passe?id='.$authorFind->getId().'&token='.$token;
+            // Envoi d'un mail de confirmation
+            $mail = new PHPMailer(true);// true active les exceptions
+            //Server settings
+            // debbug : 
+            //$mail->SMTPDebug = 2; // 1 = Erreurs et messages, 2 = messages seulement
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true; // activer l'authentification
+            $mail->Username = 'rachel.oblog@gmail.com';// mail hote
+            $mail->Password = 'ki.gu?ru@mi';// mdp hote
+            $mail->SMTPSecure = 'ssl'; // encryptage
+            $mail->Port = 465;// 587 ou 465 (pour google 465 == sécurisé)
+        
+            //Recipients
+            $mail->setFrom('rachel.oblog@gmail.com', 'oBlog');
+            $mail->addAddress($authorFind->getEmail(), $authorFind->getName());
+        
+            //Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Changer de mot de passe';
+            $mail->Body    = 'Bonjour '.$authorFind->getName().'<br/> Veuillez cliquer sur ce lien pour changer votre mot de passe oBlog : <br/> <a href="'.$urlNewPass.'"> Lien vers oBlog </a>';
+        
+            if(!$mail->Send()) {
+                $this->sendError('Une erreur est survenue lors de l\'envoi du mail.');
+                // debbug : 
+                //echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+            }
+            else
+            {
+                $array_json['success'] = true;
+                $this->showJson($array_json);
+            }
+        } 
+        else 
+        {
+            $this->sendError('Une erreur est survenue lors de l\'inscription, veuillez recommencer.');
+        }
+    }
+
+    public function resetPass() {
+        $datas = [
+            'id'          => isset($_POST['id'])              ? trim(strip_tags((int)$_POST['id'])) : '',
+            'token'       => isset($_POST['token'])           ? trim($_POST['token'])               : '',
+            'password'    => isset($_POST['password'])        ? trim($_POST['password'])            : '',
+            'passConfirm' => isset($_POST['passwordConfirm']) ? trim($_POST['passwordConfirm'])     : '',
+        ];
+        //var_dump($datas);
+        // je vérifie que les datas ne soient pas vide
+        $this->notEmptyDatas($datas);
+        // je récupère l'auteur
+        $authorFind = Author::getOne($datas['id']);
+        if (!$authorFind)
+        {
+            $this->sendError('Compte inexistant');
+        }
+        // je test le token
+        $tokenAuthor = $authorFind->getToken();
+        if($tokenAuthor !== $datas['token']) 
+        {
+            $this->sendError('Une erreur est survenue');
+        }
+        // je test l'intégrité du mdp
+        $this->passwordIntegrity($datas['password'], $datas['passConfirm']);
+        // je rajoute un salt au mdp
+        $datas['password'] .= $this->salt;
+        // je hash le mdp
+        $datas['password'] = password_hash($datas['password'], PASSWORD_DEFAULT);
+        // j'enregistre le nouveau mdp dans la bdd
+        if(!Author::updatePassword($datas['id'], $datas['password']))
+        {
+            $this->sendError('Une erreur est survenue');
+        }
+        // je supprime le token
+        Author::insertToken($authorFind->getEmail(), '0');
+
+        $array_json['success'] = true;
+        $this->showJson($array_json);
+
+    }
     // Méthode pour changer le mdp de l'auteur
     public function changePass() 
     {

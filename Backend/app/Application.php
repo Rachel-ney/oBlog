@@ -62,6 +62,8 @@ class Application
         $this->router->map('POST', '/add-author', 'AuthorController#add', 'addAuthor');
         $this->router->map('GET', '/validate-account', 'AuthorController#validateAccount', 'validateAccount');
         $this->router->map('POST', '/connexion', 'AuthorController#connexion', 'connexion');
+        $this->router->map('GET', '/lost-password', 'AuthorController#lostPass', 'lostPass');
+        $this->router->map('POST', '/reset-password', 'AuthorController#resetPass', 'resetPass');
         $this->router->map('POST', '/change-pass', 'AuthorController#changePass', 'changePass');
         $this->router->map('POST', '/desactivate', 'AuthorController#desactivate', 'desactivateAuthor');
     }

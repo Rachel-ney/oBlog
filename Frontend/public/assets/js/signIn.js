@@ -5,7 +5,7 @@ var appSignIn = {
 
   init: function() {
     appSignIn.uri =  $('.container').data('uri');
-    appSignIn.back = $('.container').data("back");
+    appSignIn.back = $('.container').data('back');
     $('.register').on('submit', appSignIn.handleCheckForm);
     $('.sign-in').on('submit', appSignIn.handleCheckForm)
   },

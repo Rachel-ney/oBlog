@@ -53,8 +53,17 @@ class UserController extends CoreController
         }
         else 
         {
-            $this->oTemplator->setVar('js', ['resetPass']);
-            $this->show('/user/resetPass');
+            if(empty($_GET['id']) || empty($_GET['token']))
+            {
+                $this->oTemplator->setVar('js', ['signIn']);
+                $this->show('/user/signIn');
+            }
+            else
+            {
+                $this->oTemplator->setVar('js', ['resetPass']);
+                $this->show('/user/resetPass');
+            }
+            
         }
     }
 
