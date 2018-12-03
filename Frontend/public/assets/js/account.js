@@ -6,8 +6,8 @@ var app = {
 
   init: function () {
     // je récupère la base uri : 
-    app.uri = $('.container').data('uri');
-    app.back = $('.container').data("back");
+    app.uri = $('.container-fluid').data('uri');
+    app.back = $('.container-fluid').data("back");
     // j'ajoute mes events
     $('.form-modal-desactivate').on('submit', app.handleConfirmModalDesactivate);
     $('.form-password').on('submit', app.handleCheckPasswordChange);
@@ -19,7 +19,6 @@ var app = {
 
   handleConfirmModalDesactivate: function(evt) {
     evt.preventDefault();
-    console.log('desactivate');
     var password = $.trim($('input#pass-desactivate').val());
 
     if(password !== '')

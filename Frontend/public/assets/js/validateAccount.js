@@ -2,7 +2,7 @@ var app = {
     back: '',
   
     init: function() {
-      app.back = $('.container').data("back");
+      app.back = $('.container-fluid').data("back");
       app.recoverData();
     },
 

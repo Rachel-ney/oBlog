@@ -61,5 +61,7 @@ class Application
         $this->router->map('GET', '/mon-compte', 'UserController#account', 'account');
         $this->router->map('GET', '/mot-de-passe-perdu', 'UserController#lostPass', 'lostPass');
         $this->router->map('GET', '/reinitialisation-mot-de-passe', 'UserController#resetPass', 'resetPass');
+        // OtherController
+        $this->router->map('GET', '/jeu-du-memory', 'OtherController#memory', 'memory');
     }
 }

@@ -4,8 +4,8 @@ var appSignIn = {
   target: '',
 
   init: function() {
-    appSignIn.uri =  $('.container').data('uri');
-    appSignIn.back = $('.container').data('back');
+    appSignIn.uri =  $('.container-fluid').data('uri');
+    appSignIn.back = $('.container-fluid').data('back');
     $('.register').on('submit', appSignIn.handleCheckForm);
     $('.sign-in').on('submit', appSignIn.handleCheckForm)
   },

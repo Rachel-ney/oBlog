@@ -1,6 +1,6 @@
     <!-- NAV 
         Nous sommes en mobile first : par défaut notre menu est masqué !-->
-    <nav class="navbar navbar-expand-md navbar-light">
+    <nav class="navbar navbar-expand-md navbar-light mx-0">
 
         <a class="navbar-brand" href="#">A la dérive</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
@@ -15,6 +15,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $this->router->generate('blog');?>">Le blog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= $this->router->generate('memory');?>">Jeu</a>
                 </li>
                 <?php if (isset($_SESSION['user'])) : ?>
                 <li class="nav-item">

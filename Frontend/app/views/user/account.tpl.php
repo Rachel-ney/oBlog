@@ -1,4 +1,4 @@
-<div class="row  justify-content-center data">
+<div class="row col-12 col-lg-9 my-3 mx-auto justify-content-center data">
     <main class="col-lg-10">
     <?php if (isset($_SESSION['success']['addPost'])) : ?>
     <p class="col-lg-12 bg-success rounded p-2 text-center text-light ">

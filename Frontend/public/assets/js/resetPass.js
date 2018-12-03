@@ -4,7 +4,7 @@ var app = {
     token: '',
 
     init: function() {
-        app.back = $('.container').data('back');
+        app.back = $('.container-fluid').data('back');
         app.id = $('.data').data('id');
         app.token = $('.data').data('token');
         $('.reset-password').on('submit', app.handleCheckFormPass);
@@ -17,8 +17,7 @@ var app = {
             password: $.trim($('.password').val()),
             passwordConfirm: $.trim($('.password-confirm').val())
         };
-        app.resetPassword(data);
-        /*
+
         var notEmpty = true;
 
         for (var index in data)
@@ -43,7 +42,6 @@ var app = {
         {
             app.resetPassword(data);
         }
-        */
     },
 
     resetPassword: function(data) {

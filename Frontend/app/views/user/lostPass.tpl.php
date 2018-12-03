@@ -1,5 +1,5 @@
-<div class="col-12">
-<h1 class="col-6 mx-auto text-center">Mot de passe perdu</h1>
+<div class="col-12 col-lg-6 my-3 mx-auto">
+<h2 class="col-6 mx-auto text-center">Mot de passe perdu</h2>
 <form class="col-6 mx-auto lost-password">
   <div class="form-group ">
     <label>Entrez votre adresse mail</label>

@@ -4,8 +4,8 @@ var aside = {
 
   init: function () {
     // je récupère la base uri : 
-    aside.back = $('.container').data("back");
-    aside.uri = $('.container').data("uri");
+    aside.back = $('.container-fluid').data("back");
+    aside.uri = $('.container-fluid').data("uri");
     aside.recoverCategoryList();
     aside.recoverAuthorList();
   },

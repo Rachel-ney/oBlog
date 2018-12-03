@@ -5,8 +5,8 @@ var appPost = {
 
     init: function() {
       // je récupère la base uri : 
-      appPost.uri = $('.container').data("uri");
-      appPost.back = $('.container').data("back");
+      appPost.uri = $('.container-fluid').data("uri");
+      appPost.back = $('.container-fluid').data("back");
       // je determine quels articles je vais devoir récupérer en fonction du nom du data
       if (typeof $('main').data("category") !== 'undefined') {
           appPost.constructUrl('category');

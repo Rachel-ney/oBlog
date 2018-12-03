@@ -1,4 +1,4 @@
-<div class="data" data-id="<?=$_GET['id']?>" data-token="<?=$_GET['token']?>">
+<div class="col-12 col-lg-6 my-3 mx-auto data" data-id="<?=$_GET['id']?>" data-token="<?=$_GET['token']?>">
     <h1 class="text-center">Réinitialiser le mot de passe</h1>
     <!-- TODO : ajouter formulaire de changement de mdp -->
 
