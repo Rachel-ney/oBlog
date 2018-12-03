@@ -128,7 +128,7 @@ class AuthorController extends CoreController
         if ($author->insert()) 
         {
             // j'assemble mon lien de redirection
-            $urlValidate = 'http://localhost/Projet_perso/oBlog/Frontend/public/validation?id='.$author->getId().'&token='.$token;
+            $urlValidate = 'http://www.oblog.rachel-michel.fr/oBlog/Frontend/public/validation?id='.$author->getId().'&token='.$token;
             // Envoi d'un mail de confirmation
             $mail = new PHPMailer(true);// true active les exceptions
             //Server settings
@@ -184,28 +184,26 @@ class AuthorController extends CoreController
         {
             $this->sendError('Compte inexistant');
         }
+        // vérification token
+        else if ($datas['token'] !== $authorFind->getToken()) 
+        {
+            $this->sendError('token');
+        }
         // vérification status : 0 = inactif, 1 = actif
-        if ($authorFind->getStatus() !== '0') 
+        else if ($authorFind->getStatus() === '1') 
         {
             $this->sendError('Le compte a déjà été activé');
         }
-        // vérification token
-        if ($datas['token'] !== $authorFind->getToken()) 
+        else
         {
-            $this->sendError('Une erreur est survenue');
+            if(!Author::activate($datas['id']))
+            {
+                $this->sendError('id');
+            }
         }
-        if(!Author::activate($datas['id']))
-        {
-            $this->sendError('Une erreur est survenue');
-        }
-
-        // j'active ma session 
-        $this->addUserInSession($authorFind);
-        // je récupère les catégories
-        $this->addCategoryInSession();
-
         $array_json['success'] = true;
         $this->showJson($array_json);
+
     }
 
     public function connexion() {
@@ -231,7 +229,7 @@ class AuthorController extends CoreController
         if ($status !== '1') 
         {
             // message d'erreur, fin du programme
-            $this->sendError('Le compte a été desactivé');
+            $this->sendError('Le compte n\'est pas actif');
         }
         // je rajoute le salt que j'avais défini à l'inscription
         $datas['Password'] .= $this->salt;
@@ -282,7 +280,7 @@ class AuthorController extends CoreController
         if (Author::insertToken($data['email'], $token)) 
         {
             // j'assemble mon lien de redirection
-            $urlNewPass = 'http://localhost/Projet_perso/oBlog/Frontend/public/reinitialisation-mot-de-passe?id='.$authorFind->getId().'&token='.$token;
+            $urlNewPass = 'http://www.oblog.rachel-michel.fr/oBlog/Frontend/public/reinitialisation-mot-de-passe?id='.$authorFind->getId().'&token='.$token;
             // Envoi d'un mail de confirmation
             $mail = new PHPMailer(true);// true active les exceptions
             //Server settings

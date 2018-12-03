@@ -25,7 +25,7 @@
 }
 
 .hidden {
-    background-image: url('../images/card-bkg.jpg');
+    background-image: url('../pictures/card-bkg.jpg');
     background-size: contain;
     border: 3px solid #049ede;
     border-radius: 3px;

@@ -2,3 +2,4 @@ Frontend/vendor/
 Frontend/composer.lock
 Backend/vendor/
 Backend/app/Utils/config.conf
+Backend/app/Utils/config.db.conf
