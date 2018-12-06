@@ -82,53 +82,80 @@ class AuthorController extends CoreController
             'Email'        => isset($_POST['email'])        ? strip_tags(trim($_POST['email'])) : '',
         ];
         // je vérifie que les datas ne sont pas vide
-        $this->notEmptyDatas($datas);
+        $asError = $this->notEmptyDatas($datas);
 
-        // je vérifie que le pseudo ne comporte que des lettres et des chiffres
-        $regexName = '/^[a-zA-Z0-9_]{1,25}$/';
-        if(!preg_match($regexName, $datas['Name'])) 
+        if (!$asError) 
         {
-            $this->sendError('Le nom ne doit pas contenir d\'espace ou de caractère spéciaux');
-        }
-        // je vérifie que l'adresse mail soit valide
-        if (!filter_var($datas['Email'], FILTER_VALIDATE_EMAIL))  
-        {
-            $this->sendError('Email invalide.');
-        }
-        // je vérifie que l'adresse mail ne soit pas déjà en bdd 
-        $alreadyExist = Author::getOneByEmail($datas['Email']);
-        if ($alreadyExist)
-        {
-            $this->sendError('Cette adresse mail est déjà enregistré');
-        }
-
-        // je test le mot de passe
-        $this->passwordIntegrity($datas['Password'], $datas['Pass_confirm']);
-
-        // je rajoute un salt au mdp
-        $datas['Password'] .= $this->salt;
-        // je hash le mdp
-        $datas['Password'] = password_hash($datas['Password'], PASSWORD_DEFAULT);
-        // création token et ajout au tableau de data 
-        $token = bin2hex(random_bytes(32));
-        $datas['Token'] = $token;
-        
-        // Je créer une instance de auteur
-        $author = new Author();
-        // je lui donne les data à ajouter : 
-        foreach ($datas as $dataName => $dataValue) 
-        {
-            if ($dataName !== 'Pass_confirm')
+            // je vérifie que le pseudo ne comporte que des lettres et des chiffres
+            $regexName = '/^[a-zA-Z0-9_]{1,25}$/';
+            if(!preg_match($regexName, $datas['Name'])) 
             {
-                $setterName = 'set'.$dataName;
-                $author->$setterName($dataValue);    
+                $this->sendError('Le nom ne doit pas contenir d\'espace ou de caractère spéciaux');
+                $asError = true;
             }
         }
-        // je test l'insertion en bdd
-        if ($author->insert()) 
+
+        if (!$asError) 
+        {
+            // je vérifie que l'adresse mail soit valide
+            if (!filter_var($datas['Email'], FILTER_VALIDATE_EMAIL))  
+            {
+                $this->sendError('Email invalide.');
+                $asError = true;
+            }
+        }
+
+        if (!$asError) 
+        {
+            // je vérifie que l'adresse mail ne soit pas déjà en bdd 
+            $alreadyExist = Author::getOneByEmail($datas['Email']);
+            if ($alreadyExist)
+            {
+                $this->sendError('Cette adresse mail est déjà enregistré');
+                $asError = true;
+            }
+        }
+
+        if (!$asError) 
+        {
+            // je test le mot de passe
+            $asError = $this->passwordIntegrity($datas['Password'], $datas['Pass_confirm']);
+        }
+
+        if (!$asError) 
+        {
+            // je rajoute un salt au mdp
+            $datas['Password'] .= $this->salt;
+            // je hash le mdp
+            $datas['Password'] = password_hash($datas['Password'], PASSWORD_DEFAULT);
+            // création token et ajout au tableau de data 
+            $token = bin2hex(random_bytes(32));
+            $datas['Token'] = $token;
+            
+            // Je créer une instance de auteur
+            $author = new Author();
+            // je lui donne les data à ajouter : 
+            foreach ($datas as $dataName => $dataValue) 
+            {
+                if ($dataName !== 'Pass_confirm')
+                {
+                    $setterName = 'set'.$dataName;
+                    $author->$setterName($dataValue);    
+                }
+            }
+            // je test l'insertion en bdd
+            if (!$author->insert()) 
+            {
+                //message d'erreur
+                $this->sendError('Une erreur est survenue lors de l\'inscription, veuillez recommencer.');
+                $asError = true;
+            }
+        }
+
+        if (!$asError) 
         {
             // j'assemble mon lien de redirection
-            $urlValidate = 'http://www.oblog.rachel-michel.fr/oBlog/Frontend/public/validation?id='.$author->getId().'&token='.$token;
+            $urlValidate = 'https://rachel-michel.fr/validation?id='.$author->getId().'&token='.$token;
             // Envoi d'un mail de confirmation
             $mail = new PHPMailer(true);// true active les exceptions
             //Server settings
@@ -151,22 +178,21 @@ class AuthorController extends CoreController
             $mail->Subject = 'Validation de votre compte oBlog';
             $mail->Body    = 'Bonjour '.$author->getName().', et bienvenu sur oBlog ! <br/> Veuillez cliquer sur ce lien pour valider votre compte: <br/> <a href="'.$urlValidate.'"> Lien vers oBlog </a>';
         
-            if(!$mail->Send()) {
+            if(!$mail->Send()) 
+            {
                 $this->sendError('Une erreur est survenue lors de l\'envoi du mail.');
+                $asError = true;
                 // debbug : 
                 //echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
             }
-            else
-            {
-                $array_json['success']['mail'] = true;
-                $this->showJson($array_json);
-            }
-        } 
-        else 
-        {
-            // sinon la clef = false + message d'erreur, fin du programme
-            $this->sendError('Une erreur est survenue lors de l\'inscription, veuillez recommencer.');
         }
+
+        if (!$asError) 
+        {
+            $array_json['success']['mail'] = true;
+            $this->showJson($array_json);
+        }
+        
     }
 
     public function validateAccount() {
@@ -175,35 +201,55 @@ class AuthorController extends CoreController
             'token' => isset($_GET['token']) ? trim(strip_tags($_GET['token']))   : '',
         ];
         // je vérifie que les data reçu ne soient pas vide
-        $this->notEmptyDatas($datas);
+        $asError = $this->notEmptyDatas($datas);
 
-         // je cherche l'auteur par son id
-        $authorFind = Author::getOne($datas['id']);
-        // si je ne le trouve pas
-        if (!$authorFind)
+        if (!$asError) 
         {
-            $this->sendError('Compte inexistant');
+            // je cherche l'auteur par son id
+            $authorFind = Author::getOne($datas['id']);
+            // si je ne le trouve pas
+            if (!$authorFind)
+            {
+                $this->sendError('Compte inexistant');
+                $asError = true;
+            }
         }
-        // vérification token
-        else if ($datas['token'] !== $authorFind->getToken()) 
+         
+        if (!$asError) 
         {
-            $this->sendError('token');
+            // vérification token
+            if ($datas['token'] !== $authorFind->getToken()) 
+            {
+                $this->sendError('token');
+                $asError = true;
+            }
         }
-        // vérification status : 0 = inactif, 1 = actif
-        else if ($authorFind->getStatus() === '1') 
+
+        if (!$asError) 
         {
-            $this->sendError('Le compte a déjà été activé');
+            // vérification status : 0 = inactif, 1 = actif
+            if ($authorFind->getStatus() === '1') 
+            {
+                $this->sendError('Le compte a déjà été activé');
+                $asError = true;
+            }
         }
-        else
+
+        if (!$asError) 
         {
             if(!Author::activate($datas['id']))
             {
                 $this->sendError('id');
+                $asError = true;
             }
         }
-        $array_json['success'] = true;
-        $this->showJson($array_json);
 
+        if (!$asError) 
+        {
+            $array_json['success'] = true;
+            $this->showJson($array_json);
+        }
+        
     }
 
     public function connexion() {
@@ -214,73 +260,112 @@ class AuthorController extends CoreController
             'Email'    => isset($_POST['email'])    ? trim(strip_tags($_POST['email']))    : '',
         ];
         // je vérifie que les data reçu ne sont pas vide
-        $this->notEmptyDatas($datas);
+        $asError = $this->notEmptyDatas($datas);
 
-        // je cherche l'auteur par son mail
-        $authorFind = Author::getOneByEmail($datas['Email']);
-        // si je ne le trouve pas
-        if (!$authorFind)
+        if (!$asError) 
         {
-            // message d'erreur, fin du programme
-            $this->sendError('Compte inexistant');
+            // je cherche l'auteur par son mail
+            $authorFind = Author::getOneByEmail($datas['Email']);
+            // si je ne le trouve pas
+            if (!$authorFind)
+            {
+                // message d'erreur, fin du programme
+                $this->sendError('Compte inexistant');
+                $asError = true;
+            }
         }
-        // je vérifie que son status sois actif (1)
-        $status = $authorFind->getStatus();
-        if ($status !== '1') 
+
+        if (!$asError) 
         {
-            // message d'erreur, fin du programme
-            $this->sendError('Le compte n\'est pas actif');
+            // je vérifie que son status sois actif (1)
+            $status = $authorFind->getStatus();
+            if ($status !== '1') 
+            {
+                // message d'erreur, fin du programme
+                $this->sendError('Le compte n\'est pas actif');
+                $asError = true;
+            }
         }
-        // je rajoute le salt que j'avais défini à l'inscription
-        $datas['Password'] .= $this->salt;
-        $hash = $authorFind->getPassword();
-        // si le mdp donné ne correspond pas à celui stocké en bdd
-        if (!password_verify($datas['Password'], $hash)) 
+
+        if (!$asError) 
         {
-            // message d'erreur, fin du programme
-            $this->sendError('Mot de passe incorrect', true);
+            // je rajoute le salt que j'avais défini à l'inscription
+            $datas['Password'] .= $this->salt;
+            $hash = $authorFind->getPassword();
+            // si le mdp donné ne correspond pas à celui stocké en bdd
+            if (!password_verify($datas['Password'], $hash)) 
+            {
+                // message d'erreur, fin du programme
+                $this->sendError('Mot de passe incorrect', true);
+                $asError = true;
+            }
+        }
+
+        if (!$asError) 
+        {
+            // j'enregistre ses info en session
+            $this->addUserInSession($authorFind);
+            // ainsi que ses articles
+            $this->addPostAuthorInSession();
+            // Pour pouvoir les afficher dans la page mon compte sans avoir à faire de requêtes
+            // je récupère les catégories en session directement à la connexion
+            $this->addCategoryInSession();
+            // j'envoi mon retour comme positif
+            $array_json['success'] = true;
+        
+            $array_json['sess'] = $_SESSION;
+            $array_json['sess_param'] = session_get_cookie_params();
+            // j'envoi le tableau à showJson
             $this->showJson($array_json);
-            die();
         }
-        // j'enregistre ses info en session
-        $this->addUserInSession($authorFind);
-        // ainsi que ses articles
-        $this->addPostAuthorInSession();
-        // Pour pouvoir les afficher dans la page mon compte sans avoir à faire de requêtes
-        // je récupère les catégories en session directement à la connexion
-        $this->addCategoryInSession();
-        // j'envoi mon retour comme positif
-        $array_json['success'] = true;
-        // j'envoi le tableau à showJson
-        $this->showJson($array_json);
+
     }
 
     public function lostPass() {
         $data['email'] = isset($_GET['email']) ? trim(strip_tags($_GET['email'])) : '';
         // je vérifie que les data reçu ne sont pas vide
-        $this->notEmptyDatas($data);
+        $asError = $this->notEmptyDatas($data);
 
-        // je cherche l'auteur par son mail
-        $authorFind = Author::getOneByEmail($data['email']);
+        if (!$asError) 
+        {
+            // je cherche l'auteur par son mail
+            $authorFind = Author::getOneByEmail($data['email']);
 
-        // si je ne le trouve pas
-        if (!$authorFind)
-        {
-            $this->sendError('Compte inexistant');
+            // si je ne le trouve pas
+            if (!$authorFind)
+            {
+                $this->sendError('Compte inexistant');
+                $asError = true;
+            }
         }
-        // je vérifie que son status sois actif (1)
-        $status = $authorFind->getStatus();
-        if ($status !== '1') 
+        
+        if (!$asError) 
         {
-            $this->sendError('Le compte a été desactivé');
+            // je vérifie que son status sois actif (1)
+            $status = $authorFind->getStatus();
+            if ($status !== '1') 
+            {
+                $this->sendError('Le compte a été desactivé');
+                $asError = true;
+            }
         }
-        // création token et ajout au tableau de data 
-        $token = bin2hex(random_bytes(32));
-        // je test l'insertion du token en bdd
-        if (Author::insertToken($data['email'], $token)) 
+        
+        if (!$asError) 
+        {
+            // création token et ajout au tableau de data 
+            $token = bin2hex(random_bytes(32));
+            // je test l'insertion du token en bdd
+            if (!Author::insertToken($data['email'], $token)) 
+            { 
+                $this->sendError('Une erreur est survenue lors de l\'inscription, veuillez recommencer.');
+                $asError = true;
+            }
+        }
+
+        if (!$asError) 
         {
             // j'assemble mon lien de redirection
-            $urlNewPass = 'http://www.oblog.rachel-michel.fr/oBlog/Frontend/public/reinitialisation-mot-de-passe?id='.$authorFind->getId().'&token='.$token;
+            $urlNewPass = 'https://rachel-michel.fr/reinitialisation-mot-de-passe?id='.$authorFind->getId().'&token='.$token;
             // Envoi d'un mail de confirmation
             $mail = new PHPMailer(true);// true active les exceptions
             //Server settings
@@ -305,19 +390,18 @@ class AuthorController extends CoreController
         
             if(!$mail->Send()) {
                 $this->sendError('Une erreur est survenue lors de l\'envoi du mail.');
+                $asError = true;
                 // debbug : 
                 //echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
             }
-            else
-            {
-                $array_json['success'] = true;
-                $this->showJson($array_json);
-            }
-        } 
-        else 
-        {
-            $this->sendError('Une erreur est survenue lors de l\'inscription, veuillez recommencer.');
         }
+
+        if (!$asError) 
+        {
+            $array_json['success'] = true;
+            $this->showJson($array_json);
+        }
+
     }
 
     public function resetPass() {
@@ -329,37 +413,59 @@ class AuthorController extends CoreController
         ];
         //var_dump($datas);
         // je vérifie que les datas ne soient pas vide
-        $this->notEmptyDatas($datas);
-        // je récupère l'auteur
-        $authorFind = Author::getOne($datas['id']);
-        if (!$authorFind)
-        {
-            $this->sendError('Compte inexistant');
-        }
-        // je test le token
-        $tokenAuthor = $authorFind->getToken();
-        if($tokenAuthor !== $datas['token']) 
-        {
-            $this->sendError('Une erreur est survenue');
-        }
-        // je test l'intégrité du mdp
-        $this->passwordIntegrity($datas['password'], $datas['passConfirm']);
-        // je rajoute un salt au mdp
-        $datas['password'] .= $this->salt;
-        // je hash le mdp
-        $datas['password'] = password_hash($datas['password'], PASSWORD_DEFAULT);
-        // j'enregistre le nouveau mdp dans la bdd
-        if(!Author::updatePassword($datas['id'], $datas['password']))
-        {
-            $this->sendError('Une erreur est survenue');
-        }
-        // je supprime le token
-        Author::insertToken($authorFind->getEmail(), '0');
+        $asError = $this->notEmptyDatas($datas);
 
-        $array_json['success'] = true;
-        $this->showJson($array_json);
+        if (!$asError) 
+        {
+            // je récupère l'auteur
+            $authorFind = Author::getOne($datas['id']);
+            if (!$authorFind)
+            {
+                $this->sendError('Compte inexistant');
+                $asError = true;
+            }
+        }
 
+        if (!$asError) 
+        {
+            // je test le token
+            $tokenAuthor = $authorFind->getToken();
+            if($tokenAuthor !== $datas['token']) 
+            {
+                $this->sendError('Une erreur est survenue');
+                $asError = true;
+            }
+        }
+        
+        if (!$asError) 
+        {
+            // je test l'intégrité du mdp
+            $asError = $this->passwordIntegrity($datas['password'], $datas['passConfirm']);
+        }
+        
+        if (!$asError) 
+        {
+            // je rajoute un salt au mdp
+            $datas['password'] .= $this->salt;
+            // je hash le mdp
+            $datas['password'] = password_hash($datas['password'], PASSWORD_DEFAULT);
+            // j'enregistre le nouveau mdp dans la bdd
+            if(!Author::updatePassword($datas['id'], $datas['password']))
+            {
+                $this->sendError('Une erreur est survenue');
+                $asError = true;
+            }
+        }
+        if (!$asError) 
+        {
+            // je supprime le token
+            Author::insertToken($authorFind->getEmail(), '0');
+            $array_json['success'] = true;
+            $this->showJson($array_json);
+        }
+        
     }
+
     // Méthode pour changer le mdp de l'auteur
     public function changePass() 
     {
@@ -372,44 +478,66 @@ class AuthorController extends CoreController
             'newPassConfirm' => isset($_POST['newPassConfirm']) ? trim($_POST['newPassConfirm']) : '',
         ];
         // je vérifie que les datas ne soient pas vide
-        $this->notEmptyDatas($datas);
-        // Je cherche si l'auteur existe bien 
-        $authorFind = Author::getOne($datas['id']);
-        if (!$authorFind)
-        {
-            $this->sendError('Une erreur est survenue');
-        }
-        // si trouvé je vérifie son mot de passe 
-        // je rajoute le salt 
-        $datas['oldPass'] .= $this->salt;
+        $asError = $this->notEmptyDatas($datas);
 
-        $hash = $authorFind->getPassword();
-        // si le mdp donné ne correspond pas à celui stocké en bdd
-        if (!password_verify($datas['oldPass'], $hash)) 
+        if (!$asError) 
         {
-            $this->sendError('Mot de passe incorrect');
+            // Je cherche si l'auteur existe bien 
+            $authorFind = Author::getOne($datas['id']);
+            if (!$authorFind)
+            {
+                $this->sendError('Une erreur est survenue');
+                $asError = true;
+            }
         }
-        // je test le nouveau mot de passe
-        $this->passwordIntegrity($datas['newPass'], $datas['newPassConfirm']);
-        // j'ajoute le salt + hash le nouveau mdp
-        $datas['newPass'] .= $this->salt;
-        $datas['newPass'] = password_hash($datas['newPass'], PASSWORD_DEFAULT);
 
-        // Je test la modification en bdd
-        if (Author::updatePassword($datas['id'], $datas['newPass'])) 
+        if (!$asError) 
+        {
+            // si trouvé je vérifie son mot de passe 
+            // je rajoute le salt 
+            $datas['oldPass'] .= $this->salt;
+
+            $hash = $authorFind->getPassword();
+            // si le mdp donné ne correspond pas à celui stocké en bdd
+            if (!password_verify($datas['oldPass'], $hash)) 
+            {
+                $this->sendError('Mot de passe incorrect');
+                $asError = true;
+            }
+        }
+        
+        if (!$asError) 
+        {
+            // je test le nouveau mot de passe
+            $asError = $this->passwordIntegrity($datas['newPass'], $datas['newPassConfirm']);
+        }
+        
+        if (!$asError) 
+        {
+            // j'ajoute le salt + hash le nouveau mdp
+            $datas['newPass'] .= $this->salt;
+            $datas['newPass'] = password_hash($datas['newPass'], PASSWORD_DEFAULT);
+
+            // Je test la modification en bdd
+            if (!Author::updatePassword($datas['id'], $datas['newPass'])) 
+            {
+                $this->sendError('Une erreur est survenue');
+                $asError = true;
+            } 
+        }
+
+        if (!$asError) 
         {
             // si update ok j'ajoute une clef true à transmettre
             $_SESSION['success']['changePass'] = 'Votre mot de passe a bien été modifié';
             $array_json['success'] = true;
             $this->showJson($array_json);
-        } 
-        else 
-        {
-            $this->sendError('Une erreur est survenue');
         }
+        
     }
 
     public function desactivate() {
+        $asError = false;
 
         $password = isset($_POST['password'])      ? trim(strip_tags($_POST['password'])) : '';
         $id       = isset($_SESSION['user']['id']) ? $_SESSION['user']['id']              : '';
@@ -417,35 +545,50 @@ class AuthorController extends CoreController
         if(empty($password) || empty($id)) 
         {
             $this->sendError('Vous ne pouvez pas laisser de champs vide');
+            $asError = true;
         }
 
-        $authorFind = Author::getOne($id);
-
-        if(empty($authorFind))
+        if (!$asError) 
         {
-            $this->sendError('Une erreur est survenue');
-        }
+            $authorFind = Author::getOne($id);
 
-        $hash = $authorFind->getPassword();
-        $password.= $this->salt;
+            if(empty($authorFind))
+            {
+                $this->sendError('Une erreur est survenue');
+                $asError = true;
+            }
+        }
         
-        // si le mdp donné correspond à celui stocké en bdd
-        if (!password_verify($password, $hash))
+        if (!$asError) 
         {
-            $this->sendError('Mot de passe incorrect');
+            $hash = $authorFind->getPassword();
+            $password.= $this->salt;
+            
+            // si le mdp donné correspond à celui stocké en bdd
+            if (!password_verify($password, $hash))
+            {
+                $this->sendError('Mot de passe incorrect');
+                $asError = true;
+            }
+        }
+        
+        if (!$asError) 
+        {
+            $desactivate = Author::desactivate($id);
+
+            if(!$desactivate)
+            {
+               $this->sendError('Une erreur est survenue');
+               $asError = true;
+            }
         }
 
-        $desactivate = Author::desactivate($id);
-
-        if($desactivate)
+        if (!$asError) 
         {
             $array_json['success'] = true;
-            session_unset();
+            $_SESSION = null;
             $this->showJson($array_json);
         }
-        else 
-        {
-            $this->sendError('Une erreur est survenue');
-        }
+        
     }
 }

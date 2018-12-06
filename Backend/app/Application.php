@@ -7,7 +7,6 @@ class Application
 
     public function __construct() 
     {
-        session_start();
         // Lancer AltoRouter
         $this->router = new \AltoRouter();
         // Récuperation de BASE_URI

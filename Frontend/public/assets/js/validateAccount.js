@@ -21,7 +21,7 @@ var app = {
 
     sendValidation: function(idUser, tokenUser) {
         var jqxhr = $.ajax({
-            url:'http://'+ app.back +'/validate-account', 
+            url:  app.back +'/validate-account', 
             method: 'GET', 
             dataType: 'json',
             data: {

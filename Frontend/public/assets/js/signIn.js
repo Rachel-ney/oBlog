@@ -95,7 +95,7 @@ var appSignIn = {
     if(register)
     {
       var jqxhr = $.ajax({
-        url:'http://'+ appSignIn.back +'/add-author', 
+        url:  appSignIn.back +'/add-author', 
         method: 'POST',
         dataType: 'json',
         data: {
@@ -109,7 +109,7 @@ var appSignIn = {
     else 
     {
       var jqxhr = $.ajax({
-        url:'http://'+ appSignIn.back +'/connexion', 
+        url:  appSignIn.back +'/connexion', 
         method: 'POST',
         dataType: 'json',
         data: {
@@ -120,6 +120,7 @@ var appSignIn = {
     }
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
     jqxhr.done(function (response) {
+      console.log(response);
         if (response.success)
         {
           if(response.success.mail)
@@ -129,7 +130,7 @@ var appSignIn = {
           }
           else
           {
-            location.reload(true);
+            //location.reload(true);
           }
           
         }

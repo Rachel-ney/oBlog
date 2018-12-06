@@ -12,12 +12,11 @@ abstract class CoreController
     public function __construct($router)
     {
         $this->router = $router;
-        session_start(); 
         if (!empty($_GET['disconnect'])) 
         {
             if($_GET['disconnect'] === '1') 
             {
-                session_unset();
+                $_SESSION = null;
                 header('Location: '. $router->generate('signIn'));
             }
         }

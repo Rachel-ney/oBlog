@@ -6,8 +6,8 @@
                 <div class="col-9 links">
                     <!-- Je créé une liste: https://getbootstrap.com/docs/4.1/components/list-group/ -->
                     <ul class="list-inline">
-                        <li class="list-inline-item"><a href="<?= $this->router->generate('contact');?>">Nous contacter</a></li>
-                        <li class="list-inline-item"><a href="<?= $this->router->generate('aboutUs');?>">Qui sommes nous ?</a></li>
+                        <li class="list-inline-item"><a href="<?= $this->router->generate('contact');?>">Me contacter</a></li>
+                        <li class="list-inline-item"><a href="<?= $this->router->generate('aboutUs');?>">A propos </a></li>
                         <li class="list-inline-item"><a href="<?= $this->router->generate('legalMention');?>">Mentions légales</a></li>
                     </ul>
                 </div>

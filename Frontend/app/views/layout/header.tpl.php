@@ -9,9 +9,8 @@
     <!-- Déclaration de notre font -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,800" rel="stylesheet">
 
-    <!-- -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
-        crossorigin="anonymous">
+    <!-- Font awesome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
@@ -39,6 +38,9 @@
     </header>
 
     <!-- Mon container (avec une max-width) dans lequel mon contenu va être placé: https://getbootstrap.com/docs/4.1/layout/overview/#containers -->
-    <!-- Serveur : data-back="www.oblog.rachel-michel.fr/oBlog/Backend" -->
-    <!-- Local : data-back="localhost/Projet_perso/oBlog/Backend" -->
-    <div class="container-fluid" data-uri="<?=$_SERVER['BASE_URI'];?>" data-back="localhost/Projet_perso/oBlog/Backend" >
+    <!-- Serveur : data-back="https://api.rachel-michel.fr/oBlog/Backend" -->
+    <!-- Local : data-back="http://localhost/Projet_perso/oBlog/Backend" -->
+    
+    <?php dump($_SESSION); ?>  
+    <?php dump(session_get_cookie_params());?>
+    <div class="container-fluid" data-uri="<?=$_SERVER['BASE_URI'];?>" data-back="http://localhost/Projet_perso/oBlog/Backend" >

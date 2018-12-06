@@ -46,7 +46,7 @@ var app = {
 
     resetPassword: function(data) {
         var jqxhr = $.ajax({
-            url:'http://'+ app.back +'/reset-password', 
+            url:  app.back +'/reset-password', 
             method: 'POST', 
             dataType: 'json',
             data: {

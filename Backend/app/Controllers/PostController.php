@@ -138,63 +138,94 @@ class PostController extends CoreController
     // Méthode pour ajouter / modifier un post en bdd
     public function addOrUpdate() 
     {
+        $asError = false;
         // je récupère la variable qui détermine si l'action sera de type add ou de type update
         $insertOrUpdate = isset($_POST['action']) ? strip_tags(trim($_POST['action'])) : '';
         // si vide
         if(empty($insertOrUpdate)) 
         {
             $this->sendError('Une erreur est survenue');
+            $asError = true;
         }
-        // si la méthode renseigné n'est pas update ou insert
-        if ($insertOrUpdate !== 'update' && $insertOrUpdate !== 'insert') {
-            $this->sendError('Une erreur est survenue');
-        }
-        // si la méthode choisi est update 
-        if ($insertOrUpdate === 'update') 
+
+        if (!$asError)
         {
-            // je récupère l'id de l'article à modifier
-            $idPostToUpdate = isset($_POST['post_id']) ? strip_tags(trim((int)$_POST['post_id'])) : '';
-            // si id vide
-            if(empty($idPostToUpdate)) 
-            {
+            // si la méthode renseigné n'est pas update ou insert
+            if ($insertOrUpdate !== 'update' && $insertOrUpdate !== 'insert') {
                 $this->sendError('Une erreur est survenue');
+                $asError = true;
             }
         }
-        // je récupère les data
-        // j'elimine les espaces (trim) et les balises(strip_tags)
-        $datas = [
-            'Title'      => isset($_POST['title'])         ? strip_tags(trim($_POST['title']))         : '',
-            'Resume'     => isset($_POST['resume'])        ? strip_tags(trim($_POST['resume']))        : '',
-            'Content'    => isset($_POST['content'])       ? strip_tags(trim($_POST['content']))       : '',
-            'AuthorId'   => isset($_SESSION['user']['id']) ? strip_tags(trim($_SESSION['user']['id'])) : '',
-            'CategoryId' => isset($_POST['category_id'])   ? strip_tags(trim((int)$_POST['category_id']))   : ''
-        ];
-        // je vérifie que les datas ne soient pas vide
-        $this->notEmptyDatas($datas);
-        // je vérifie que la catégorie reçu existe bien 
-        $categoryExist = Category::getOne($datas['CategoryId']);
-
-        if(!$categoryExist)
+        
+        if (!$asError)
         {
-            $this->sendError('Cette categorie n\'existe pas');
-        }
-        // Je créer une instance de post
-        $post = new Post();
-        // je lui donne les data à ajouter : 
-        foreach ($datas as $dataName => $dataValue) 
-        {
-            $setterName = 'set'.$dataName;
-            $post->$setterName($dataValue);
-        }
-        // si la méthode choisi est update 
-        if ($insertOrUpdate === 'update') 
-        {
-            // je lui donne aussi l'id
-            $post->setId($idPostToUpdate);
+            // si la méthode choisi est update 
+            if ($insertOrUpdate === 'update') 
+            {
+                // je récupère l'id de l'article à modifier
+                $idPostToUpdate = isset($_POST['post_id']) ? strip_tags(trim((int)$_POST['post_id'])) : '';
+                // si id vide
+                if(empty($idPostToUpdate)) 
+                {
+                    $this->sendError('Une erreur est survenue');
+                    $asError = true;
+                }
+            }
         }
         
-        // je test l'insertion ou la modification en bdd
-        if ($post->$insertOrUpdate()) 
+        if (!$asError)
+        {
+            // je récupère les data
+            // j'elimine les espaces (trim) et les balises(strip_tags)
+            $datas = [
+                'Title'      => isset($_POST['title'])         ? strip_tags(trim($_POST['title']))         : '',
+                'Resume'     => isset($_POST['resume'])        ? strip_tags(trim($_POST['resume']))        : '',
+                'Content'    => isset($_POST['content'])       ? strip_tags(trim($_POST['content']))       : '',
+                'AuthorId'   => isset($_SESSION['user']['id']) ? strip_tags(trim($_SESSION['user']['id'])) : '',
+                'CategoryId' => isset($_POST['category_id'])   ? strip_tags(trim((int)$_POST['category_id']))   : ''
+            ];
+            // je vérifie que les datas ne soient pas vide
+            $asError = $this->notEmptyDatas($datas);
+        }
+        
+        if (!$asError)
+        {
+            // je vérifie que la catégorie reçu existe bien 
+            $categoryExist = Category::getOne($datas['CategoryId']);
+
+            if(!$categoryExist)
+            {
+                $this->sendError('Cette categorie n\'existe pas');
+                $asError = true;
+            }
+        }
+        
+        if (!$asError)
+        {
+            // Je créer une instance de post
+            $post = new Post();
+            // je lui donne les data à ajouter : 
+            foreach ($datas as $dataName => $dataValue) 
+            {
+                $setterName = 'set'.$dataName;
+                $post->$setterName($dataValue);
+            }
+            // si la méthode choisi est update 
+            if ($insertOrUpdate === 'update') 
+            {
+                // je lui donne aussi l'id
+                $post->setId($idPostToUpdate);
+            }
+            
+            // je test l'insertion ou la modification en bdd
+            if (!$post->$insertOrUpdate()) 
+            {
+                $this->sendError('Une erreur est survenue');
+                $asError = true;
+            } 
+        }
+
+        if (!$asError)
         {
             // si insertion / update ok j'ajoute une clef true à transmettre
             $array_json['success'] = true;
@@ -210,11 +241,8 @@ class PostController extends CoreController
             $this->addPostAuthorInSession();
             
             $this->showJson($array_json);
-        } 
-        else 
-        {
-            $this->sendError('Une erreur est survenue');
         }
+
     }
 
     // Méthode pour supprimer le post d'un auteur en bdd 
@@ -227,33 +255,54 @@ class PostController extends CoreController
         ];
     
         //je vérifie qu'elles ne soient pas vide
-        $this->notEmptyDatas($datas);
-        // je récupère l'auteur
-        $authorExist = Author::getOne($datas['idAuthor']);
-        if (!$authorExist)
+        $asError = $this->notEmptyDatas($datas);
+        if (!$asError)
         {
-            $this->sendError('Une erreur est survenu');
+            // je récupère l'auteur
+            $authorExist = Author::getOne($datas['idAuthor']);
+            if (!$authorExist)
+            {
+                $this->sendError('Une erreur est survenu');
+                $asError = true;
+            }
         }
-        // et son mot de passe
-        $hash = $authorExist->getPassword();
-        $datas['password'].= $this->salt;
-        // pour le comparer au mot de passe entré par l'utilisateur
-        if (!password_verify($datas['password'], $hash))
+        
+        if (!$asError)
         {
-            $this->sendError('Mot de passe incorect', true);
-
+            // et son mot de passe
+            $hash = $authorExist->getPassword();
+            $datas['password'].= $this->salt;
+            // pour le comparer au mot de passe entré par l'utilisateur
+            if (!password_verify($datas['password'], $hash))
+            {
+                $this->sendError('Mot de passe incorect', true);
+                $asError = true;
+            }
         }
-
-        // je récupère le post d'après l'id du post ET l'id de l'auteur
-        $postToAuthor = Post::getOnePostFromAuthor($datas['idPost'], $datas['idAuthor']);
-
-        if (!$postToAuthor)
+        
+        if (!$asError)
         {
-            $this->sendError('Une erreur est survenu');
+            // je récupère le post d'après l'id du post ET l'id de l'auteur
+            $postToAuthor = Post::getOnePostFromAuthor($datas['idPost'], $datas['idAuthor']);
+
+            if (!$postToAuthor)
+            {
+                $this->sendError('Une erreur est survenu');
+                $asError = true;
+            }
+        }
+        
+        if (!$asError)
+        {   
+            // je supprime le post lié à l'auteur
+            if(!Post::delete($datas['idPost'], $datas['idAuthor']))
+            {
+                $this->sendError('Une erreur est survenu');
+                $asError = true;
+            }
         }
 
-        // je supprime le post lié à l'auteur
-        if(Post::delete($datas['idPost'], $datas['idAuthor']))
+        if (!$asError)
         {
             $array_json['success'] = true;
             $_SESSION['success']['deletePost'] = 'Votre article a bien été supprimé';
@@ -261,9 +310,6 @@ class PostController extends CoreController
             $this->addPostAuthorInSession();
             $this->showJson($array_json);
         }
-        else 
-        {
-            $this->sendError('Une erreur est survenu');
-        }
     }
+    
 }// end class

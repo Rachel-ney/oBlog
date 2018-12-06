@@ -33,16 +33,16 @@ var appPost = {
         if (type === 'category' || type === 'author') 
         {
             var id = $('main').data(type);
-            appPost.url = 'http://'+ appPost.back +'/all-post-by/'+ type +'/'+ id ;
+            appPost.url =   appPost.back +'/all-post-by/'+ type +'/'+ id ;
         }
         else if(type === 'all') 
         {
-            appPost.url = 'http://'+ appPost.back +'/all-post';
+            appPost.url =   appPost.back +'/all-post';
         }
         else if (type === 'one')
         {
             var id = $('main').data(type);
-            appPost.url = 'http://'+ appPost.back +'/one-post/'+ id;
+            appPost.url =   appPost.back +'/one-post/'+ id;
         }
     },
 

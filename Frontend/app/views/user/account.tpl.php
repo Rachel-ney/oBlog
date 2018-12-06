@@ -220,5 +220,5 @@
 
 <?php
 // j'attend la fin du chargement de la page pour remettre à 0 mes messages success stocké en session
-unset($_SESSION['success']);
+$_SESSION['success'] = null;
 ?>

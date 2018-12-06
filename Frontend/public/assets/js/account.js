@@ -221,7 +221,7 @@ var app = {
 
   unsubscribeUser: function(passwordEntry) {
     var jqxhr = $.ajax({
-      url:'http://'+ app.back +'/desactivate', 
+      url:  app.back +'/desactivate', 
       method: 'POST', 
       dataType: 'json',
       data: {
@@ -248,7 +248,7 @@ var app = {
 
   changePassword: function(arrayData) {
     var jqxhr = $.ajax({
-      url:'http://'+ app.back +'/change-pass', 
+      url:  app.back +'/change-pass', 
       method: 'POST', 
       dataType: 'json', 
       data: {
@@ -284,7 +284,7 @@ var app = {
 
   sendNewPost: function(arrayData) {
     var jqxhr = $.ajax({
-      url:'http://'+ app.back +'/add-update-post', 
+      url:  app.back +'/add-update-post', 
       method: 'POST', 
       dataType: 'json', 
       data: {
@@ -315,7 +315,7 @@ var app = {
 
   sendPostModification: function(arrayData) {
     var jqxhr = $.ajax({
-      url:'http://'+ app.back +'/add-update-post', 
+      url:  app.back +'/add-update-post', 
       method: 'POST', 
       dataType: 'json', 
       data: {
@@ -347,7 +347,7 @@ var app = {
 
   removePost: function(id, passwordUser) {
     var jqxhr = $.ajax({
-      url:'http://'+ app.back +'/delete-post', 
+      url:  app.back +'/delete-post', 
       method: 'POST', 
       dataType: 'json', 
       data: {

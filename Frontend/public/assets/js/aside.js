@@ -12,7 +12,7 @@ var aside = {
 
   recoverCategoryList: function () {
     var jqxhr = $.ajax({
-      url:'http://'+ aside.back +'/all-category', 
+      url:  aside.back +'/all-category', 
       method: 'GET', 
       dataType: 'json',
     });
@@ -29,7 +29,7 @@ var aside = {
 
   recoverAuthorList: function () {
     var jqxhr = $.ajax({
-      url:'http://'+ aside.back +'/all-author',
+      url:  aside.back +'/all-author',
       method: 'GET', 
       dataType: 'json',
     });

@@ -25,7 +25,7 @@ var app = {
 
     sendMailUser(mailUser) {
     var jqxhr = $.ajax({
-        url:'http://'+ app.back +'/lost-password', 
+        url:  app.back +'/lost-password', 
         method: 'GET', 
         dataType: 'json',
         data: {

@@ -29,33 +29,44 @@ abstract class CoreController
 
     protected function notEmptyDatas($array) {
 
+        $asError = false;
+
         foreach ($array as $currentIndex) 
         {
             // si vide
             if(empty($currentIndex)) 
             {
+                $asError = true;
                 $this->sendError('Vous ne pouvez pas laisser de champs vide');
+                break;
             }
         }
+        
+        return $asError;
     }
 
     protected function passwordIntegrity($pass, $passConfirm) {
+        $asError = false;
+        $regexPass = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[.?!_])/';
         // je vérifie que le mdp et la confirmation du mdp soient identiques
         if ($pass !== $passConfirm) 
         {
             $this->sendError('Le nouveau mot de passe et sa confirmation doivent êtres identiques', true);
+            $asError = true;
         }
         // je vérifie que mon mot de passe fasse bien 8 caractère ou plus
-        if (strlen($pass) < 8 )
+        else if (strlen($pass) < 8 )
         {
             $this->sendError('Le mot de passe doit contenir au moins 8 caractères', true);
+            $asError = true;
         }
         // je vérifie que le mot de passe contienne bien maj, min, chiffre et . ou ? ou ! ou _ (1x ou plus)
-        $regexPass = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[.?!_])/';
-        if (!preg_match($regexPass, $pass))
+        else if (!preg_match($regexPass, $pass))
         {
             $this->sendError('Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et un des caractère suivant _ ? . !', true);
+            $asError = true;
         }
+        return $asError;
     }
 
     protected function addUserInSession($author) {
@@ -67,7 +78,12 @@ abstract class CoreController
     }
 
     protected function addPostAuthorInSession() {
-        unset($_SESSION['user']['posts']);
+        
+        if (isset($_SESSION['user']) && isset($_SESSION['user']['posts'])) {
+
+            $_SESSION['user']['posts'] = null;
+        }
+
         $allPost = Post::getAllPostBy('author', $_SESSION['user']['id']);
 
         if(!empty($allPost))
@@ -114,7 +130,6 @@ abstract class CoreController
         }
         $array_json['success'] = false;
         $this->showJson($array_json);
-        die();
     }
 
 }
