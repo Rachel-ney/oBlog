@@ -86,53 +86,68 @@ class PostController extends CoreController
     // Méthode pour récuperer TOUT les POST d'un auteur OU d'une category
     public function allPostBy($params) 
     {
-        // isset($_POST['idCategory']) ? strip_tags(trim($_POST['idCategory'])) : '';
+        $asError = false;
+
         $id = $params['id'];
         // si id vide
         if(empty($id)) 
         {
             $this->sendError('Veuillez préciser l\'identifiant de la catégorie ou de l\'auteur choisi');
-        }
-        $by = $params['action'];
-        // si action vide
-        if($by !== 'category' && $by !== 'author') 
-        {
-            $this->sendError('Une erreur est survenue');
-        }
-        // je récupère tout les posts de ma bdd sous forme d'objet
-        $allPostBy = Post::getAllPostBy($by, $id);
-
-        // si la bdd ne m'a rien renvoyé
-        if(empty($allPostBy)) 
-        {
-            $this->sendError('Aucun article enregistré');
+            $asError = true;
         }
 
-        // je déclare le tableau qui contiendra tout les posts
-        $forJson = array();
-        // je rempli le tableau : 
-        foreach( $allPostBy as $index => $currentObject) 
+        if (!$asError)
         {
-            $forJson[$index] = [
-                'id'            => $currentObject->getId(),
-                'title'         => $currentObject->getTitle(),
-                'resume'        => $currentObject->getResume(),
-                'content'       => $currentObject->getContent(),
-                'authorId'      => $currentObject->getAuthorId(),
-                'categoryId'    => $currentObject->getCategoryId(),
-                'authorName'    => $currentObject->getAuthorName(),
-                'categoryName'  => $currentObject->getCategoryName(),
-                'created_at'    => $currentObject->getCreatedAt(),
-                'updated_at'    => $currentObject->getUpdatedAt(),
+            $by = $params['action'];
+            // si action vide
+            if($by !== 'category' && $by !== 'author') 
+            {
+                $this->sendError('Une erreur est survenue');
+                $asError = true;
+            }
+        }
+
+        if (!$asError)
+        {
+            // je récupère tout les posts de ma bdd sous forme d'objet
+            $allPostBy = Post::getAllPostBy($by, $id);
+
+            // si la bdd ne m'a rien renvoyé
+            if(empty($allPostBy)) 
+            {
+                $this->sendError('Aucun article enregistré');
+                $asError = true;
+            }
+        }
+        
+        if (!$asError)
+        {
+            // je déclare le tableau qui contiendra tout les posts
+            $forJson = array();
+            // je rempli le tableau : 
+            foreach( $allPostBy as $index => $currentObject) 
+            {
+                $forJson[$index] = [
+                    'id'            => $currentObject->getId(),
+                    'title'         => $currentObject->getTitle(),
+                    'resume'        => $currentObject->getResume(),
+                    'content'       => $currentObject->getContent(),
+                    'authorId'      => $currentObject->getAuthorId(),
+                    'categoryId'    => $currentObject->getCategoryId(),
+                    'authorName'    => $currentObject->getAuthorName(),
+                    'categoryName'  => $currentObject->getCategoryName(),
+                    'created_at'    => $currentObject->getCreatedAt(),
+                    'updated_at'    => $currentObject->getUpdatedAt(),
+                ];
+            }
+            // j'ajoute le tableau à ma réponse json : 
+            $array_json = [
+                'post' => $forJson,
+                'success' => true,
             ];
+            // j'envoi le tableau à showJson
+            $this->showJson($array_json);
         }
-        // j'ajoute le tableau à ma réponse json : 
-        $array_json = [
-            'post' => $forJson,
-            'success' => true,
-        ];
-        // j'envoi le tableau à showJson
-        $this->showJson($array_json);
     }
 
     // Méthode pour ajouter / modifier un post en bdd

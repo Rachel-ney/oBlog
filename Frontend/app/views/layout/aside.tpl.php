@@ -1,4 +1,4 @@
-        <aside class="col-3 col-lg-2 mx-auto">
+        <aside class="col-3 col-lg-2 mr-2">
           <!-- Catégories: https://getbootstrap.com/docs/4.1/components/card/#list-groups-->
           <div class="card">
             <h3 class="card-header">Catégories</h3>

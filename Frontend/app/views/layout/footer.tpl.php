@@ -2,7 +2,7 @@
             <!-- Je crée une nouvelle ligne dans ma grille virtuelle: https://getbootstrap.com/docs/4.1/layout/grid/
                 Je déclare également que ces elements doivent être centré (flex): https://getbootstrap.com/docs/4.1/utilities/flex/#justify-content
                 ainsi que leur textes: https://getbootstrap.com/docs/4.1/utilities/text/#text-alignment -->
-            <div class="row justify-content-center text-center">
+            <div class="row justify-content-center text-center mt-4">
                 <div class="col-9 links">
                     <!-- Je créé une liste: https://getbootstrap.com/docs/4.1/components/list-group/ -->
                     <ul class="list-inline">

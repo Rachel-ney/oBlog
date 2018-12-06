@@ -1,13 +1,15 @@
 var app = {
   uri: '',
   back: '',
+  sess: '',
   target: '',
   postTarget: '',
 
   init: function () {
     // je récupère la base uri : 
     app.uri = $('.container-fluid').data('uri');
-    app.back = $('.container-fluid').data("back");
+    app.back = $('.container-fluid').data('back');
+    app.sess = $('.container-fluid').data('sess');
     // j'ajoute mes events
     $('.form-modal-desactivate').on('submit', app.handleConfirmModalDesactivate);
     $('.form-password').on('submit', app.handleCheckPasswordChange);
@@ -40,8 +42,8 @@ var app = {
     $('.error').remove();
 
     var data = {
-      'oldPass' : $.trim($('.password').val()),
-      'newPass' : $.trim($('.newPassword').val()),
+      'oldPass'        : $.trim($('.password').val()),
+      'newPass'        : $.trim($('.newPassword').val()),
       'newPassConfirm' : $.trim($('.newPasswordConfirm').val())
     };
 
@@ -153,13 +155,14 @@ var app = {
     evt.preventDefault();
 
     var form = $(evt.target);
+    app.postTarget = evt.target;
     
     var data = {
       'id'          : form.data('postid'),
       'title'       : $.trim($(form.find('.modify-title')).val()),
       'resume'      : $.trim($(form.find('.modify-resume')).val()),
       'content'     : $.trim($(form.find('.modify-content')).val()),
-      'category' : $(form.find('select.modify-category')).val(),
+      'category'    : $(form.find('select.modify-category')).val(),
     };
 
     var notEmpty = true;
@@ -225,7 +228,8 @@ var app = {
       method: 'POST', 
       dataType: 'json',
       data: {
-        password: passwordEntry,
+        sess     : app.sess,
+        password : passwordEntry,
       } 
     });
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
@@ -242,7 +246,7 @@ var app = {
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
-      alert('Requête échouée');
+      console.log('Echec request unsuscribe user');
     });
   },
 
@@ -252,9 +256,10 @@ var app = {
       method: 'POST', 
       dataType: 'json', 
       data: {
-        oldPass : arrayData['oldPass'],
-        newPass: arrayData['newPass'],
-        newPassConfirm: arrayData['newPassConfirm']
+        sess           : app.sess,
+        oldPass        : arrayData['oldPass'],
+        newPass        : arrayData['newPass'],
+        newPassConfirm : arrayData['newPassConfirm']
       } 
     });
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
@@ -278,7 +283,7 @@ var app = {
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
-      alert('Requête échouée');
+      console.log('Echec resquest change pass');
     });
   },
 
@@ -288,10 +293,11 @@ var app = {
       method: 'POST', 
       dataType: 'json', 
       data: {
-        action   : 'insert',
-        title    : arrayData['title'],
-        resume   : arrayData['resume'],
-        content  : arrayData['content'],
+        sess        : app.sess,
+        action      : 'insert',
+        title       : arrayData['title'],
+        resume      : arrayData['resume'],
+        content     : arrayData['content'],
         category_id : arrayData['category']
       } 
     });
@@ -309,7 +315,7 @@ var app = {
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
-      alert('Requête échouée');
+      console.log('Echec resquest send new post');
     });
   },
 
@@ -319,11 +325,12 @@ var app = {
       method: 'POST', 
       dataType: 'json', 
       data: {
-        action   : 'update',
-        post_id  : arrayData['id'],
-        title    : arrayData['title'],
-        resume   : arrayData['resume'],
-        content  : arrayData['content'],
+        sess        : app.sess,
+        action      : 'update',
+        post_id     : arrayData['id'],
+        title       : arrayData['title'],
+        resume      : arrayData['resume'],
+        content     : arrayData['content'],
         category_id : arrayData['category']
       } 
     });
@@ -341,7 +348,7 @@ var app = {
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
-      alert('Requête échouée');
+      console.log('Echec resquest modify post');
     });
   },
 
@@ -351,8 +358,9 @@ var app = {
       method: 'POST', 
       dataType: 'json', 
       data: {
-        post_id   : id,
-        password  : passwordUser,
+        sess     : app.sess,
+        post_id  : id,
+        password : passwordUser,
       } 
     });
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
@@ -376,7 +384,7 @@ var app = {
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
-      alert('Requête échouée');
+      console.log('Echec resquest delete post');
     });
   },
 
@@ -398,30 +406,32 @@ var app = {
     {
       div.html(msg);
     }
-    
-    if(app.target === 'desactivate')
+
+    switch(app.target)
     {
+      case 'desactivate' :
       div.appendTo($('.form-modal-desactivate'));
-    }
-    else if (app.target === 'changePass')
-    {
+      break;
+
+      case 'changePass' : 
       div.appendTo($('.form-password'));
-    }
-    else if (app.target === 'newPost')
-    {
+      break;
+
+      case 'newPost' :
       div.appendTo($('.form-new-post'));
-    }
-    else if (app.target === 'modifyPost')
-    {
+      break;
+
+      case 'modifyPost' : 
+      console.log(app.postTarget);
       div.appendTo($(app.postTarget));
-    }
-    else if (app.target === 'deletePost')
-    {
+      break;
+
+      case 'deletePost' :
       div.appendTo($('.form-delete-post'));
-    }
-    else 
-    {
-      console.log('Nani ?!')
+      break;
+
+      default : 
+      console.log('Nani ?!');
     }
   }
 };

@@ -37,10 +37,7 @@
         </section>
     </header>
 
-    <!-- Mon container (avec une max-width) dans lequel mon contenu va être placé: https://getbootstrap.com/docs/4.1/layout/overview/#containers -->
-    <!-- Serveur : data-back="https://api.rachel-michel.fr/oBlog/Backend" -->
+    <!-- Serveur : data-back="https://api.rachel-michel.fr" -->
     <!-- Local : data-back="http://localhost/Projet_perso/oBlog/Backend" -->
-    
-    <?php dump($_SESSION); ?>  
-    <?php dump(session_get_cookie_params());?>
-    <div class="container-fluid" data-uri="<?=$_SERVER['BASE_URI'];?>" data-back="http://localhost/Projet_perso/oBlog/Backend" >
+
+    <div class="container-fluid" data-uri="<?=$_SERVER['BASE_URI'];?>" data-back="http://localhost/Projet_perso/oBlog/Backend" data-sess="<?= session_id();?>">

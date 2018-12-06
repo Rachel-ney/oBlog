@@ -586,7 +586,7 @@ class AuthorController extends CoreController
         if (!$asError) 
         {
             $array_json['success'] = true;
-            $_SESSION = null;
+            $_SESSION['user'] = null;
             $this->showJson($array_json);
         }
         

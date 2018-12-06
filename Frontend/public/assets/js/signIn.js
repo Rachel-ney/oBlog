@@ -1,19 +1,21 @@
-var appSignIn = {
+var app = {
   uri: '',
   back: '',
+  sess: '',
   target: '',
 
   init: function() {
-    appSignIn.uri =  $('.container-fluid').data('uri');
-    appSignIn.back = $('.container-fluid').data('back');
-    $('.register').on('submit', appSignIn.handleCheckForm);
-    $('.sign-in').on('submit', appSignIn.handleCheckForm)
+    app.uri =  $('.container-fluid').data('uri');
+    app.back = $('.container-fluid').data('back');
+    app.sess = $('.container-fluid').data('sess');
+    $('.register').on('submit', app.handleCheckForm);
+    $('.sign-in').on('submit', app.handleCheckForm)
   },
 
   handleCheckForm: function(evt) {
     // je bloque l'envoi du formulaire
     evt.preventDefault();
-    appSignIn.target = evt.target;
+    app.target = evt.target;
     // je détermine si c'est sign in ou register par la présence / absence de l'input name
     var register = $($(evt.target).find('.name')).val();
     //debugger;
@@ -28,17 +30,17 @@ var appSignIn = {
     $('.error').remove();
     // dans tout les cas je récupère email et password
     var data = {
-      'email': $.trim($($(evt.target).find('.email')).val()),
+      'email'   : $.trim($($(evt.target).find('.email')).val()),
       'password': $.trim($($(evt.target).find('.password')).val())
     };
 
     // si c'est le formulaire d'inscription je récupère aussi le pseudo et la confirmation du mdp
     if(register) 
     {
-      data['name'] = $.trim($($(evt.target).find('.name')).val());
+      data['name']         = $.trim($($(evt.target).find('.name')).val());
       data['pass_confirm'] = $.trim($($(evt.target).find('.password-confirm')).val());
     }
-  
+
     // par défaut je considère que des valeurs on été mis dans chaque input
     var notEmpty = true;
     var error = [];
@@ -80,7 +82,7 @@ var appSignIn = {
     if (notEmpty) 
     {
       // je lance la requête vers le back
-      appSignIn.dataRequest(data, register);
+      app.dataRequest(data, register);
     }
     else 
     {
@@ -95,26 +97,28 @@ var appSignIn = {
     if(register)
     {
       var jqxhr = $.ajax({
-        url:  appSignIn.back +'/add-author', 
+        url:  app.back +'/add-author', 
         method: 'POST',
         dataType: 'json',
         data: {
-          name: dataValue['name'],
-          password: dataValue['password'],
-          pass_confirm: dataValue['pass_confirm'],
-          email: dataValue['email']
+          sess         : app.sess,
+          name         : dataValue['name'],
+          password     : dataValue['password'],
+          pass_confirm : dataValue['pass_confirm'],
+          email        : dataValue['email']
         }
       });
     }
     else 
     {
       var jqxhr = $.ajax({
-        url:  appSignIn.back +'/connexion', 
+        url:  app.back +'/connexion', 
         method: 'POST',
         dataType: 'json',
         data: {
-          password: dataValue['password'],
-          email: dataValue['email']
+          sess     : app.sess,
+          password : dataValue['password'],
+          email    : dataValue['email']
         }
       });
     }
@@ -130,7 +134,7 @@ var appSignIn = {
           }
           else
           {
-            //location.reload(true);
+            location.reload(true);
           }
           
         }
@@ -138,17 +142,17 @@ var appSignIn = {
         {
           if(response.msg.pass)
           {
-            appSignIn.displayError('pass',response.msg);
+            app.displayError('pass',response.msg);
           }
           else
           {
-            appSignIn.displayError('other',response.msg);
+            app.displayError('other',response.msg);
           }
         }
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
-      alert('Requête échouée');
+      console.log('Echec resquest connexion or register');
     });
   },
 
@@ -168,7 +172,7 @@ var appSignIn = {
       div.html(msg);
     }
     
-    div.appendTo(appSignIn.target);
+    div.appendTo(app.target);
   }
 };
-$(appSignIn.init);
+$(app.init);

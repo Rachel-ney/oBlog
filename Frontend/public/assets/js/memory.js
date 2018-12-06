@@ -3,15 +3,22 @@ var app = {
   board: document.querySelector('.board'),
   title: document.createElement('h1'),
   rules: document.createElement('p'),
+
   blocTime: document.querySelector('.bloc-time'),
-  time: document.createElement('div'),
-  startTimer: null,
-  position: 750,
+  blocTimeBis: document.querySelector('.bloc-time-bis'),
+
   $allCards: [],
   $clickedCardOne: null,
   $clickedCardTwo: null,
   click: 0,
   win: 0,
+
+  // chrono 
+  startTimer: 0,
+  start : 0,
+  end : 0,
+  diff : 0,
+
 
   init: function() {
     // Affichage du titre + règles sur le board
@@ -26,11 +33,11 @@ var app = {
   },
 
   presentation: function() {
-    app.title.className = 'title';
+    app.title.classList = 'title mx-auto';
     app.title.innerHTML = 'Le Memory de l\'espace';
     app.board.appendChild(app.title);
     app.rules.className = 'text';
-    app.rules.innerHTML = 'Règles :<br/> Cliquez sur deux cartes pour les retourner. <br/> Si elles sont différentes vous avez 0.5 seconde pour les mémoriser.<br/> Si elles sont identiques, elles sont retiré du jeu. <br/><br/> Attention !<br/> Vous avez une minute pour retrouver les 14 paires de cartes mélangées sur le plateau.<br/> La barre bleu symbolise le temps qu\'il vous reste... <br/><br/> Appuyez sur Jouer pour lancer la partie.';
+    app.rules.innerHTML = 'Règles :<br/> Cliquez sur deux cartes pour les retourner. <br/> Si elles sont différentes vous avez 0.5 seconde pour les mémoriser.<br/> Si elles sont identiques, elles sont retiré du jeu. <br/><br/> Attention !<br/> Vous avez une minute et trentes secondes seulement pour retrouver les 14 paires de cartes mélangées sur le plateau.<br/><br/> Appuyez sur Jouer pour lancer la partie.';
     app.board.appendChild(app.rules);
   },
 
@@ -39,11 +46,9 @@ var app = {
     app.cleanBoard(evt.target);
 
     // préparation du timer
-    app.time.className = 'time';
-    app.blocTime.appendChild(app.time);
+    app.start = new Date();
     // début du chrono
-    app.startTimer = setInterval(app.chrono, 100);
-
+    app.startTimer = setInterval(app.chrono, 500);
     // je créer les cartes
     app.createCard();
     // je leur assigne un sprite
@@ -62,11 +67,35 @@ var app = {
   },
 
   chrono: function() {
-    app.position--;
-    app.time.style.width = app.position + 'px';
-    if (app.position <= 0) {
+    // je récupère la date actuelle
+    var end = new Date();
+    // je retire la date actuelle de celle du lancement du chrono
+    app.diff = end - app.start
+    // je créer une nouvelle date symbolisant l'écart entre les deux
+    app.diff = new Date(app.diff)
+    // je récupère les seconde
+    var sec =  app.diff.getSeconds();
+    // et les minutes
+    var min =  app.diff.getMinutes();
+    // si les minutes sont inférieur à 10 j'ajoute un 0 devant
+    if (min < 10)
+    {
+      min = "0" + min
+    }
+    // idem pour les secondes
+    if (sec < 10)
+    {
+      sec = "0" + sec
+    }
+    // j'affiche le temps
+    app.blocTime.innerHTML = min + " : " + sec;
+    app.blocTimeBis.innerHTML = min + " : " + sec;
+
+    // si le chrono à atteind 1m31 on stop tout
+    if(min === '01' && sec === '31')
+    {
+      alert('Temps écoulé, vous avez perdu');
       clearInterval(app.startTimer);
-      alert('Temps écoulé vous avez perdu !');
       app.reset();
     }
   },
@@ -189,14 +218,14 @@ var app = {
   reset: function() {
     // remise à 0 des valeurs
     app.startTimer = null;
-    app.position = 1000;
     app.$clickedCardOne = null;
     app.$clickedCardTwo = null;
     app.click = 0;
     app.win = 0;
 
     // supression du chrono
-    app.blocTime.removeChild(app.time);
+    app.blocTime.innerHTML ='';
+    app.blocTimeBis.innerHTML = '';
 
     // suppression de toutes les cartes
     for (var index in app.$allCards) {

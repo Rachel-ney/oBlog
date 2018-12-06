@@ -1,11 +1,13 @@
 var aside = {
   uri: '',
   back: '',
+  sess: '',
 
   init: function () {
     // je récupère la base uri : 
     aside.back = $('.container-fluid').data("back");
     aside.uri = $('.container-fluid').data("uri");
+    aside.sess = $('.container-fluid').data('sess');
     aside.recoverCategoryList();
     aside.recoverAuthorList();
   },
@@ -15,6 +17,9 @@ var aside = {
       url:  aside.back +'/all-category', 
       method: 'GET', 
       dataType: 'json',
+      data: {
+        sess  : aside.sess
+      } 
     });
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
     jqxhr.done(function (response) {
@@ -23,7 +28,7 @@ var aside = {
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
-      alert('Requête échouée');
+      console.log('Echec resquest recover all category');
     });
   },
 
@@ -32,6 +37,9 @@ var aside = {
       url:  aside.back +'/all-author',
       method: 'GET', 
       dataType: 'json',
+      data: {
+        sess  : aside.sess
+      } 
     });
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
     jqxhr.done(function (response) {
@@ -40,7 +48,7 @@ var aside = {
     });
     // Je déclare la méthode fail, celle-ci sera executée si la réponse est insatisfaisante
     jqxhr.fail(function () {
-      alert('Requête échouée');
+      console.log('Echec resquest recover all author');
     });
   },
 

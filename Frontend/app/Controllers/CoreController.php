@@ -16,7 +16,7 @@ abstract class CoreController
         {
             if($_GET['disconnect'] === '1') 
             {
-                $_SESSION = null;
+                $_SESSION['user'] = null;
                 header('Location: '. $router->generate('signIn'));
             }
         }
