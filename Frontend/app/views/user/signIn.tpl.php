@@ -1,5 +1,5 @@
 <div class="row all-form">
-    <main class="col-12 col-md-8 col-lg-7 mx-auto d-lg-flex flex-lg-row  ">
+    <main class="col-12 col-md-8 col-lg-7 mx-auto p-0 d-lg-flex flex-lg-row  ">
         
         <form class="col-12 col-lg-5 my-3 mx-auto border d-flex flex-column sign-in ">
             <h3 class="text-center mt-3">Se connecter</h3>

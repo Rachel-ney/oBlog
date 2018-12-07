@@ -1,7 +1,6 @@
 
-<div class="row ">
+<div class="row p-3">
     <main class="col-12 col-md-8 col-lg-7 mx-auto">
-        <h1 class="text-center my-4">Bienvenue sur oBlog... à la dérive</h1>
         <p class="text-center bg-light border-top border-bottom py-3"> 
             Etre dev c'est un peu comme être astronaute <i class="fas fa-user-astronaut"></i><br/>
             Je vous vois déjà rouler des yeux en lisant ces lignes, laissez moi m'expliquer...

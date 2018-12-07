@@ -28,7 +28,7 @@
     <!-- HEADER -->
     <header class="col-12 px-0">
         <?php $this->includeOne('/layout/nav') ?>
-        <section class="text-center">
+        <section class="text-center p-2">
             <h1>A la dérive</h1>
             <hr />
             <p>
@@ -39,5 +39,4 @@
 
     <!-- Serveur : data-back="https://api.rachel-michel.fr" -->
     <!-- Local : data-back="http://localhost/Projet_perso/oBlog/Backend" -->
-
-    <div class="container-fluid" data-uri="<?=$_SERVER['BASE_URI'];?>" data-back="http://localhost/Projet_perso/oBlog/Backend" data-sess="<?= session_id();?>">
+    <div class="container-fluid p-0" data-uri="<?=$_SERVER['BASE_URI'];?>" data-back="http://localhost/Projet_perso/oBlog/Backend" data-sess="<?= session_id();?>">

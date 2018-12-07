@@ -1,5 +1,5 @@
 
-<div class="row">
+<div class="row p-3">
     <main class="col-12 col-md-8 col-lg-7 mx-auto">
     <blockquote class="blockquote my-3 text-center">
         <p class="mb-0">

@@ -1,3 +1,17 @@
+        <?php if (empty($_SESSION['acceptCookie'])) :?>
+            <div class="col-12 cookie">
+                <p class="d-inline">
+                    En naviguant sur ce site, vous acceptez l'utilisation de cookies,<br/>
+                    ceux-ci ne sont utilisé qu'a des fin de fonctionnement tel que le maintient 
+                    de votre identification lors de votre navigation.
+                </p>
+            <form method="get" class="d-inline">
+                <button type="submit" name="acceptCookie" value="1">
+                    J'ai compris
+                    </button>
+                </form> 
+            </div>
+        <?php endif; ?>
         <footer>
             <!-- Je crée une nouvelle ligne dans ma grille virtuelle: https://getbootstrap.com/docs/4.1/layout/grid/
                 Je déclare également que ces elements doivent être centré (flex): https://getbootstrap.com/docs/4.1/utilities/flex/#justify-content

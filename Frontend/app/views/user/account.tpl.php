@@ -1,5 +1,5 @@
-<div class="row col-12 col-lg-9 my-3 mx-auto justify-content-center data">
-    <main class="col-lg-10">
+<div class="row col-12 col-lg-9 my-3 p-0 mx-auto justify-content-center data">
+    <main class="col-lg-10 p-0">
     <?php if (isset($_SESSION['success']['addPost'])) : ?>
     <p class="col-lg-12 bg-success rounded p-2 text-center text-light ">
         <?=$_SESSION['success']['addPost'];?>
@@ -32,7 +32,7 @@
                                 <button type="button" class="btn btn-danger mt-3 unsubscribe" data-toggle="modal" data-target="#confirm-desactivate" data-whatever="@getbootstrap">Désactiver mon compte</button>
                             </ul>
                             <!-- Formulaire changement de mot de passe -->
-                            <form class="col-md-5 col-12 form-password">
+                            <form class="col-md-5 col-12 p-0 form-password">
                                 <div class="form-group mb-1">
                                     <p>Changer de mot de passe</p>
                                     <input type="password" class="form-control password" placeholder="Mot de passe actuel">
@@ -64,7 +64,7 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
                     <div class="card-body d-md-flex justify-content-center">
                     <!-- Formulaire création d'un article -->
-                        <form class="col-md-9 col-12 form-new-post">
+                        <form class="col-md-9 col-12 p-0 form-new-post">
                             <div class="form-group">
                                 <p>Titre de l'article</p>
                                 <input type="text" class="form-control" id="title" aria-describedby="emailHelp">
@@ -171,7 +171,7 @@
                     <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
                         <div class="card-body">
                         <!-- Possibilité de supprimer un article choisi -->
-                        <form class="col-11 mx-auto form-delete-post">
+                        <form class="col-11 mx-auto p-0 form-delete-post">
                             <div class="mb-2">Choisissez un article à supprimer :</div>
                                 <select class="form-control to-delete">
                                 <option selected disabled>Articles</option>

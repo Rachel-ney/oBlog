@@ -1,5 +1,5 @@
 
-<div class="row">
+<div class="row p-3">
     <main class="col-12 col-md-8 col-lg-7 mx-auto">
         <h3 class="text-center my-4">Mentions légales</h3>
         <div class="h4 text-center bg-light border-top border-bottom py-3">Informations sur l'hébergeur</div>

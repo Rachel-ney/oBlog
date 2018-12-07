@@ -4,6 +4,15 @@
 //session_save_path('/var/www/tmp');
 session_start();
 
+if (!empty($_GET['acceptCookie']))
+{
+    if($_GET['acceptCookie'] === '1')
+    {
+        $_SESSION['acceptCookie'] = true;
+    }
+    
+}
+
 use \oBlog\Application as App;
 // Inclusion autoload de Composer
 require __DIR__.'/../vendor/autoload.php';
