@@ -31,4 +31,11 @@ class MainController extends CoreController
         $this->show('/main/legalMention');
     }
 
+    // j'appel show pour la page d'info sur les cookies
+    public function cookie()
+    {
+        $this->oTemplator->setVar('js', ['aside']);
+        $this->show('/main/cookie');
+    }
+
 }

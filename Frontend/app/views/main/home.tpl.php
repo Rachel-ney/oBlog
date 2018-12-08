@@ -7,9 +7,9 @@
         </p>
         <p class="pt-3">
             <i class="far fa-star"></i> L'univers de la programmation comprends au moins autant de langage qu'il y a de constellation. <br/>
-            <i class="fas fa-rocket"></i> Executer un code ( avec succès ) requiert au moins autant de condition que de faire décoller une fusée.  <br/>
+            <i class="fas fa-rocket"></i> Exécuter un code ( avec succès ) requiert au moins autant de conditions que de faire décoller une fusée.  <br/>
             <i class="fas fa-code"></i> Et au milieu de tout ça, il y a les devs ! <br/>
-            Passionnés, curieux, et conscient qu'une vie entière ne suffirais même pas pour apprendre tout ce qui compose cet univers fantastique qu'est la programmation ! 
+            Passionnés, curieux, et conscients qu'une vie entière ne suffirait pas pour apprendre tout ce qui compose cet univers fantastique qu'est la programmation ! 
         </p>
         <div class="bg-light border-top border-bottom">
             <p class="h3 text-center  pt-3">oBlog, c'est quoi ?</hp>
@@ -22,18 +22,18 @@
             <i class="far fa-lightbulb"></i> Vos découvertes<br/>
             <i class="fas fa-compress"></i> Vos ascenseurs émotionnel<br/>
             <i class="fas fa-chair"></i> Vos pires bug d'interface chaise clavier <br/>
-            <i class="far fa-clock"></i> Vos nuits blanche<br/>
+            <i class="far fa-clock"></i> Vos nuits blanches<br/>
             ...<br/>
             
             Vous avez déjà rêvé de code ? Non ne répondez pas, je suis sur que oui. <br/>
-            Toutes ces annecdote que vous ne pouvez pas raconter à votre entourage parce qu'il vous regarde comme un alien <i class="fab fa-reddit-alien"></i> à la simple mention du mot "Frameworks"... <br/>
+            Toutes ces annecdotes que vous ne pouvez pas raconter à votre entourage parce qu'il vous regarde comme un alien <i class="fab fa-reddit-alien"></i> à la simple mention du mot "Frameworks"... <br/>
             Toutes ces aventures, il existe un lieu ou vous pouvez les conter... et c'est ici même !
         </p>
         <p class="h3 text-center bg-light border-top border-bottom py-3">Pourquoi "à la dérive" ?</p>
         <p>
-            La dérive, c'est un sentiment que tous dev peu importe son niveau ou son domaine de prédiléction a connu un jour.<br/>
-            La dérive, c'est un peu l'essence même de la programmation, être capable de naviguer dans l'immensité de l'espace, avec ni plus ni moins qu'une carte en main pour s'y retrouver <i class="fas fa-arrow-right"></i> <span  class="font-italic">aaah notre fidèle documentation...</span> <br/>
-            On l'a tous connu ce sentiment de flotter dans une autre dimension, d'être à la dérive, nageant dans la documentation et les forums jusqu'à finir par dévier totalement de notre recherche initiale... jusqu'à jetter un oeil sur notre horloge pour se rendre compte qu'il est minuit passé <i class="fas fa-dizzy"></i>
+            La dérive, c'est un sentiment que tout dev peu importe son niveau ou son domaine de prédilection a connu un jour.<br/>
+            La dérive, c'est un peu l'essence même de la programmation, être capable de naviguer dans l'immensitée de l'espace, avec ni plus ni moins qu'une carte en main pour s'y retrouver <i class="fas fa-arrow-right"></i> <span  class="font-italic">aaah notre fidèle documentation...</span> <br/>
+            On l'a tous connu ce sentiment de flotter dans une autre dimension, d'être à la dérive, nageant dans la documentation et les forums jusqu'à finir par dévier totalement de notre recherche initiale... jusqu'à jeter un oeil sur notre horloge pour se rendre compte qu'il est minuit passé <i class="fas fa-dizzy"></i>
         </p>
         <p class="h3 text-center bg-light border-top border-bottom py-3">C'est un peu le VDM du dev ?</p>
         <p class="h5 text-center">

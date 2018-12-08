@@ -1,5 +1,4 @@
 <div class="col-12 col-lg-6 my-3 mx-auto data" data-id="<?=$_GET['id']?>" data-token="<?=$_GET['token']?>">
-    <p class="h3 mx-auto mb-4 text-center">Réinitialiser le mot de passe</p>
 
     <form class="col-12 col-md-7 col-lg-8 mb-5 reset-password">
         <div class="form-group">

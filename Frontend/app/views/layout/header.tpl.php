@@ -17,10 +17,11 @@
         crossorigin="anonymous">
     <!-- Ma feuille de style pour mon blog -->
     <link rel="stylesheet" href="<?=$_SERVER['BASE_URI']?>/assets/css/blog.css">
-    <?php if ($this->var['js'][0] === 'memory') : ?>
-    <link rel="stylesheet" href="<?=$_SERVER['BASE_URI'];?>/assets/css/memory.css">
-    <link href="https://fonts.googleapis.com/css?family=Neucha" rel="stylesheet">
-    <?php endif; ?>
+    <?php if (!empty($this->var['js'])) :
+    if ($this->var['js'][0] === 'memory') : ?>
+        <link rel="stylesheet" href="<?=$_SERVER['BASE_URI'];?>/assets/css/memory.css">
+        <link href="https://fonts.googleapis.com/css?family=Neucha" rel="stylesheet">
+    <?php endif; endif; ?>
     <title>oBlog</title>
 </head>
 <body>

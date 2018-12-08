@@ -1,7 +1,7 @@
 <div class="row all-form">
     <main class="col-12 col-md-8 col-lg-7 mx-auto p-0 d-lg-flex flex-lg-row  ">
         
-        <form class="col-12 col-lg-5 my-3 mx-auto border d-flex flex-column sign-in ">
+        <form class="col-12 col-lg-5 m-3 border d-flex flex-column sign-in ">
             <h3 class="text-center mt-3">Se connecter</h3>
             <div class="form-group">
                 <label>Adresse mail</label>
@@ -15,7 +15,7 @@
             <button type="submit" class="btn d-block mx-auto mt-auto mb-3">Connexion</button>
         </form>
         
-        <form class="col-12 col-lg-5 my-3 border register">
+        <form class="col-12 col-lg-5 m-3 border register">
             <h3 class="text-center mt-3">S'inscrire</h3>
             <div class="form-group">
                 <label>Nom d'utilisateur</label>

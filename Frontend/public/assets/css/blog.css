@@ -127,6 +127,14 @@ footer .links a:hover {
   text-decoration: none;
 }
 
+.cookie {
+  position: fixed;
+  background-color: #3d1d67;
+  bottom: 0px;
+  color: white;
+  font-size: 1.1em;
+}
+
 /* device de 768px min (tablette ou +) => md chez bootstrap */
 @media (min-width:768px) {
 

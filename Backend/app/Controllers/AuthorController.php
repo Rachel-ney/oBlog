@@ -2,7 +2,6 @@
 namespace oBlogApi\Controllers;
 
 use oBlogApi\Models\Author;
-use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 class AuthorController extends CoreController
@@ -15,7 +14,7 @@ class AuthorController extends CoreController
         // si la bdd ne m'a rien renvoyé
         if(empty($allAuthor)) 
         {
-            $this->sendError('La bdd n\'a retourné aucun résultat');
+            $this->sendError('La bdd n\'a retournée aucun résultat');
         }
         // je déclare le tableau qui contiendra touts les posts
         $allAuthorForJson = array();
@@ -48,7 +47,7 @@ class AuthorController extends CoreController
         // si la bdd ne m'a rien renvoyé
         if(empty($oneAuthor)) 
         {
-            $this->sendError('La bdd n\'a retourné aucun résultat');
+            $this->sendError('La bdd n\'a retournée aucun résultat');
         }
         // je déclare le tableau qui contiendra touts les posts
         $authorForJson = array();
@@ -90,7 +89,7 @@ class AuthorController extends CoreController
             $regexName = '/^[a-zA-Z0-9_]{1,25}$/';
             if(!preg_match($regexName, $datas['Name'])) 
             {
-                $this->sendError('Le nom ne doit pas contenir d\'espace ou de caractère spéciaux');
+                $this->sendError('Le nom ne doit pas contenir d\'espaces ou de caractères spéciaux');
                 $asError = true;
             }
         }
@@ -111,7 +110,7 @@ class AuthorController extends CoreController
             $alreadyExist = Author::getOneByEmail($datas['Email']);
             if ($alreadyExist)
             {
-                $this->sendError('Cette adresse mail est déjà enregistré');
+                $this->sendError('Cette adresse mail est déjà enregistrée');
                 $asError = true;
             }
         }
@@ -147,44 +146,14 @@ class AuthorController extends CoreController
             if (!$author->insert()) 
             {
                 //message d'erreur
-                $this->sendError('Une erreur est survenue lors de l\'inscription, veuillez recommencer.');
+                $this->sendError('Une erreur est survenue lors de l\'inscription');
                 $asError = true;
             }
         }
 
         if (!$asError) 
         {
-            // j'assemble mon lien de redirection
-            $urlValidate = 'https://rachel-michel.fr/validation?id='.$author->getId().'&token='.$token;
-            // Envoi d'un mail de confirmation
-            $mail = new PHPMailer(true);// true active les exceptions
-            //Server settings
-            // debbug : 
-            //$mail->SMTPDebug = 2; // 1 = Erreurs et messages, 2 = messages seulement
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true; // activer l'authentification
-            $mail->Username = 'rachel.oblog@gmail.com';// mail hote
-            $mail->Password = 'ki.gu?ru@mi';// mdp hote
-            $mail->SMTPSecure = 'ssl'; // encryptage
-            $mail->Port = 465;// 587 ou 465 (pour google 465 == sécurisé)
-        
-            //Recipients
-            $mail->setFrom('rachel.oblog@gmail.com', 'oBlog');
-            $mail->addAddress($author->getEmail(), $author->getName());
-        
-            //Content
-            $mail->isHTML(true);
-            $mail->Subject = 'Validation de votre compte oBlog';
-            $mail->Body    = 'Bonjour '.$author->getName().', et bienvenu sur oBlog ! <br/> Veuillez cliquer sur ce lien pour valider votre compte: <br/> <a href="'.$urlValidate.'"> Lien vers oBlog </a>';
-        
-            if(!$mail->Send()) 
-            {
-                $this->sendError('Une erreur est survenue lors de l\'envoi du mail.');
-                $asError = true;
-                // debbug : 
-                //echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
-            }
+            $asError = $this->sendMail($author, 'validate');
         }
 
         if (!$asError) 
@@ -220,7 +189,7 @@ class AuthorController extends CoreController
             // vérification token
             if ($datas['token'] !== $authorFind->getToken()) 
             {
-                $this->sendError('token');
+                $this->sendError('Une erreur est survenue');
                 $asError = true;
             }
         }
@@ -239,7 +208,7 @@ class AuthorController extends CoreController
         {
             if(!Author::activate($datas['id']))
             {
-                $this->sendError('id');
+                $this->sendError('Une erreur est survenue');
                 $asError = true;
             }
         }
@@ -318,7 +287,6 @@ class AuthorController extends CoreController
             // j'envoi le tableau à showJson
             $this->showJson($array_json);
         }
-
     }
 
     public function lostPass() {
@@ -360,40 +328,15 @@ class AuthorController extends CoreController
                 $this->sendError('Une erreur est survenue lors de l\'inscription, veuillez recommencer.');
                 $asError = true;
             }
+            else 
+            {
+                $authorFind->setToken($token);
+            }
         }
 
         if (!$asError) 
         {
-            // j'assemble mon lien de redirection
-            $urlNewPass = 'https://rachel-michel.fr/reinitialisation-mot-de-passe?id='.$authorFind->getId().'&token='.$token;
-            // Envoi d'un mail de confirmation
-            $mail = new PHPMailer(true);// true active les exceptions
-            //Server settings
-            // debbug : 
-            //$mail->SMTPDebug = 2; // 1 = Erreurs et messages, 2 = messages seulement
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true; // activer l'authentification
-            $mail->Username = 'rachel.oblog@gmail.com';// mail hote
-            $mail->Password = 'ki.gu?ru@mi';// mdp hote
-            $mail->SMTPSecure = 'ssl'; // encryptage
-            $mail->Port = 465;// 587 ou 465 (pour google 465 == sécurisé)
-        
-            //Recipients
-            $mail->setFrom('rachel.oblog@gmail.com', 'oBlog');
-            $mail->addAddress($authorFind->getEmail(), $authorFind->getName());
-        
-            //Content
-            $mail->isHTML(true);
-            $mail->Subject = 'Changer de mot de passe';
-            $mail->Body    = 'Bonjour '.$authorFind->getName().'<br/> Veuillez cliquer sur ce lien pour changer votre mot de passe oBlog : <br/> <a href="'.$urlNewPass.'"> Lien vers oBlog </a>';
-        
-            if(!$mail->Send()) {
-                $this->sendError('Une erreur est survenue lors de l\'envoi du mail.');
-                $asError = true;
-                // debbug : 
-                //echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
-            }
+            $asError = $this->sendMail($authorFind, 'lostPass');
         }
 
         if (!$asError) 
@@ -432,7 +375,7 @@ class AuthorController extends CoreController
             $tokenAuthor = $authorFind->getToken();
             if($tokenAuthor !== $datas['token']) 
             {
-                $this->sendError('Une erreur est survenue');
+                $this->sendError('Une erreur est survenue - token');
                 $asError = true;
             }
         }
@@ -452,10 +395,11 @@ class AuthorController extends CoreController
             // j'enregistre le nouveau mdp dans la bdd
             if(!Author::updatePassword($datas['id'], $datas['password']))
             {
-                $this->sendError('Une erreur est survenue');
+                $this->sendError('Une erreur est survenue - password');
                 $asError = true;
             }
         }
+
         if (!$asError) 
         {
             // je supprime le token

@@ -1,6 +1,7 @@
 <?php
 namespace oBlogApi\Controllers;
 use PDO;
+use PHPMailer\PHPMailer\PHPMailer;
 use oBlogApi\Utils\Database;
 use oBlogApi\Models\Category;
 use oBlogApi\Models\Post;
@@ -57,7 +58,7 @@ abstract class CoreController
         // je vérifie que mon mot de passe fasse bien 8 caractère ou plus
         else if (strlen($pass) < 8 )
         {
-            $this->sendError('Le mot de passe doit contenir au moins 8 caractères', true);
+            $this->sendError('Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et un des caractère suivant _ ? . !', true);
             $asError = true;
         }
         // je vérifie que le mot de passe contienne bien maj, min, chiffre et . ou ? ou ! ou _ (1x ou plus)
@@ -116,6 +117,55 @@ abstract class CoreController
                 $_SESSION['category'][$category->getId()] = $category->getName();
             }
         }
+    }
+
+    protected function sendMail($recipient, $action) {
+        if ($action === 'validate')
+        {
+            // j'assemble mon lien de redirection
+            $urlToSend = 'https://rachel-michel.fr/validation?id='.$recipient->getId().'&token='.$recipient->getToken();
+
+            $mailSubject = 'Validation de votre compte oBlog';
+            $mailContent = 'Bonjour '.$recipient->getName().', et bienvenue sur oBlog ! <br/> Veuillez cliquer sur ce lien pour valider votre compte: <br/> <a href="'.$urlToSend.'"> Lien vers oBlog </a>';
+        }
+        else if ($action === 'lostPass')
+        {
+            $urlToSend = 'https://rachel-michel.fr/reinitialisation-mot-de-passe?id='.$recipient->getId().'&token='.$recipient->getToken();
+
+            $mailSubject = 'Changer de mot de passe';
+            $mailContent = 'Bonjour '.$recipient->getName().'<br/> Veuillez cliquer sur ce lien pour changer votre mot de passe oBlog : <br/> <a href="'.$urlToSend.'"> Lien vers oBlog </a>';
+        }
+        // Envoi d'un mail de confirmation
+        $mail = new PHPMailer(true);// true active les exceptions
+        //Server settings
+        // debbug : 
+        //$mail->SMTPDebug = 2; // 1 = Erreurs et messages, 2 = messages seulement
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true; // activer l'authentification
+        $mail->Username = 'rachel.oblog@gmail.com'; // mail hote
+        $mail->Password = 'your-pass-here'; // pour des raisons de sécurité ce mot de passe n'est pas valide
+        $mail->SMTPSecure = 'ssl'; // encryptage
+        $mail->Port = 465; // 587 ou 465 (pour google 465 == sécurisé)
+    
+        //Recipients
+        $mail->setFrom('rachel.oblog@gmail.com', 'oBlog');
+        $mail->addAddress($recipient->getEmail(), $recipient->getName());
+    
+        //Content
+        $mail->isHTML(true);
+        $mail->Subject = $mailSubject ;
+        $mail->Body    = $mailContent ;
+    
+        if(!$mail->Send()) 
+        {
+            $this->sendError('Une erreur est survenue lors de l\'envoi du mail.');
+            return true;
+            // debbug : 
+            //echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+        }
+
+        return false;
     }
 
     protected function sendError($message, $password = false) {

@@ -50,6 +50,7 @@ class Application
         $this->router->map('GET', '/me-contacter', 'MainController#contact', 'contact');
         $this->router->map('GET', '/qui-suis-je', 'MainController#aboutUs', 'aboutUs');
         $this->router->map('GET', '/mentions-legales', 'MainController#legalMention', 'legalMention');
+        $this->router->map('GET', '/les-cookies', 'MainController#cookie', 'cookie');
         // BlogController
         $this->router->map('GET', '/le-blog', 'BlogController#blog', 'blog');
         $this->router->map('GET', '/article/[i:id]', 'BlogController#post', 'post');
