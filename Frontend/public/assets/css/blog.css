@@ -14,7 +14,10 @@ header {
 
 /* Comme dit dans header, on met un fond blanc à la nav (voir maquette mobile) */
 .navbar {
-  background-color: #f8f8f8;
+  background-color: white;
+  position: sticky;
+  top: 0px;
+  z-index: 50;
 }
 
 /* on surcharge les éléments de bootstrap. Pour surcharger, le "poids" du selecteur/ciblage doit être le même que celui des styles de bootstrap */
@@ -103,6 +106,11 @@ aside {
   padding: 2em 0;
 }
 
+.author-aside {
+  height: 250px;
+  overflow-y: auto;
+}
+
 aside h3 {
   font-size: 1.4rem;
 }
@@ -146,8 +154,8 @@ footer .links a:hover {
 
   /* on retire le fond blanc de la navbar */
   .navbar {
-    background-color: transparent;
-  }
+    background-color: #3d1d67;
+  } 
 
   /* on met les textes en blancs car l'image de fond est foncée */
   .navbar,
@@ -187,7 +195,9 @@ footer .links a:hover {
     margin: auto;
     padding-bottom: 2em;
   }
-
+  .navbar {
+    border-bottom: 1px solid white;
+  } 
   .card a {
     color: black;
   }

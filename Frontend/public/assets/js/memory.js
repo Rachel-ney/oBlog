@@ -37,7 +37,7 @@ var app = {
     app.title.innerHTML = 'Le Memory de l\'espace';
     app.board.appendChild(app.title);
     app.rules.className = 'text';
-    app.rules.innerHTML = 'Règles :<br/> Cliquez sur deux cartes pour les retourner. <br/> Si elles sont différentes vous avez 0.5 seconde pour les mémoriser.<br/> Si elles sont identiques, elles sont retiré du jeu. <br/><br/> Attention !<br/> Vous avez une minute et trentes secondes seulement pour retrouver les 14 paires de cartes mélangées sur le plateau.<br/><br/> Appuyez sur Jouer pour lancer la partie.';
+    app.rules.innerHTML = 'Règles :<br/> Cliquez sur deux cartes pour les retourner. <br/> Si elles sont différentes, vous avez 0,5 seconde pour les mémoriser.<br/> Si elles sont identiques, elles sont retirées du jeu. <br/><br/> Attention !<br/> Vous avez une minute et trente secondes seulement pour retrouver les 14 paires de cartes mélangées sur le plateau.<br/><br/> Appuyez sur Jouer pour lancer la partie.';
     app.board.appendChild(app.rules);
   },
 
@@ -92,7 +92,7 @@ var app = {
     app.blocTimeBis.innerHTML = min + " : " + sec;
 
     // si le chrono à atteind 1m31 on stop tout
-    if(min === '01' && sec === '31')
+    if(min === '01' && sec === 31)
     {
       alert('Temps écoulé, vous avez perdu');
       clearInterval(app.startTimer);

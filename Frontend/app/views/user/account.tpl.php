@@ -128,7 +128,7 @@
                                             <input type="text" class="form-control modify-title" value="<?=$post['title'];?>">
                                         </div>
                                         <div class="form-group">
-                                            <p>Sous titre / Phrase de présentation</p>
+                                            <p>Sous-titre / Phrase de présentation</p>
                                             <textarea class="form-control modify-resume" rows="2"><?=$post['resume'];?></textarea>
                                         </div>
                                         <div class="form-group">
@@ -154,7 +154,7 @@
                                 </article>
                         <?php endforeach; ?>
                         <?php else : ?>
-                        <p>Vous n'avez pas encore écris d'article</p>
+                        <p>Vous n'avez pas encore écrit d'articles</p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -198,7 +198,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header border-0">
-        <h5 class="modal-title">Entrez votre mot de passe pour confirmer </h5>
+        <h5 class="modal-title">Entrez votre mot de passe pour confirmer :</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

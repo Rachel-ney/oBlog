@@ -3,7 +3,7 @@
       <?php if(isset($this->var['id'])) : ?>
         <main class="col-12 col-md-8 col-lg-7 mx-auto" data-<?=$this->getVar('type');?>="<?= $this->getVar('id');?>">
       <?php else : ?>
-      <main class="col-12">
+      <main class="col-12 ">
       <?php endif; ?>
           <!-- Je dispose une card: https://getbootstrap.com/docs/4.1/components/card/ -->
           <article class="card d-none">

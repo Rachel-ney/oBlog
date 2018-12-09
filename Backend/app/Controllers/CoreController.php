@@ -48,7 +48,7 @@ abstract class CoreController
 
     protected function passwordIntegrity($pass, $passConfirm) {
         $asError = false;
-        $regexPass = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[.?!_])/';
+        $regexPass = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W])/';
         // je vérifie que le mdp et la confirmation du mdp soient identiques
         if ($pass !== $passConfirm) 
         {
@@ -58,13 +58,13 @@ abstract class CoreController
         // je vérifie que mon mot de passe fasse bien 8 caractère ou plus
         else if (strlen($pass) < 8 )
         {
-            $this->sendError('Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et un des caractère suivant _ ? . !', true);
+            $this->sendError('Le mot de passe doit contenir au moins 8 caractères dont : majuscule(s), minuscule(s), chiffre(s) et au moins un caractère spécial', true);
             $asError = true;
         }
         // je vérifie que le mot de passe contienne bien maj, min, chiffre et . ou ? ou ! ou _ (1x ou plus)
         else if (!preg_match($regexPass, $pass))
         {
-            $this->sendError('Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et un des caractère suivant _ ? . !', true);
+            $this->sendError('Le mot de passe doit contenir au moins 8 caractères dont : majuscule(s), minuscule(s), chiffre(s) et au moins un caractère spécial', true);
             $asError = true;
         }
         return $asError;

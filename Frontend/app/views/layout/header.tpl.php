@@ -27,8 +27,9 @@
 <body>
 
     <!-- HEADER -->
-    <header class="col-12 px-0">
-        <?php $this->includeOne('/layout/nav') ?>
+    <?php $this->includeOne('/layout/nav') ?>
+    <header class="col-12 px-0 header">
+        
         <section class="text-center p-2">
             <h1>A la dérive</h1>
             <hr />

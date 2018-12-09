@@ -1,4 +1,4 @@
-        <aside class="col-3 col-lg-2 mr-2">
+        <aside class="col-3 col-lg-2 mr-2 pt-3">
           <!-- Catégories: https://getbootstrap.com/docs/4.1/components/card/#list-groups-->
           <div class="card">
             <h3 class="card-header">Catégories</h3>
@@ -8,7 +8,7 @@
             </ul>
           </div>
           <!-- Auteurs: https://getbootstrap.com/docs/4.1/components/card/#list-groups -->
-          <div class="card">
+          <div class="card ">
             <h3 class="card-header">Auteurs</h3>
             <ul class="list-group list-group-flush author-aside">
               <li class="list-group-item d-none"><a href="">Author Name</a></li>

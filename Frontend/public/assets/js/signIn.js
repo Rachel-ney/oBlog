@@ -124,7 +124,6 @@ var app = {
     }
     // Je déclare la méthode done, celle-ci sera executée si la réponse est satisfaisante
     jqxhr.done(function (response) {
-      console.log(response);
         if (response.success)
         {
           if(response.success.mail)

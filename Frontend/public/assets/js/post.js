@@ -64,7 +64,7 @@ var app = {
       app.displayPost(response.post);
       if (typeof response.msg !== 'undefined') 
       {
-          $error = $('<div>').html('Oups on dirais bien qu\'il n\'y a pas encore d\'article ici').addClass('h3 text-center my-4');
+          $error = $('<div>').html('Oups on dirait bien qu\'il n\'y a pas encore d\'article ici').addClass('h3 text-center my-4');
           $($error).prependTo('main');
       }
     });

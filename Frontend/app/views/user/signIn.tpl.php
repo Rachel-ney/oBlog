@@ -32,7 +32,7 @@
             <div class="form-group">
                 <label>Confirmation du mot de passe</label>
                 <input type="password" class="form-control col-10 password-confirm" placeholder="Password confirm">
-                <small class="form-text text-muted">Le mot de passe doit contenir au moins 8 caractères dont : minuscule(s), majuscule(s), chiffre(s) et au moins un des caractères suivant _ ? . !</small>
+                <small class="form-text text-muted">Le mot de passe doit contenir au moins 8 caractères dont : minuscule(s), majuscule(s), chiffre(s) et au moins un caractère spécial</small>
             </div>
             <button type="submit" class="btn d-block mx-auto mb-3">Inscription</button>
         </form>

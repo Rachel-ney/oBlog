@@ -37,7 +37,7 @@ var app = {
     jqxhr.done(function (response) {
       if (response.success)
       {
-        $('p.msg').html('Votre compte a été activé avec succes, vous pouvez vous connecter').addClass('bg-success text-light');
+        $('p.msg').html('Votre compte a été activé avec succès, vous pouvez vous connecter').addClass('bg-success text-light');
       }
       else 
       {
