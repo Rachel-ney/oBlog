@@ -213,6 +213,17 @@ footer .links a:hover {
   aside {
     display: block;
   }
+  
+  .aside-absolute {
+    position: absolute;
+    right: 0px;
+  }
+
+  .aside-fixed {
+    position : fixed;
+    top: 70px;
+    right: 0px;
+  }
 
   aside h3 {
     font-size: 0.9rem;

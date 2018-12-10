@@ -10,6 +10,24 @@ var aside = {
     aside.sess = $('.container-fluid').data('sess');
     aside.recoverCategoryList();
     aside.recoverAuthorList();
+    // cet evenement écoute tout ce qui se passe sur la page
+    addEventListener("scroll", aside.scrolled, false);
+  },
+
+  scrolled: function(){
+    var heightHeader = $('header').height();
+    var currentScroll = $('html, body').scrollTop();
+
+    if(currentScroll >= heightHeader)
+    {
+      $('aside').removeClass('aside-absolute');
+      $('aside').addClass('aside-fixed');
+    }
+    else
+    {
+      $('aside').removeClass('aside-fixed');
+      $('aside').addClass('aside-absolute');
+    }       
   },
 
   recoverCategoryList: function () {
